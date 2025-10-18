@@ -411,6 +411,7 @@ let chatHistory = [];
 function initAIAssistant() {
     const assistantInput = document.getElementById('assistantInput');
     const sendAssistantBtn = document.getElementById('sendAssistantBtn');
+    const chatHistoryBtn = document.getElementById('chatHistoryBtn');
     const toolsBtn = document.getElementById('toolsBtn');
     const resultsPanel = document.getElementById('assistantResultsPanel');
     const searchSection = document.getElementById('searchResultsSection');
@@ -544,6 +545,17 @@ Help users plan their trip, answer questions about Singapore, and provide person
         const chatInputBox = document.getElementById('chatInputBox');
         chatSection.insertBefore(messageDiv, chatInputBox);
         chatSection.scrollTop = chatSection.scrollHeight;
+        
+        // Update chat history button indicator
+        updateChatHistoryButton();
+    }
+    
+    function updateChatHistoryButton() {
+        if (chatHistory.length > 0) {
+            chatHistoryBtn.classList.add('has-messages');
+        } else {
+            chatHistoryBtn.classList.remove('has-messages');
+        }
     }
     
     function createTypingBubble() {
@@ -630,6 +642,26 @@ Help users plan their trip, answer questions about Singapore, and provide person
         }
     });
     
+    // Chat history button - reopen chat panel
+    chatHistoryBtn.addEventListener('click', () => {
+        if (chatHistory.length > 0) {
+            // Show chat section with history
+            searchSection.classList.remove('active');
+            chatSection.classList.add('active');
+            resultsPanel.classList.add('active');
+            toolsMenu.classList.remove('active');
+            
+            // Focus on chat input
+            setTimeout(() => {
+                document.getElementById('chatInput').focus();
+            }, 100);
+        } else {
+            // No chat history, prompt user to start
+            assistantInput.placeholder = "💬 Ask me anything about Singapore...";
+            assistantInput.focus();
+        }
+    });
+    
     // Toggle tools menu
     toolsBtn.addEventListener('click', () => {
         const isActive = toolsMenu.classList.toggle('active');
@@ -662,6 +694,9 @@ Help users plan their trip, answer questions about Singapore, and provide person
             toolsMenu.classList.remove('active');
         }
     });
+    
+    // Initialize button state
+    updateChatHistoryButton();
 }
 
 // Recenter button

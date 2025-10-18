@@ -268,6 +268,7 @@ body {
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
+.chat-history-btn,
 .send-assistant-btn,
 .tools-btn {
     width: 40px;
@@ -285,10 +286,28 @@ body {
     flex-shrink: 0;
 }
 
+.chat-history-btn:hover,
 .send-assistant-btn:hover,
 .tools-btn:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.chat-history-btn.has-messages {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    position: relative;
+}
+
+.chat-history-btn.has-messages::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
 }
 
 .send-assistant-btn:disabled {
@@ -1170,6 +1189,7 @@ body {
         font-size: 13px;
     }
     
+    .chat-history-btn,
     .send-assistant-btn,
     .tools-btn {
         width: 36px;
