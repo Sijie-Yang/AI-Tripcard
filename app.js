@@ -2342,21 +2342,20 @@ function showMapUI() {
     const progressBar = document.getElementById('progressBarContainer') || document.querySelector('.progress-bar-container');
     if (progressBar) progressBar.style.display = 'block';
     
-    // Show AI assistant
-    const aiBar = document.getElementById('aiAssistantBar') || document.querySelector('.ai-assistant-bar');
-    if (aiBar) aiBar.style.display = 'flex';
+    // Show AI assistant bar
+    const aiBar = document.querySelector('.ai-assistant-bar');
+    if (aiBar) aiBar.style.display = 'block';
     
-    // Show emotion bar
+    // Show both emotion and category bars (they're both visible by default)
     const emotionBar = document.querySelector('.emotion-bar');
     if (emotionBar) emotionBar.style.display = 'flex';
     
-    // Show category bar (initially hidden, will be shown when toggled)
     const categoryBar = document.querySelector('.category-bar');
-    if (categoryBar) categoryBar.style.display = 'none'; // Keep hidden by default
+    if (categoryBar) categoryBar.style.display = 'flex';
     
     // Show color mode slider
     const colorSlider = document.querySelector('.color-mode-slider');
-    if (colorSlider) colorSlider.style.display = 'flex';
+    if (colorSlider) colorSlider.style.display = 'block';
     
     // Show map style selector
     const styleSelector = document.querySelector('.map-style-selector');
@@ -2366,10 +2365,8 @@ function showMapUI() {
     const recenterBtn = document.getElementById('recenterBtn');
     if (recenterBtn) recenterBtn.style.display = 'flex';
     
-    // Show clear buttons if needed (they'll manage their own visibility)
-    const clearHighlightBtn = document.getElementById('clearHighlightBtn');
-    const clearRouteBtn = document.getElementById('clearRouteBtn');
-    // Don't force show these, they have their own logic
+    // Clear buttons manage their own visibility based on state
+    // Don't force show them here
 }
 
 // Initialize card mode status (will be called after DOM loads)
