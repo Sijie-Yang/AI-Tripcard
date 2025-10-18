@@ -241,7 +241,7 @@ body {
 /* AI Assistant Bar */
 .ai-assistant-bar {
     position: fixed;
-    bottom: 145px;
+    bottom: 85px;
     left: 20px;
     right: 20px;
     z-index: 1001;
@@ -1314,7 +1314,7 @@ body {
     }
     
     .ai-assistant-bar {
-        bottom: 140px;
+        bottom: 80px;
         left: 10px;
         right: 10px;
     }
