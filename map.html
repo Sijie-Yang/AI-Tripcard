@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SG TripCards">
+    
+    <!-- Android Chrome -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#667eea">
+    
+    <!-- Disable phone number detection -->
+    <meta name="format-detection" content="telephone=no">
+    
+    <title>SG TripCards</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    
+    <!-- Chart.js for radar chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" style="color: white; text-decoration: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+            ← <span style="font-size: 16px;">Home</span>
+        </a>
+        <h1 style="position: absolute; left: 50%; transform: translateX(-50%);">SG TripCards</h1>
+        <div class="poi-count"><span id="poiCount">0</span> Places</div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar-container" id="progressBarContainer">
+        <div class="progress-info">
+            <span class="progress-label">📊 My Journey</span>
+            <span class="progress-stats">
+                <span class="progress-stat"><span class="stat-dot visited-dot"></span><span id="visitedCount">0</span> Visited</span>
+                <span class="progress-stat"><span class="stat-dot planned-dot"></span><span id="plannedCount">0</span> To Visit</span>
+                <span class="progress-percent" id="progressPercent">0%</span>
+            </span>
+            <span class="expand-indicator" id="expandIndicator">▼</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill visited-segment" id="visitedBar"></div>
+            <div class="progress-fill planned-segment" id="plannedBar"></div>
+        </div>
+    </div>
+
+    <!-- Journey Analytics Panel -->
+    <div class="journey-analytics-panel" id="journeyAnalyticsPanel">
+        <div class="analytics-content">
+            <!-- Summary Cards -->
+            <div class="analytics-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">🎯</div>
+                    <div class="summary-value" id="completionRate">0%</div>
+                    <div class="summary-label">Completion Rate</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">🗺️</div>
+                    <div class="summary-value" id="totalPlaces">0</div>
+                    <div class="summary-label">Total Places</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">⭐</div>
+                    <div class="summary-value" id="favoriteEmotion">-</div>
+                    <div class="summary-label">Favorite Vibe</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">🏆</div>
+                    <div class="summary-value" id="topCategory">-</div>
+                    <div class="summary-label">Top Category</div>
+                </div>
+            </div>
+
+            <!-- Emotion Radar Chart -->
+            <div class="analytics-section">
+                <h3 class="section-title">📊 Emotion Distribution</h3>
+                <div class="radar-chart-container">
+                    <canvas id="emotionRadarChart"></canvas>
+                </div>
+                <div class="radar-stats" id="radarStats"></div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div class="analytics-section">
+                <h3 class="section-title">🏷️ Category Breakdown</h3>
+                <div class="category-breakdown" id="categoryBreakdown"></div>
+            </div>
+
+            <!-- Travel Insights -->
+            <div class="analytics-section">
+                <h3 class="section-title">💡 Travel Insights</h3>
+                <div class="insights-list" id="insightsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Bar -->
+    <div class="ai-assistant-bar">
+        <div class="assistant-input-group">
+            <button class="chat-history-btn" id="chatHistoryBtn" title="Chat History">
+                <span class="chat-icon">💬</span>
+            </button>
+            <input type="text" id="assistantInput" placeholder="🔍 Search places or ask me anything about Singapore..." autocomplete="off">
+            <button class="send-assistant-btn" id="sendAssistantBtn">
+                <span class="send-icon">➤</span>
+            </button>
+            <button class="tools-btn" id="toolsBtn" title="AI Tools">
+                <span class="tools-icon">🛠️</span>
+            </button>
+        </div>
+        
+        <!-- Combined Results Panel -->
+        <div class="assistant-results-panel" id="assistantResultsPanel">
+            <!-- Search Results -->
+            <div class="search-results-section" id="searchResultsSection"></div>
+            
+            <!-- Chat Messages -->
+            <div class="chat-messages-section" id="chatMessagesSection">
+                <!-- Chat input will appear here when in chat mode -->
+                <div class="chat-input-box" id="chatInputBox">
+                    <input type="text" id="chatInput" placeholder="Continue the conversation..." />
+                    <button class="send-chat-btn" id="sendChatBtn">
+                        <span class="send-icon">➤</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tools Menu -->
+        <div class="tools-menu" id="toolsMenu">
+            <div class="tool-item" data-tool="planner">
+                <span class="tool-icon">🤖</span>
+                <span class="tool-name">Route Planner</span>
+                <span class="tool-desc">Generate optimal travel routes</span>
+            </div>
+            <div class="tool-item" data-tool="recommend">
+                <span class="tool-icon">✨</span>
+                <span class="tool-name">Recommendations</span>
+                <span class="tool-desc">Get personalized suggestions</span>
+            </div>
+            <div class="tool-item" data-tool="insights">
+                <span class="tool-icon">📊</span>
+                <span class="tool-name">Travel Insights</span>
+                <span class="tool-desc">Analyze your journey data</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 地图样式选择器 -->
+    <div class="map-style-selector">
+        <button class="style-toggle-btn" id="styleToggleBtn">🗺️</button>
+        <div class="style-menu" id="styleMenu">
+            <div class="style-option" data-style="voyager">
+                <span class="style-preview voyager-preview"></span>
+                <span class="style-name">Voyager</span>
+            </div>
+            <div class="style-option" data-style="positron">
+                <span class="style-preview positron-preview"></span>
+                <span class="style-name">Light</span>
+            </div>
+            <div class="style-option" data-style="dark">
+                <span class="style-preview dark-preview"></span>
+                <span class="style-name">Dark</span>
+            </div>
+            <div class="style-option" data-style="osm">
+                <span class="style-preview osm-preview"></span>
+                <span class="style-name">Standard</span>
+            </div>
+            <div class="style-option" data-style="satellite">
+                <span class="style-preview satellite-preview"></span>
+                <span class="style-name">Satellite</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 地图容器 -->
+    <div id="map"></div>
+
+    <!-- Emotion Color Bar -->
+    <div class="emotion-bar">
+        <div class="emotion-card" data-emotion="vibrant" style="background: linear-gradient(135deg, #F6C667 0%, #f8d48f 100%);">
+            <span class="emotion-label">Vibrant</span>
+        </div>
+        <div class="emotion-card" data-emotion="romantic" style="background: linear-gradient(135deg, #E57373 0%, #ef9a9a 100%);">
+            <span class="emotion-label">Romantic</span>
+        </div>
+        <div class="emotion-card" data-emotion="adventurous" style="background: linear-gradient(135deg, #6CB5F5 0%, #90caf9 100%);">
+            <span class="emotion-label">Adventure</span>
+        </div>
+        <div class="emotion-card" data-emotion="creative" style="background: linear-gradient(135deg, #C26EF1 0%, #ce93d8 100%);">
+            <span class="emotion-label">Creative</span>
+        </div>
+        <div class="emotion-card" data-emotion="nostalgic" style="background: linear-gradient(135deg, #A8875C 0%, #bcaa8c 100%);">
+            <span class="emotion-label">Nostalgic</span>
+        </div>
+        <div class="emotion-card" data-emotion="calm" style="background: linear-gradient(135deg, #4FB0AE 0%, #80cbc4 100%);">
+            <span class="emotion-label">Calm</span>
+        </div>
+    </div>
+
+    <!-- Recenter Button -->
+    <button class="recenter-btn" id="recenterBtn" title="Recenter Map">
+        <span class="recenter-icon">⊕</span>
+    </button>
+    
+    <!-- Clear Highlight Button -->
+    <button class="clear-highlight-btn" id="clearHighlightBtn" title="Clear Highlights">
+        <span class="clear-icon">✨</span>
+        <span class="clear-text">Clear Highlights</span>
+    </button>
+
+    <!-- Clear Route Button -->
+    <button class="clear-route-btn" id="clearRouteBtn" title="Clear Route">
+        <span class="clear-icon">🗺️</span>
+        <span class="clear-text">Clear Route</span>
+    </button>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <img src="SG60.png" alt="SG60" class="loading-sg60">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">🇸🇬 Loading SG TripCards...</div>
+        </div>
+    </div>
+
+    <!-- Category Color Bar -->
+    <div class="category-bar">
+        <div class="category-card active" data-category="all" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <span class="category-label">All</span>
+        </div>
+        <div class="category-card" data-category="urban_iconic" style="background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);">
+            <span class="category-label">Urban</span>
+        </div>
+        <div class="category-card" data-category="creative_scene" style="background: linear-gradient(135deg, #E64980 0%, #C23A6A 100%);">
+            <span class="category-label">Arts</span>
+        </div>
+        <div class="category-card" data-category="cultural_heritage" style="background: linear-gradient(135deg, #D4A574 0%, #B8915F 100%);">
+            <span class="category-label">Heritage</span>
+        </div>
+        <div class="category-card" data-category="serene_nature" style="background: linear-gradient(135deg, #51CF66 0%, #40B854 100%);">
+            <span class="category-label">Nature</span>
+        </div>
+        <div class="category-card" data-category="social_vibe" style="background: linear-gradient(135deg, #FF6B6B 0%, #EE5A5A 100%);">
+            <span class="category-label">Social</span>
+        </div>
+        <div class="category-card" data-category="hidden_gems" style="background: linear-gradient(135deg, #9775FA 0%, #7C5FD8 100%);">
+            <span class="category-label">Hidden</span>
+        </div>
+    </div>
+
+    <!-- Color Mode Slider -->
+    <div class="color-mode-slider">
+        <div class="slider-track">
+            <div class="slider-option" data-mode="emotion">
+                <span class="slider-icon">🎨</span>
+                <span class="slider-label">Emotion</span>
+            </div>
+            <div class="slider-option" data-mode="category">
+                <span class="slider-icon">🏷️</span>
+                <span class="slider-label">Category</span>
+            </div>
+            <div class="slider-indicator" id="sliderIndicator"></div>
+        </div>
+    </div>
+
+    <!-- POI Detail Panel -->
+    <div class="poi-detail" id="poiDetail">
+        <div class="poi-detail-content">
+            <button class="close-btn" id="closeDetail">&times;</button>
+            <h2 id="poiName"></h2>
+            <div class="poi-category" id="poiCategory"></div>
+            <div class="poi-emotion" id="poiEmotion"></div>
+            <p id="poiDescription"></p>
+            
+            <!-- Visit Status -->
+            <div class="status-selector">
+                <div class="status-label">Mark as:</div>
+                <div class="status-buttons">
+                    <button class="status-btn" data-status="visited">
+                        <span class="status-icon">✕</span>
+                        <span class="status-text">Visited</span>
+                    </button>
+                    <button class="status-btn" data-status="planned">
+                        <span class="status-icon">+</span>
+                        <span class="status-text">To Visit</span>
+                    </button>
+                    <button class="status-btn" data-status="unvisited">
+                        <span class="status-icon">○</span>
+                        <span class="status-text">Unvisited</span>
+                    </button>
+                </div>
+            </div>
+            
+            <button class="navigate-btn" id="navigateBtn">
+                📍 Navigate Here
+            </button>
+
+            <!-- Smart Recommendations -->
+            <div class="recommendations-section" id="recommendationsSection">
+                <h3 class="recommendations-title">💡 You May Also Like</h3>
+                <div class="recommendations-grid" id="recommendationsGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Trip Planner Panel -->
+    <div class="ai-planner-panel" id="aiPlannerPanel">
+        <div class="planner-content">
+            <button class="close-btn" id="closePlanner">&times;</button>
+            <h2>🤖 AI Trip Planner</h2>
+            <p class="planner-subtitle">Select places you want to visit, and AI will create the perfect route!</p>
+            
+            <!-- API Key Input -->
+            <div class="api-key-section" id="apiKeySection">
+                <label for="apiKeyInput">OpenAI API Key:</label>
+                <div class="api-key-input-group">
+                    <input type="password" id="apiKeyInput" placeholder="sk-..." />
+                    <button class="save-key-btn" id="saveKeyBtn">Save</button>
+                </div>
+                <p class="api-key-hint">🔒 Stored locally in your browser</p>
+            </div>
+
+            <!-- POI Selection -->
+            <div class="poi-selection-section" id="poiSelectionSection" style="display: none;">
+                <h3>Select Places to Visit:</h3>
+                <div class="filter-chips">
+                    <button class="filter-chip active" data-filter="planned">➕ To Visit</button>
+                    <button class="filter-chip" data-filter="unvisited">○ Not Visit</button>
+                    <button class="filter-chip" data-filter="visited">✓ Revisit</button>
+                </div>
+                <div class="poi-checklist" id="poiChecklist"></div>
+                <button class="generate-route-btn" id="generateRouteBtn">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-text">Generate Optimal Route</span>
+                </button>
+            </div>
+
+            <!-- Route Result -->
+            <div class="route-result" id="routeResult" style="display: none;">
+                <h3>🗺️ Your Optimized Route</h3>
+                
+                <!-- Travel Time Estimates -->
+                <div class="travel-times" id="travelTimes">
+                    <h4>⏱️ Estimated Travel Times:</h4>
+                    <div class="time-estimates">
+                        <div class="time-card">
+                            <span class="time-icon">🚗</span>
+                            <span class="time-label">Car</span>
+                            <span class="time-value" id="carTime">--</span>
+                        </div>
+                        <div class="time-card">
+                            <span class="time-icon">🚌</span>
+                            <span class="time-label">Bus</span>
+                            <span class="time-value" id="busTime">--</span>
+                        </div>
+                        <div class="time-card">
+                            <span class="time-icon">🚴</span>
+                            <span class="time-label">Bike</span>
+                            <span class="time-value" id="bikeTime">--</span>
+                        </div>
+                        <div class="time-card">
+                            <span class="time-icon">🚶</span>
+                            <span class="time-label">Walk</span>
+                            <span class="time-value" id="walkTime">--</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="route-info" id="routeInfo"></div>
+                <div class="route-actions">
+                    <button class="route-action-btn" id="showRouteOnMap">Show on Map</button>
+                    <button class="route-action-btn secondary" id="planNewRoute">Plan New Route</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    
+    <!-- Leaflet Routing Machine JS -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    
+    <script src="app.js"></script>
+</body>
+</html>
+
