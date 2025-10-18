@@ -52,6 +52,53 @@ body {
     backdrop-filter: blur(10px);
 }
 
+/* 颜色图例 */
+.color-legend {
+    position: fixed;
+    bottom: 100px;
+    left: 10px;
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    max-width: 140px;
+}
+
+.legend-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.legend-label {
+    font-size: 11px;
+    color: #333;
+    font-weight: 500;
+}
+
 /* 地图样式选择器 */
 .map-style-selector {
     position: fixed;
@@ -557,6 +604,27 @@ body {
     .filter-btn {
         font-size: 12px;
         padding: 6px 12px;
+    }
+    
+    .color-legend {
+        bottom: 90px;
+        left: 5px;
+        padding: 8px 10px;
+        max-width: 120px;
+    }
+    
+    .legend-title {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+    
+    .legend-color {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .legend-label {
+        font-size: 10px;
     }
 }
 
