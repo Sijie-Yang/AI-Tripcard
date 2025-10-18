@@ -23,40 +23,43 @@ body {
 /* 桌面端手机预览框架 */
 @media (min-width: 768px) {
     body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     
+    /* iPhone外框 */
     body::before {
         content: '';
         position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         width: 375px;
         height: 812px;
         background: #1a1a1a;
         border-radius: 40px;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        z-index: -1;
+        z-index: 0;
         border: 14px solid #1a1a1a;
+        pointer-events: none;
     }
     
     /* iPhone刘海 */
     body::after {
         content: '';
         position: fixed;
-        top: 14px;
+        top: calc(50% - 406px + 14px);
         left: 50%;
         transform: translateX(-50%);
         width: 150px;
         height: 30px;
         background: #1a1a1a;
         border-radius: 0 0 20px 20px;
-        z-index: 10000;
+        z-index: 10001;
+        pointer-events: none;
     }
     
+    /* 所有主要容器居中并限制宽度 */
     .header,
-    #map,
     .filter-container,
     .poi-detail,
     .map-style-selector {
@@ -66,8 +69,32 @@ body {
     }
     
     #map {
+        position: fixed;
+        top: calc(50% - 406px + 60px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: 375px;
+        height: calc(812px - 140px);
         max-width: 375px;
-        border-radius: 40px 40px 0 0;
+        border-radius: 0;
+        bottom: auto;
+    }
+    
+    .header {
+        position: fixed;
+        top: calc(50% - 406px);
+        width: 375px;
+    }
+    
+    .filter-container {
+        position: fixed;
+        top: calc(50% + 406px - 80px);
+        bottom: auto;
+        width: 375px;
+    }
+    
+    .map-style-selector {
+        top: calc(50% - 406px + 70px);
     }
 }
 
