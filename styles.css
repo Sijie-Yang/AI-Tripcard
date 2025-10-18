@@ -2521,6 +2521,93 @@ body {
     color: #C2185B;
 }
 
+/* Introduction Screen Styles */
+.intro-instructions {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: 2.5rem 0;
+    padding: 0 2rem;
+}
+
+.intro-item {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.intro-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.intro-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.intro-icon.swipe-right {
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    color: white;
+}
+
+.intro-icon.swipe-left {
+    background: linear-gradient(135deg, #f87171, #ef4444);
+    color: white;
+}
+
+.intro-text {
+    text-align: left;
+    flex: 1;
+}
+
+.intro-text h3 {
+    font-size: 1.4rem;
+    color: #2C3E50;
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+}
+
+.intro-text p {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+}
+
+.continue-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 28px;
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    margin-top: 1rem;
+}
+
+.continue-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.continue-btn:active {
+    transform: translateY(0);
+}
+
 /* Mode Selector Responsive Design */
 @media (max-width: 768px) {
     .mode-dialog {
@@ -2553,6 +2640,35 @@ body {
     .mode-icon {
         width: 140px;
         height: 140px;
+    }
+    
+    .intro-instructions {
+        padding: 0 1rem;
+        gap: 1.5rem;
+    }
+    
+    .intro-item {
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .intro-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+    
+    .intro-text h3 {
+        font-size: 1.2rem;
+    }
+    
+    .intro-text p {
+        font-size: 0.95rem;
+    }
+    
+    .continue-btn {
+        padding: 0.8rem 2.5rem;
+        font-size: 1.1rem;
     }
 }
 

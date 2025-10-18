@@ -2376,38 +2376,76 @@ function showMapUI() {
 // Initialize card mode status (will be called after DOM loads)
 function initCardModeStatus() {
     console.log('🎴 initCardModeStatus called');
+    const introduction = document.getElementById('cardIntroduction');
+    const modeSelector = document.getElementById('cardModeSelector');
+    
     // Check if card mode was already completed or skipped
     if (localStorage.getItem('cardModeComplete') === 'true') {
         isCardModeComplete = true;
         console.log('✅ Card mode already completed, hiding selector');
-        // Hide mode selector, show map immediately
-        const modeSelector = document.getElementById('cardModeSelector');
-        const collectionBtn = document.getElementById('collectionBtn');
+        // Hide both introduction and mode selector, show map immediately
+        if (introduction) {
+            introduction.style.display = 'none';
+            introduction.style.visibility = 'hidden';
+            introduction.style.pointerEvents = 'none';
+        }
         if (modeSelector) {
             modeSelector.style.display = 'none';
             modeSelector.style.visibility = 'hidden';
             modeSelector.style.pointerEvents = 'none';
         }
+        const collectionBtn = document.getElementById('collectionBtn');
         if (collectionBtn) collectionBtn.style.display = 'flex';
         // Show all UI elements
         showMapUI();
     } else if (localStorage.getItem('cardModeSkipped') === 'true') {
         console.log('⏭️ Card mode was skipped, hiding selector');
-        // User skipped card mode, hide mode selector, show restart button
-        const modeSelector = document.getElementById('cardModeSelector');
-        const restartBtn = document.getElementById('restartCardBtn');
+        // User skipped card mode, hide both introduction and mode selector, show restart button
+        if (introduction) {
+            introduction.style.display = 'none';
+            introduction.style.visibility = 'hidden';
+            introduction.style.pointerEvents = 'none';
+        }
         if (modeSelector) {
             modeSelector.style.display = 'none';
             modeSelector.style.visibility = 'hidden';
             modeSelector.style.pointerEvents = 'none';
         }
+        const restartBtn = document.getElementById('restartCardBtn');
         if (restartBtn) restartBtn.style.display = 'flex';
         // Show all UI elements
         showMapUI();
     } else {
-        console.log('📝 First time, showing mode selector');
-        // Hide UI elements when showing mode selector
+        console.log('📝 First time, showing introduction');
+        // Hide UI elements when showing introduction
         hideMapUI();
+        // Show introduction screen
+        if (introduction) {
+            introduction.style.display = 'flex';
+            introduction.style.visibility = 'visible';
+            introduction.style.pointerEvents = 'auto';
+        }
+    }
+}
+
+// Show mode selector after introduction
+function showModeSelector() {
+    console.log('➡️ Showing mode selector');
+    const introduction = document.getElementById('cardIntroduction');
+    const modeSelector = document.getElementById('cardModeSelector');
+    
+    // Hide introduction
+    if (introduction) {
+        introduction.style.display = 'none';
+        introduction.style.visibility = 'hidden';
+        introduction.style.pointerEvents = 'none';
+    }
+    
+    // Show mode selector
+    if (modeSelector) {
+        modeSelector.style.display = 'flex';
+        modeSelector.style.visibility = 'visible';
+        modeSelector.style.pointerEvents = 'auto';
     }
 }
 
@@ -2466,11 +2504,21 @@ function startCardMode(mode) {
 
 // Skip card mode and go directly to map
 function skipCardMode() {
-    // Hide mode selector completely
+    // Hide both introduction and mode selector completely
+    const introduction = document.getElementById('cardIntroduction');
     const modeSelector = document.getElementById('cardModeSelector');
-    modeSelector.style.display = 'none';
-    modeSelector.style.visibility = 'hidden';
-    modeSelector.style.pointerEvents = 'none';
+    
+    if (introduction) {
+        introduction.style.display = 'none';
+        introduction.style.visibility = 'hidden';
+        introduction.style.pointerEvents = 'none';
+    }
+    
+    if (modeSelector) {
+        modeSelector.style.display = 'none';
+        modeSelector.style.visibility = 'hidden';
+        modeSelector.style.pointerEvents = 'none';
+    }
     
     // Mark as skipped in local storage
     localStorage.setItem('cardModeSkipped', 'true');
@@ -2506,16 +2554,18 @@ function restartCardMode() {
     // Clear skip status
     localStorage.removeItem('cardModeSkipped');
     
-    // Hide UI elements when showing mode selector
+    // Hide UI elements when showing introduction
     hideMapUI();
     
-    // Show mode selector
-    const modeSelector = document.getElementById('cardModeSelector');
-    modeSelector.style.display = 'flex';
-    modeSelector.style.visibility = 'visible';
-    modeSelector.style.pointerEvents = 'auto';
+    // Show introduction screen
+    const introduction = document.getElementById('cardIntroduction');
+    if (introduction) {
+        introduction.style.display = 'flex';
+        introduction.style.visibility = 'visible';
+        introduction.style.pointerEvents = 'auto';
+    }
     
-    console.log('Restarting card mode, showing mode selector');
+    console.log('Restarting card mode, showing introduction');
 }
 
 // Show next card with map animation

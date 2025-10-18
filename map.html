@@ -41,8 +41,34 @@
         <div class="poi-count"><span id="poiCount">0</span> Places</div>
     </header>
 
+    <!-- Introduction Screen -->
+    <div class="card-mode-selector" id="cardIntroduction" style="display: none;">
+        <div class="mode-dialog">
+            <button class="mode-skip-btn" onclick="skipCardMode()">Skip ✕</button>
+            <h1>🌏 Singapore TripCard</h1>
+            <p class="mode-subtitle">Swipe to discover 60 amazing places</p>
+            <div class="intro-instructions">
+                <div class="intro-item">
+                    <div class="intro-icon swipe-right">→</div>
+                    <div class="intro-text">
+                        <h3>Swipe Right</h3>
+                        <p>Been there / Want to visit</p>
+                    </div>
+                </div>
+                <div class="intro-item">
+                    <div class="intro-icon swipe-left">←</div>
+                    <div class="intro-text">
+                        <h3>Swipe Left</h3>
+                        <p>Haven't been / Not interested</p>
+                    </div>
+                </div>
+            </div>
+            <button class="continue-btn" onclick="showModeSelector()">Continue</button>
+        </div>
+    </div>
+
     <!-- Mode Selector Overlay -->
-    <div class="card-mode-selector" id="cardModeSelector">
+    <div class="card-mode-selector" id="cardModeSelector" style="display: none;">
         <div class="mode-dialog">
             <button class="mode-skip-btn" onclick="skipCardMode()">Skip ✕</button>
             <h1>🌏 Singapore TripCard</h1>
@@ -285,6 +311,15 @@
         <span class="clear-icon">🗺️</span>
         <span class="clear-text">Clear Route</span>
     </button>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <img src="SG60.png" alt="SG60" class="loading-sg60">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">🇸🇬 Loading SG TripCards...</div>
+        </div>
+    </div>
 
     <!-- Category Color Bar -->
     <div class="category-bar">
