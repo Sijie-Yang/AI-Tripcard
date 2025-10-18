@@ -941,7 +941,12 @@ function highlightPOIs(poiIds) {
                 }).filter(Boolean)
             );
             console.log('Fitting map to bounds:', bounds);
-            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+            // Add more padding at bottom to avoid AI assistant bar
+            map.fitBounds(bounds, { 
+                paddingTopLeft: [50, 50],
+                paddingBottomRight: [50, 280],  // More padding at bottom for chat interface
+                maxZoom: 15 
+            });
         }
     }
 }
