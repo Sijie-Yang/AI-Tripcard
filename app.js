@@ -2294,8 +2294,9 @@ if (localStorage.getItem('cardModeComplete') === 'true') {
     document.getElementById('cardModeSelector').style.display = 'none';
     document.getElementById('collectionBtn').style.display = 'flex';
 } else if (localStorage.getItem('cardModeSkipped') === 'true') {
-    // User skipped card mode, hide mode selector
+    // User skipped card mode, hide mode selector, show restart button
     document.getElementById('cardModeSelector').style.display = 'none';
+    document.getElementById('restartCardBtn').style.display = 'flex';
 }
 
 // Start card mode
@@ -2329,11 +2330,28 @@ function skipCardMode() {
     // Mark as skipped in local storage
     localStorage.setItem('cardModeSkipped', 'true');
     
+    // Show the restart button
+    document.getElementById('restartCardBtn').style.display = 'flex';
+    
     // Show the map with all markers
     displayMarkers();
     updateStats();
     
     console.log('Card mode skipped, showing map directly');
+}
+
+// Restart card mode (show mode selector again)
+function restartCardMode() {
+    // Hide restart button
+    document.getElementById('restartCardBtn').style.display = 'none';
+    
+    // Clear skip status
+    localStorage.removeItem('cardModeSkipped');
+    
+    // Show mode selector
+    document.getElementById('cardModeSelector').style.display = 'flex';
+    
+    console.log('Restarting card mode, showing mode selector');
 }
 
 // Show next card with map animation
@@ -2559,3 +2577,4 @@ document.getElementById('collectionBtn').addEventListener('click', () => {
 // Make functions global
 window.startCardMode = startCardMode;
 window.skipCardMode = skipCardMode;
+window.restartCardMode = restartCardMode;
