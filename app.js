@@ -517,16 +517,26 @@ IMPORTANT INSTRUCTIONS:
 2. At the end of your response, add special instructions for the system:
    - To HIGHLIGHT places on map: [HIGHLIGHT: Place1 | Place2 | ...]
    - To UPDATE visit status: [STATUS: Place1=visited | Place2=planned | Place3=unvisited]
+   
+   ⚠️ CRITICAL: You can update MULTIPLE places to DIFFERENT statuses in ONE response!
 
-3. Update status when user mentions:
-   - "I visited/went to X" or "I've been to X" → X=visited
-   - "I want to visit X" or "I plan to go to X" → X=planned
-   - "I haven't been to X" or "Remove X from my list" → X=unvisited
+3. Status update rules - listen carefully to user's language:
+   - "I visited/went to/have been to X" → X=visited
+   - "I want to visit/plan to go to X" → X=planned  
+   - "I haven't been to X yet" or "Remove X" → X=unvisited
 
-Example responses:
-"I recommend Marina Bay Sands for stunning views! [HIGHLIGHT: Marina Bay Sands]"
-"Great! I've marked Marina Bay Sands as visited. [STATUS: Marina Bay Sands=visited][HIGHLIGHT: Marina Bay Sands]"
-"I'll add Gardens by the Bay to your plan. [STATUS: Gardens by the Bay=planned][HIGHLIGHT: Gardens by the Bay]"
+4. Example conversations showing MIXED status updates:
+   
+   User: "I visited Marina Bay Sands yesterday and I want to visit Gardens by the Bay next"
+   Response: "Wonderful! Marina Bay Sands is amazing. I've marked it as visited and added Gardens by the Bay to your plan. [STATUS: Marina Bay Sands=visited | Gardens by the Bay=planned][HIGHLIGHT: Marina Bay Sands | Gardens by the Bay]"
+   
+   User: "I've been to Chinatown and Little India. I plan to visit Kampong Glam tomorrow"
+   Response: "Great choices! I've updated your status for these heritage sites. [STATUS: Chinatown=visited | Little India=visited | Kampong Glam=planned][HIGHLIGHT: Chinatown | Little India | Kampong Glam]"
+   
+   User: "I went to Sentosa but I'm not interested in the Zoo anymore"
+   Response: "Got it! I've marked Sentosa as visited and removed the Zoo from your plans. [STATUS: Sentosa=visited | Singapore Zoo=unvisited]"
+
+5. ALWAYS update status based on what user tells you. Pay attention to each place mentioned and its specific status.
 
 Only include places that are the main focus of your recommendation or discussion.`;
             
@@ -599,15 +609,21 @@ Only include places that are the main focus of your recommendation or discussion
             
             // Execute status updates
             if (statusUpdates.length > 0) {
+                console.log('=== STATUS UPDATES ===');
+                let successCount = 0;
                 statusUpdates.forEach(({ name, status }) => {
                     const poi = poiData.find(p => p.name.toLowerCase() === name.toLowerCase());
                     if (poi) {
-                        console.log(`Updating ${poi.name} status to ${status}`);
+                        const oldStatus = getVisitStatus(poi.id);
                         setVisitStatus(poi.id, status);
+                        console.log(`✓ ${poi.name}: ${oldStatus} → ${status}`);
+                        successCount++;
                     } else {
-                        console.log(`Could not find POI for status update: ${name}`);
+                        console.log(`✗ Could not find POI: ${name}`);
                     }
                 });
+                console.log(`Updated ${successCount} out of ${statusUpdates.length} places`);
+                console.log('======================');
             }
             
             // Type out the message character by character
