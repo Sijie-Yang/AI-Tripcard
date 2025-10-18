@@ -107,126 +107,115 @@ body {
     50% { transform: scale(1.1); }
 }
 
-/* Stats Card */
-.stats-card {
+/* Progress Bar Container */
+.progress-bar-container {
     position: fixed;
-    top: 70px;
-    left: 10px;
+    top: 60px;
+    left: 0;
+    right: 0;
     background: white;
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 12px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1001;
-    min-width: 160px;
-    animation: slideInLeft 0.5s ease-out;
+    animation: slideInTop 0.5s ease-out;
 }
 
-@keyframes slideInLeft {
+@keyframes slideInTop {
     from {
         opacity: 0;
-        transform: translateX(-100px);
+        transform: translateY(-50px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 }
 
-.stats-header {
+.progress-info {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-.stats-icon {
-    font-size: 20px;
-}
-
-.stats-title {
+.progress-label {
     font-size: 14px;
     font-weight: 600;
     color: #333;
 }
 
-.stats-body {
+.progress-stats {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.stat-value {
-    font-size: 24px;
-    font-weight: 700;
-    color: #667eea;
-}
-
-.stat-label {
-    font-size: 11px;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
     color: #666;
+}
+
+.progress-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-weight: 500;
 }
 
-.stat-bar {
-    height: 6px;
-    background: #f0f0f0;
-    border-radius: 3px;
-    overflow: hidden;
+.stat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
 }
 
-.stat-fill {
+.visited-dot {
+    background: #4CAF50;
+}
+
+.planned-dot {
+    background: #FFC107;
+}
+
+.progress-percent {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 14px;
+}
+
+.progress-track {
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+}
+
+.progress-fill {
     height: 100%;
-    border-radius: 3px;
     transition: width 0.5s ease-out;
 }
 
-.visited-fill {
+.visited-segment {
     background: linear-gradient(90deg, #4CAF50 0%, #81C784 100%);
 }
 
-.planned-fill {
+.planned-segment {
     background: linear-gradient(90deg, #FFC107 0%, #FFD54F 100%);
 }
 
-.stats-footer {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #f0f0f0;
-    font-size: 12px;
-    color: #666;
-    text-align: center;
+/* Search Bar Container */
+.search-bar-container {
+    position: fixed;
+    top: 125px;
+    left: 20px;
+    right: 20px;
+    z-index: 1001;
+    animation: slideInTop 0.5s ease-out 0.1s backwards;
 }
 
-#progressPercent {
+#visitedCount, #plannedCount {
     font-weight: 700;
     color: #667eea;
-}
-
-/* Search Box */
-.search-box {
-    position: fixed;
-    top: 130px;
-    right: 10px;
-    z-index: 1001;
-    width: 250px;
-    animation: slideInRight 0.5s ease-out;
-}
-
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(100px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
 }
 
 #searchInput {
@@ -372,7 +361,7 @@ body {
 /* 地图样式选择器 */
 .map-style-selector {
     position: fixed;
-    top: 70px;
+    top: 185px;
     right: 10px;
     z-index: 1001;
 }
@@ -477,7 +466,7 @@ body {
 /* 地图容器 */
 #map {
     position: fixed;
-    top: 60px;
+    top: 180px;
     left: 0;
     right: 0;
     bottom: 80px;
@@ -876,27 +865,36 @@ body {
         padding: 6px 12px;
     }
     
-    .stats-card {
-        top: 65px;
-        left: 5px;
-        padding: 12px;
-        min-width: 140px;
+    .progress-bar-container {
+        padding: 10px 15px;
+    }
+    
+    .progress-label {
         font-size: 13px;
     }
     
-    .stat-value {
-        font-size: 20px;
+    .progress-stats {
+        gap: 10px;
+        font-size: 11px;
     }
     
-    .search-box {
+    .progress-percent {
+        font-size: 12px;
+    }
+    
+    .search-bar-container {
         top: 120px;
-        right: 5px;
-        width: 200px;
+        left: 10px;
+        right: 10px;
     }
     
     #searchInput {
         padding: 10px 14px;
         font-size: 13px;
+    }
+    
+    .map-style-selector {
+        top: 175px;
     }
     
     .recenter-btn {

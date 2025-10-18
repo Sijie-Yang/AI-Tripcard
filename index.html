@@ -32,6 +32,28 @@
         <div class="poi-count"><span id="poiCount">0</span> Places</div>
     </header>
 
+    <!-- Progress Bar -->
+    <div class="progress-bar-container">
+        <div class="progress-info">
+            <span class="progress-label">📊 My Journey</span>
+            <span class="progress-stats">
+                <span class="progress-stat"><span class="stat-dot visited-dot"></span><span id="visitedCount">0</span> Visited</span>
+                <span class="progress-stat"><span class="stat-dot planned-dot"></span><span id="plannedCount">0</span> To Visit</span>
+                <span class="progress-percent" id="progressPercent">0%</span>
+            </span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill visited-segment" id="visitedBar"></div>
+            <div class="progress-fill planned-segment" id="plannedBar"></div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar-container">
+        <input type="text" id="searchInput" placeholder="🔍 Search places in Singapore..." autocomplete="off">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+
     <!-- 地图样式选择器 -->
     <div class="map-style-selector">
         <button class="style-toggle-btn" id="styleToggleBtn">🗺️</button>
@@ -91,39 +113,6 @@
                 <span class="legend-label">Calm</span>
             </div>
         </div>
-    </div>
-
-    <!-- Progress Stats Card -->
-    <div class="stats-card">
-        <div class="stats-header">
-            <span class="stats-icon">📊</span>
-            <span class="stats-title">My Journey</span>
-        </div>
-        <div class="stats-body">
-            <div class="stat-item">
-                <div class="stat-value" id="visitedCount">0</div>
-                <div class="stat-label">Visited</div>
-                <div class="stat-bar">
-                    <div class="stat-fill visited-fill" id="visitedBar"></div>
-                </div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="plannedCount">0</div>
-                <div class="stat-label">To Visit</div>
-                <div class="stat-bar">
-                    <div class="stat-fill planned-fill" id="plannedBar"></div>
-                </div>
-            </div>
-        </div>
-        <div class="stats-footer">
-            <span id="progressPercent">0%</span> Complete
-        </div>
-    </div>
-
-    <!-- Search Box -->
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="🔍 Search places..." autocomplete="off">
-        <div class="search-results" id="searchResults"></div>
     </div>
 
     <!-- Recenter Button -->
