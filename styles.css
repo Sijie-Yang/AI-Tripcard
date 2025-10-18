@@ -1772,7 +1772,7 @@ body {
 .poi-check-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     padding: 12px;
     border-radius: 8px;
     cursor: pointer;
@@ -1794,6 +1794,29 @@ body {
     flex: 1;
     font-size: 14px;
     color: #333;
+}
+
+.poi-status-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.poi-status-badge.visited {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #0d5f4e;
+}
+
+.poi-status-badge.planned {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    color: #8b4513;
+}
+
+.poi-status-badge.unvisited {
+    background: #f0f0f0;
+    color: #999;
 }
 
 .poi-check-category {

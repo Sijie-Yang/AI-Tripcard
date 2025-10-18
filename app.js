@@ -1345,6 +1345,9 @@ function initAIPlanner() {
         document.getElementById('routeResult').style.display = 'none';
         document.getElementById('poiSelectionSection').style.display = 'block';
         
+        // Clear selected POIs for new route
+        selectedPOIIds.clear();
+        
         // Reset travel times
         resetTravelTimes();
         
@@ -1375,12 +1378,19 @@ function initAIPlanner() {
 }
 
 // Populate POI checklist
+// Store selected POI IDs across filter changes
+let selectedPOIIds = new Set();
+
 function populatePOIChecklist(filter) {
     const checklist = document.getElementById('poiChecklist');
     if (!checklist) {
         console.error('POI checklist element not found');
         return;
     }
+    
+    // Save currently selected POIs before re-rendering
+    const currentCheckboxes = checklist.querySelectorAll('input[type="checkbox"]:checked');
+    currentCheckboxes.forEach(cb => selectedPOIIds.add(cb.value));
     
     let pois = poiData;
     let emptyMessage = '';
@@ -1406,13 +1416,37 @@ function populatePOIChecklist(filter) {
         return;
     }
     
+    // Helper function to get status badge
+    function getStatusBadge(poiId) {
+        const status = visitStatus[poiId];
+        if (status === 'visited') {
+            return '<span class="poi-status-badge visited">✓ Visited</span>';
+        } else if (status === 'planned') {
+            return '<span class="poi-status-badge planned">⭐ To Visit</span>';
+        } else {
+            return '<span class="poi-status-badge unvisited">○ Not Yet</span>';
+        }
+    }
+    
     checklist.innerHTML = pois.map(poi => `
         <div class="poi-check-item">
-            <input type="checkbox" id="poi-${poi.id}" value="${poi.id}">
+            <input type="checkbox" id="poi-${poi.id}" value="${poi.id}" ${selectedPOIIds.has(poi.id.toString()) ? 'checked' : ''}>
             <label for="poi-${poi.id}" class="poi-check-label">${poi.name}</label>
+            ${getStatusBadge(poi.id)}
             <span class="poi-check-category" style="background-color: ${poi.category_color}; color: white;">${categoryTranslations[poi.category_tag]}</span>
         </div>
     `).join('');
+    
+    // Add event listeners to track selection changes
+    checklist.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                selectedPOIIds.add(e.target.value);
+            } else {
+                selectedPOIIds.delete(e.target.value);
+            }
+        });
+    });
 }
 
 // Get selected POIs
