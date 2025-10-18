@@ -2,6 +2,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* 优化触摸滚动 */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 body {
@@ -10,6 +13,62 @@ body {
     height: 100vh;
     overflow: hidden;
     background: #f5f5f5;
+    /* 防止iOS橡皮筋效果 */
+    position: fixed;
+    /* 优化字体渲染 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 桌面端手机预览框架 */
+@media (min-width: 768px) {
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        width: 375px;
+        height: 812px;
+        background: #1a1a1a;
+        border-radius: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        z-index: -1;
+        border: 14px solid #1a1a1a;
+    }
+    
+    /* iPhone刘海 */
+    body::after {
+        content: '';
+        position: fixed;
+        top: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 30px;
+        background: #1a1a1a;
+        border-radius: 0 0 20px 20px;
+        z-index: 10000;
+    }
+    
+    .header,
+    #map,
+    .filter-container,
+    .poi-detail,
+    .map-style-selector {
+        max-width: 375px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    #map {
+        max-width: 375px;
+        border-radius: 40px 40px 0 0;
+    }
 }
 
 /* 顶部标题栏 */
@@ -168,12 +227,21 @@ body {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     overflow-x: auto;
+    overflow-y: hidden;
     gap: 8px;
     -webkit-overflow-scrolling: touch;
+    /* 优化触摸滚动 */
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
 }
 
 .filter-container::-webkit-scrollbar {
     display: none;
+}
+
+/* 防止过度滚动 */
+.filter-container {
+    touch-action: pan-x;
 }
 
 .filter-btn {
@@ -186,18 +254,30 @@ body {
     font-weight: 500;
     color: #666;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     white-space: nowrap;
+    /* 增大触摸区域 */
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    /* 优化触摸反馈 */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    user-select: none;
 }
 
 .filter-btn:active {
     transform: scale(0.95);
+    background: #f0f0f0;
 }
 
 .filter-btn.active {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border-color: transparent;
+}
+
+.filter-btn.active:active {
+    background: linear-gradient(135deg, #5569d8 0%, #653a90 100%);
 }
 
 /* 自定义Marker样式 - 未去过（圆形） */
@@ -288,10 +368,30 @@ body {
     transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     max-height: 70vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* 优化滚动 */
+    overscroll-behavior: contain;
+    /* 防止内容穿透 */
+    touch-action: pan-y;
 }
 
 .poi-detail.active {
     bottom: 0;
+}
+
+/* 详情面板顶部拖动指示器 */
+.poi-detail::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+    margin: 10px auto;
+    display: block;
 }
 
 .poi-detail-content {
