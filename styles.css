@@ -2625,7 +2625,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(5px);
 }
 
 .card-title {
