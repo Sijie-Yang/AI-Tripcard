@@ -162,8 +162,8 @@
     </button>
 
     <!-- All Cards Modal -->
-    <div class="all-cards-modal" id="allCardsModal">
-        <div class="all-cards-content">
+    <div class="all-cards-modal" id="allCardsModal" onclick="closeAllCardsModal()">
+        <div class="all-cards-content" onclick="event.stopPropagation()">
             <button class="close-modal-btn" onclick="closeAllCardsModal()">✕</button>
             <h2>All 60 Places</h2>
             <div class="cards-grid" id="cardsGrid"></div>

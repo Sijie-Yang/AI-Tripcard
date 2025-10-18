@@ -2310,7 +2310,10 @@ function hideMapUI() {
         'clearHighlightBtn',
         'clearRouteBtn',
         'collectionBtn',
-        'restartCardBtn'
+        'restartCardBtn',
+        'resetBtn',
+        'reviewBtn',
+        'viewAllBtn'
     ];
     
     elementsToHide.forEach(id => {
@@ -2368,6 +2371,16 @@ function showMapUI() {
     // Show recenter button
     const recenterBtn = document.getElementById('recenterBtn');
     if (recenterBtn) recenterBtn.style.display = 'flex';
+    
+    // Show map control buttons
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) resetBtn.style.display = 'flex';
+    
+    const reviewBtn = document.getElementById('reviewBtn');
+    if (reviewBtn) reviewBtn.style.display = 'flex';
+    
+    const viewAllBtn = document.getElementById('viewAllBtn');
+    if (viewAllBtn) viewAllBtn.style.display = 'flex';
     
     // Clear buttons manage their own visibility based on state
     // Don't force show them here
@@ -2930,6 +2943,9 @@ function initCardSwipe() {
                 handleSwipe('left');
             } else if (e.key === 'ArrowRight') {
                 handleSwipe('right');
+            } else if (e.key === 'Escape' && cardMode === 'review') {
+                // Exit review mode with Escape
+                completeCardMode();
             }
         }
     });
@@ -3111,7 +3127,7 @@ function showAllCardsModal() {
         };
         
         cardItem.innerHTML = `
-            <img src="60 images/${poi.image_prompt}" alt="${poi.name}" onerror="this.src='60 images/poi_001.png'">
+            <img src="60 images/${poi.id}.png" alt="${poi.name}" onerror="this.src='60 images/poi_001.png'">
             <div class="card-item-content">
                 <div class="card-item-title">${poi.name}</div>
                 <div class="card-item-category" style="color: ${poi.category_color}">${poi.category_tag}</div>
@@ -3130,6 +3146,16 @@ function closeAllCardsModal() {
     const modal = document.getElementById('allCardsModal');
     modal.classList.remove('show');
 }
+
+// Close modal with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('allCardsModal');
+        if (modal && modal.classList.contains('show')) {
+            closeAllCardsModal();
+        }
+    }
+});
 
 // Make functions global
 window.startCardMode = startCardMode;
