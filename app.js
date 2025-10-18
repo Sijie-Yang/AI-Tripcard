@@ -2696,7 +2696,7 @@ function showNextCard() {
     
     // Navigate map to POI location with offset to show POI in lower half of screen
     // Add offset to latitude so POI appears in lower half (card is on top)
-    const latOffset = 0.012; // Adjust this value to move POI further down
+    const latOffset = 0.008; // Adjust this value to move POI further down
     
     // For first card, set zoom level; for subsequent cards, keep current zoom and just pan
     let animationDelay;
