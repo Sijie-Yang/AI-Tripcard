@@ -81,6 +81,22 @@
             opacity: 0.8;
         }
 
+        /* Transition animations */
+        .container.transitioning .logo {
+            animation: logoDescend 1.5s ease-in-out forwards;
+        }
+
+        .container.transitioning h1,
+        .container.transitioning .subtitle,
+        .container.transitioning .enter-btn,
+        .container.transitioning .footer {
+            animation: fadeOut 1s ease-out forwards;
+        }
+
+        .container.transitioning {
+            animation: containerFadeOut 1.5s ease-out 0.5s forwards;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -98,6 +114,41 @@
             }
             50% {
                 transform: translateY(-10px);
+            }
+        }
+
+        @keyframes logoDescend {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(30vh) scale(0.8);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(50vh) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes containerFadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
             }
         }
 
@@ -123,15 +174,30 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="container">
         <img src="SG60.png" alt="SG60" class="logo">
         <h1>🇸🇬 SG TripCard</h1>
         <p class="subtitle">Explore Singapore's 60 Iconic Locations</p>
-        <a href="map.html" class="enter-btn">🏙️ Enter City</a>
+        <a href="#" class="enter-btn" id="enterBtn">🏙️ Enter City</a>
         <div class="footer">
             <p>🎉 Celebrating 60 Years of Singapore</p>
         </div>
     </div>
+
+    <script>
+        document.getElementById('enterBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Add transitioning class to trigger animations
+            const container = document.getElementById('container');
+            container.classList.add('transitioning');
+            
+            // Navigate to map after animation completes (2 seconds)
+            setTimeout(function() {
+                window.location.href = 'map.html';
+            }, 2000);
+        });
+    </script>
 </body>
 </html>
 
