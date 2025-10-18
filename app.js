@@ -2536,7 +2536,7 @@ function completeCardMode() {
     updateStats();
 }
 
-// Initialize card swipe events
+// Initialize card swipe events (match cards.html exactly)
 function initCardSwipe() {
     const card = document.getElementById('card');
     if (!card) {
@@ -2545,125 +2545,60 @@ function initCardSwipe() {
     }
     
     let startX = 0;
-    let startY = 0;
+    let currentX = 0;
     let isDragging = false;
     
-    // Touch events
-    card.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
+    // Unified start drag function
+    function startDrag(e) {
         isDragging = true;
+        startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
         card.classList.add('dragging');
-    });
+    }
     
-    card.addEventListener('touchmove', (e) => {
+    // Unified drag function
+    function drag(e) {
         if (!isDragging) return;
+        currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+        const diff = currentX - startX;
+        card.style.transform = `translateX(${diff}px) rotate(${diff * 0.1}deg)`;
+    }
+    
+    // Unified end drag function
+    function endDrag(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        card.classList.remove('dragging');
         
-        const touchX = e.touches[0].clientX;
-        const touchY = e.touches[0].clientY;
-        
-        const deltaX = touchX - startX;
-        const deltaY = touchY - startY;
-        
-        // Apply transform
-        const rotation = deltaX / 20;
-        card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
-        
-        // Show hints
-        const leftHint = document.getElementById('leftHint');
-        const rightHint = document.getElementById('rightHint');
-        
-        if (Math.abs(deltaX) > 50) {
-            if (deltaX > 0) {
-                rightHint.style.opacity = Math.min(deltaX / 100, 1);
-                leftHint.style.opacity = 0;
-            } else {
-                leftHint.style.opacity = Math.min(Math.abs(deltaX) / 100, 1);
-                rightHint.style.opacity = 0;
+        const diff = currentX - startX;
+        if (Math.abs(diff) > 100) {
+            handleSwipe(diff > 0 ? 'right' : 'left');
+        } else {
+            card.style.transform = '';
+        }
+    }
+    
+    // Attach event listeners
+    card.addEventListener('mousedown', startDrag);
+    card.addEventListener('touchstart', startDrag);
+    
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag);
+    
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+    
+    // Keyboard shortcuts (match cards.html)
+    document.addEventListener('keydown', (e) => {
+        if (cardMode && currentCardIndex < poiData.length) {
+            if (e.key === 'ArrowLeft') {
+                handleSwipe('left');
+            } else if (e.key === 'ArrowRight') {
+                handleSwipe('right');
             }
         }
     });
     
-    card.addEventListener('touchend', (e) => {
-        if (!isDragging) return;
-        
-        const touchX = e.changedTouches[0].clientX;
-        const deltaX = touchX - startX;
-        
-        card.classList.remove('dragging');
-        isDragging = false;
-        
-        if (Math.abs(deltaX) > 100) {
-            // Swipe detected
-            handleSwipe(deltaX > 0 ? 'right' : 'left');
-        } else {
-            // Reset card
-            card.style.transform = 'translate(0, 0) rotate(0deg)';
-            document.getElementById('leftHint').style.opacity = 0;
-            document.getElementById('rightHint').style.opacity = 0;
-        }
-        
-        startX = 0;
-        startY = 0;
-    });
-    
-    // Mouse events for desktop
-    card.addEventListener('mousedown', (e) => {
-        startX = e.clientX;
-        startY = e.clientY;
-        isDragging = true;
-        card.classList.add('dragging');
-        e.preventDefault();
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-        
-        // Apply transform
-        const rotation = deltaX / 20;
-        card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
-        
-        // Show hints
-        const leftHint = document.getElementById('leftHint');
-        const rightHint = document.getElementById('rightHint');
-        
-        if (Math.abs(deltaX) > 50) {
-            if (deltaX > 0) {
-                rightHint.style.opacity = Math.min(deltaX / 100, 1);
-                leftHint.style.opacity = 0;
-            } else {
-                leftHint.style.opacity = Math.min(Math.abs(deltaX) / 100, 1);
-                rightHint.style.opacity = 0;
-            }
-        }
-    });
-    
-    document.addEventListener('mouseup', (e) => {
-        if (!isDragging) return;
-        
-        const deltaX = e.clientX - startX;
-        
-        card.classList.remove('dragging');
-        isDragging = false;
-        
-        if (Math.abs(deltaX) > 100) {
-            // Swipe detected
-            handleSwipe(deltaX > 0 ? 'right' : 'left');
-        } else {
-            // Reset card
-            card.style.transform = 'translate(0, 0) rotate(0deg)';
-            document.getElementById('leftHint').style.opacity = 0;
-            document.getElementById('rightHint').style.opacity = 0;
-        }
-        
-        startX = 0;
-        startY = 0;
-    });
-    
-    console.log('✅ Card swipe events initialized (touch + mouse)');
+    console.log('✅ Card swipe events initialized (touch + mouse + keyboard)');
 }
 
 // Collection button - show all cards
