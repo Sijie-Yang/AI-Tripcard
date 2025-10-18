@@ -2351,6 +2351,15 @@ body {
     border: 3px solid transparent;
     position: relative;
     overflow: hidden;
+    animation: fadeIn 0.6s ease both;
+}
+
+.mode-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.mode-card:nth-child(2) {
+    animation-delay: 0.2s;
 }
 
 .mode-card::before {
