@@ -657,45 +657,6 @@ body {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
-.leaflet-popup-content {
-    margin: 15px;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.popup-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #333;
-}
-
-.popup-category {
-    display: inline-block;
-    padding: 3px 10px;
-    background: #f0f0f0;
-    border-radius: 12px;
-    font-size: 11px;
-    color: #666;
-    margin-bottom: 8px;
-}
-
-.popup-description {
-    color: #666;
-    font-size: 13px;
-    margin-top: 8px;
-}
-
-.popup-more {
-    margin-top: 10px;
-    padding: 8px 0;
-    text-align: center;
-    color: #667eea;
-    font-weight: 500;
-    cursor: pointer;
-    border-top: 1px solid #f0f0f0;
-}
-
 /* POI详情弹窗 */
 .poi-detail {
     position: fixed;

@@ -239,24 +239,9 @@ function displayMarkers(data) {
         
         const marker = L.marker([poi.lat, poi.lng], { icon: icon });
         
-        // Create popup content
-        const popupContent = `
-            <div class="popup-title">${poi.name}</div>
-            <div class="popup-category">${categoryTranslations[poi.category_tag] || poi.category_tag}</div>
-            <div class="popup-description">${poi.description}</div>
-            <div class="popup-more" onclick="showDetail('${poi.id}')">View Details →</div>
-        `;
-        
-        marker.bindPopup(popupContent, {
-            maxWidth: 250,
-            className: 'custom-popup'
-        });
-
-        // 点击marker时显示详情
+        // 点击marker时直接显示详情面板
         marker.on('click', () => {
-            setTimeout(() => {
-                // popup打开后短暂延迟，确保用户能看到popup
-            }, 100);
+            showDetail(poi.id);
         });
 
         markers.push({ marker, poi });
