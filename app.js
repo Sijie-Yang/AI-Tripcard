@@ -573,6 +573,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initColorBarToggle();
     initCategoryCards();
     initEmotionCards();
+    initAIPlanner();
+    initEmotionRadar();
 });
 
 // 将showDetail函数暴露到全局作用域，以便popup可以调用
@@ -1028,26 +1030,4 @@ function showDetail(poiId) {
 
 // Re-expose to global
 window.showDetail = showDetail;
-
-// ==================== Initialize all new features ====================
-
-// Add to DOMContentLoaded
-const originalDOMContentLoaded = document.querySelector('script[src="app.js"]');
-if (originalDOMContentLoaded) {
-    document.addEventListener('DOMContentLoaded', () => {
-        initAIPlanner();
-        initEmotionRadar();
-    });
-}
-
-// If DOM already loaded, init immediately
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        initAIPlanner();
-        initEmotionRadar();
-    });
-} else {
-    initAIPlanner();
-    initEmotionRadar();
-}
 
