@@ -405,15 +405,52 @@ function updateStats() {
 }
 
 // Search functionality
-function initSearch() {
-    const searchInput = document.getElementById('searchInput');
+// AI Assistant (Search + Chat + Tools)
+let chatMode = false;
+let chatHistory = [];
+
+function initAIAssistant() {
+    const assistantInput = document.getElementById('assistantInput');
     const searchResults = document.getElementById('searchResults');
+    const modeBtn = document.getElementById('assistantModeBtn');
+    const toolsBtn = document.getElementById('toolsBtn');
+    const chatPanel = document.getElementById('aiChatPanel');
+    const toolsMenu = document.getElementById('toolsMenu');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const clearChatBtn = document.getElementById('clearChatBtn');
     
-    searchInput.addEventListener('input', (e) => {
+    // Toggle chat mode
+    modeBtn.addEventListener('click', () => {
+        chatMode = !chatMode;
+        if (chatMode) {
+            modeBtn.classList.add('active');
+            chatPanel.classList.add('active');
+            searchResults.style.display = 'none';
+            toolsMenu.classList.remove('active');
+        } else {
+            modeBtn.classList.remove('active');
+            chatPanel.classList.remove('active');
+        }
+    });
+    
+    // Toggle tools menu
+    toolsBtn.addEventListener('click', () => {
+        const isActive = toolsMenu.classList.toggle('active');
+        if (isActive) {
+            chatPanel.classList.remove('active');
+            searchResults.style.display = 'none';
+        }
+    });
+    
+    // Search functionality
+    assistantInput.addEventListener('input', (e) => {
+        if (chatMode) return;
+        
         const query = e.target.value.toLowerCase().trim();
         
         if (query.length === 0) {
-            searchResults.classList.remove('active');
+            searchResults.style.display = 'none';
             return;
         }
         
@@ -429,7 +466,7 @@ function initSearch() {
                     <div class="search-result-category">${categoryTranslations[poi.category_tag] || poi.category_tag}</div>
                 </div>
             `).join('');
-            searchResults.classList.add('active');
+            searchResults.style.display = 'block';
             
             // Add click handlers
             document.querySelectorAll('.search-result-item').forEach(item => {
@@ -439,21 +476,120 @@ function initSearch() {
                     if (poi) {
                         map.setView([poi.lat, poi.lng], 16);
                         showDetail(poiId);
-                        searchInput.value = '';
-                        searchResults.classList.remove('active');
+                        assistantInput.value = '';
+                        searchResults.style.display = 'none';
                     }
                 });
             });
         } else {
             searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
-            searchResults.classList.add('active');
+            searchResults.style.display = 'block';
         }
     });
     
-    // Close search results when clicking outside
+    // Chat functionality
+    async function sendChatMessage(message) {
+        if (!message.trim()) return;
+        
+        // Add user message
+        addChatMessage('user', message);
+        chatInput.value = '';
+        sendBtn.disabled = true;
+        
+        try {
+            const apiKey = localStorage.getItem('openai_api_key');
+            if (!apiKey) {
+                addChatMessage('assistant', 'Please set your OpenAI API key in the AI Trip Planner tool first.');
+                sendBtn.disabled = false;
+                return;
+            }
+            
+            // Build context from POI data
+            const context = `You are a helpful Singapore travel assistant. You have access to information about 60 amazing places in Singapore across 6 categories: Urban Iconic, Arts & Culture, Heritage, Nature, Social Vibe, and Hidden Gems. Help users plan their trip, answer questions about Singapore, and provide travel recommendations based on the POI data available.`;
+            
+            chatHistory.push({ role: 'user', content: message });
+            
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: 'system', content: context },
+                        ...chatHistory.slice(-10) // Keep last 10 messages
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 500
+                })
+            });
+            
+            if (!response.ok) throw new Error('Failed to get AI response');
+            
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            
+            chatHistory.push({ role: 'assistant', content: reply });
+            addChatMessage('assistant', reply);
+        } catch (error) {
+            addChatMessage('assistant', 'Sorry, I encountered an error. Please try again.');
+            console.error(error);
+        } finally {
+            sendBtn.disabled = false;
+        }
+    }
+    
+    function addChatMessage(role, content) {
+        const chatMessages = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${role}`;
+        messageDiv.innerHTML = `<div class="message-bubble">${content}</div>`;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    sendBtn.addEventListener('click', () => {
+        sendChatMessage(chatInput.value);
+    });
+    
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendChatMessage(chatInput.value);
+        }
+    });
+    
+    clearChatBtn.addEventListener('click', () => {
+        document.getElementById('chatMessages').innerHTML = '';
+        chatHistory = [];
+    });
+    
+    // Tools menu handlers
+    document.querySelectorAll('.tool-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const tool = item.dataset.tool;
+            toolsMenu.classList.remove('active');
+            
+            if (tool === 'planner') {
+                document.getElementById('aiPlannerPanel').classList.add('active');
+            } else if (tool === 'recommend') {
+                addChatMessage('assistant', 'Please click on any place to see personalized recommendations!');
+                chatMode = true;
+                modeBtn.classList.add('active');
+                chatPanel.classList.add('active');
+            } else if (tool === 'insights') {
+                document.getElementById('progressBarContainer').click();
+            }
+        });
+    });
+    
+    // Close panels when clicking outside
     document.addEventListener('click', (e) => {
-        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-            searchResults.classList.remove('active');
+        const assistantBar = document.querySelector('.ai-assistant-bar');
+        if (!assistantBar.contains(e.target)) {
+            searchResults.style.display = 'none';
+            toolsMenu.classList.remove('active');
         }
     });
 }
@@ -574,7 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hideLoadingScreen();
     });
     initEventListeners();
-    initSearch();
+    initAIAssistant();
     initRecenterButton();
     initColorBarToggle();
     initCategoryCards();
