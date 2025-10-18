@@ -5,7 +5,7 @@
 <table>
 <tr>
 <td width="50%"><img src="screenshots/SG%20TripCard%20for%20SG%2060.png" alt="SG TripCard Homepage"/></td>
-<td width="50%"></td>
+<td width="50%"><img src="screenshots/Place%20Overview%20-%20Emotion.png" alt="Map Overview with Markers"/></td>
 </tr>
 </table>
 
@@ -23,8 +23,11 @@ From Marina Bay Sands to hidden hawker centers - explore the best of Singapore a
 
 <table>
 <tr>
-<td width="50%"><img src="screenshots/Place%20Overview%20-%20Emotion.png" alt="Map Overview with Markers"/></td>
+<td width="50%"><img src="screenshots/Swipe%20Card%20Guidance.png" alt="Swipe Card Guidance"/></td>
+</tr>
+<td width="50%"><img src="screenshots/Local%20-%20Tourist%20-%20Mode%20-%20Choice.png" alt="Mode Selection - Local vs Tourist"/></td>
 <td width="50%"><img src="screenshots/Place%20Visit%20Status%20Markers.png" alt="Visit Status Markers"/></td>
+<td width="50%"><img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Marina%20Bay%20Sands.png" alt="Card Swiping Interface - Marina Bay Sands"/></td>
 </tr>
 </table>
 
@@ -43,12 +46,10 @@ Swipe right ➡️ for interested/visited, left ⬅️ for not interested/unvisi
 
 <table>
 <tr>
-<td width="50%"><img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Marina%20Bay%20Sands.png" alt="Card Swiping Interface - Marina Bay Sands"/></td>
 <td width="50%"><img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Gardens%20by%20the%20Bay.png" alt="Card Swiping Interface - Gardens by the Bay"/></td>
 </tr>
 <tr>
 <td width="50%"><img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Changi%20Airport.png" alt="Card Swiping Interface - Changi Airport"/></td>
-<td width="50%"><img src="screenshots/Review%20card-Chinatown.png" alt="Card Swiping Interface - Chinatown"/></td>
 </tr>
 </table>
 
@@ -76,7 +77,7 @@ Smart LLM chatbot that helps you:
 <table>
 <tr>
 <td width="50%"><img src="screenshots/AI%20Route%20Planner-Route.png" alt="AI Route Planning"/></td>
-<td width="50%"><img src="screenshots/POI%20Chat%20Recommendation.png" alt="AI Chat Recommendations"/></td>
+<td width="50%"><img src="screenshots/AI%20Route%20Planner-Travel%20Time-List.png" alt="Travel Time Analysis"/></td>
 </tr>
 </table>
 
@@ -84,8 +85,8 @@ Smart LLM chatbot that helps you:
 
 <table>
 <tr>
-<td width="50%"><img src="screenshots/AI%20Route%20Planner-Travel%20Time-List.png" alt="Travel Time Analysis"/></td>
-<td width="50%"></td>
+<td width="50%"><img src="screenshots/POI%20Chat%20Recommendation.png" alt="AI Chat Recommendations"/></td>
+<td width="50%"><img src="screenshots/Change%20Map%20Style-Darkmode.png" alt="Control Buttons and Map Styles"/></td>
 </tr>
 </table>
 
@@ -123,9 +124,7 @@ Visual grid of all 60 locations:
 
 <table>
 <tr>
-<td width="50%"><img src="screenshots/Change%20Map%20Style-Darkmode.png" alt="Control Buttons and Map Styles"/></td>
-<td width="50%"><img src="screenshots/Swipe%20Card%20Guidance.png" alt="Swipe Card Guidance"/></td>
-</tr>
+
 </table>
 
 ---
@@ -162,7 +161,7 @@ open http://localhost:8000
 
 <table>
 <tr>
-<td width="50%"><img src="screenshots/Local%20-%20Tourist%20-%20Mode%20-%20Choice.png" alt="Mode Selection - Local vs Tourist"/></td>
+<td width="50%"><img src="screenshots/Review%20card-Chinatown.png" alt="Card Swiping Interface - Chinatown"/></td>
 <td width="50%"><img src="screenshots/My%20Journey%20Summary.png" alt="Journey Progress and Statistics"/></td>
 </tr>
 </table>
