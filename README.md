@@ -16,25 +16,41 @@
 ### 📍 **60 Curated Singapore Locations**
 From Marina Bay Sands to hidden hawker centers - explore the best of Singapore across 6 categories and 6 emotional themes.
 
+**🗂️ 6 Categories:**
+Urban Iconic | Arts & Culture | Heritage | Nature | Social Vibe | Hidden Gems
+
+**🎨 6 Emotional Themes:**
+Vibrant | Romantic | Adventurous | Creative | Nostalgic | Calm
+
 <table>
 <tr>
 <td width="50%"><img src="60 images/poi_001.png" alt="Marina Bay Sands"/></td>
-<td width="50%"><img src="60 images/poi_002.png" alt="Gardens by the Bay"/></td>
+<td width="50%"><img src="60 images/poi_002.png" alt="Merlion Park"/></td>
 </tr>
 <tr>
-<td width="50%"><img src="60 images/poi_003.png" alt="Merlion Park"/></td>
-<td width="50%"><img src="60 images/poi_010.png" alt="Chinatown"/></td>
+<td width="50%"><img src="60 images/poi_004.png" alt="Singapore Flyer"/></td>
+<td width="50%"><img src="60 images/poi_010.png" alt="Reflections at Keppel Bay"/></td>
 </tr>
 <tr>
-<td width="50%"><img src="60 images/poi_015.png" alt="Sentosa"/></td>
-<td width="50%"><img src="60 images/poi_020.png" alt="Singapore Zoo"/></td>
+<td width="50%"><img src="60 images/poi_022.png" alt="Little India"/></td>
+<td width="50%"><img src="60 images/poi_034.png" alt="Sungei Bulloh Wetland Reserve"/></td>
 </tr>
 </table>
 
-### 🏷️ **3 Smart Status Markers**
-- ✅ **Visited** - Places you've already explored
-- ⭐ **To Visit** - Your wishlist destinations
-- ○ **No Visit** - Not on your radar yet
+### 🎯 **One Gesture × Two Roles × Three Markers**
+
+**One Simple Swipe**, ➡️ Swipe Right = Interested/Visited | ⬅️ Swipe Left = Not Interested/Unvisited, tailored by **Your Role**, resulting in **Three Clear States**:
+
+👤 **Two Role Modes:**
+- 🏠 **Local Mode**: Swipe to mark places you've visited (X) or haven't (○)
+- ✈️ **Tourist Mode**: Swipe to mark places you want to visit (+) or skip (○)
+
+🏷️ **Three Status Markers:**
+- **X (Visited)** - Places you've already explored
+- **+ (To Visit)** - Your wishlist destinations  
+- **○ (No Visit)** - Not on your radar yet
+
+
 
 <table>
 <tr>
