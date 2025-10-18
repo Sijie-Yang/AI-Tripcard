@@ -2304,19 +2304,13 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(15px);
-    z-index: 10000;
+    background: linear-gradient(135deg, #FFE5EC 0%, #FFF4E6 50%, #E8F4FA 100%);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.5s ease;
-}
-
-.card-mode-content {
-    text-align: center;
-    padding: 40px;
-    max-width: 800px;
+    padding: 2rem;
+    z-index: 10000;
 }
 
 .mode-logo {
@@ -2326,89 +2320,122 @@ body {
     animation: float 3s ease-in-out infinite;
 }
 
-.card-mode-content h1 {
+.card-mode-selector h1 {
     font-size: 2.5rem;
     font-weight: 800;
-    color: white;
-    margin-bottom: 15px;
+    color: #2C3E50;
+    margin-bottom: 0.5rem;
+    margin-top: 3rem;
+    text-align: center;
+    letter-spacing: -0.02em;
 }
 
-.mode-subtitle {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 50px;
+.card-mode-selector .mode-subtitle {
+    font-size: 1.1rem;
+    color: #7F8C8D;
+    margin-bottom: 4rem;
+    text-align: center;
+    font-weight: 500;
 }
 
 .mode-cards {
     display: flex;
-    gap: 30px;
-    justify-content: center;
+    gap: 2rem;
     flex-wrap: wrap;
+    justify-content: center;
+    max-width: 800px;
 }
 
-.mode-card-choice {
+.mode-card {
     background: white;
-    border-radius: 24px;
-    padding: 30px;
+    border-radius: 32px;
+    padding: 2rem 1.5rem;
     width: 260px;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border: 3px solid transparent;
     position: relative;
     overflow: hidden;
 }
 
-.mode-card-choice::before {
+.mode-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 6px;
+    background: linear-gradient(90deg, #FF6B9D, #FFA07A);
     transform: scaleX(0);
     transition: transform 0.4s ease;
 }
 
-.mode-card-choice.local::before {
+.mode-card.local::before {
     background: linear-gradient(90deg, #4FC3F7, #29B6F6);
 }
 
-.mode-card-choice.tourist::before {
+.mode-card.tourist::before {
     background: linear-gradient(90deg, #FF6B9D, #FFA07A);
 }
 
-.mode-card-choice:hover {
-    transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+.mode-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
 }
 
-.mode-card-choice:hover::before {
+.mode-card:hover::before {
     transform: scaleX(1);
 }
 
-.mode-icon {
-    font-size: 3.5rem;
-    display: block;
-    margin-bottom: 20px;
+.mode-card:active {
+    transform: translateY(-4px) scale(0.98);
 }
 
-.mode-card-choice h2 {
-    font-size: 1.5rem;
+.mode-icon {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 1.5rem;
+    display: block;
+    border-radius: 20px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+    padding: 0.5rem;
+}
+
+.mode-card h2 {
+    font-size: 1.6rem;
     font-weight: 700;
     color: #2C3E50;
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 
-.mode-card-choice p {
-    font-size: 1rem;
+.mode-card p {
+    font-size: 0.95rem;
     color: #7F8C8D;
-    margin-bottom: 15px;
+    text-align: center;
+    line-height: 1.6;
+    font-weight: 500;
 }
 
-.mode-hint {
+.mode-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
     font-size: 0.85rem;
-    color: #95A5A6;
-    font-style: italic;
-    display: block;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.mode-card.local .mode-badge {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+    color: #1976D2;
+}
+
+.mode-card.tourist .mode-badge {
+    background: linear-gradient(135deg, #FCE4EC, #F8BBD0);
+    color: #C2185B;
 }
 
 /* Card Swipe Container */

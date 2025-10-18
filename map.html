@@ -43,23 +43,21 @@
 
     <!-- Mode Selector Overlay -->
     <div class="card-mode-selector" id="cardModeSelector">
-        <div class="card-mode-content">
-            <img src="SG60.png" alt="SG60" class="mode-logo">
-            <h1>🌏 Welcome to Singapore</h1>
-            <p class="mode-subtitle">Before exploring the map, let's discover all 60 places!</p>
-            <div class="mode-cards">
-                <div class="mode-card-choice local" onclick="startCardMode('local')">
-                    <span class="mode-icon">🏠</span>
-                    <h2>Local Mode</h2>
-                    <p>Share your Singapore experiences</p>
-                    <span class="mode-hint">Swipe: Been there / Haven't been</span>
-                </div>
-                <div class="mode-card-choice tourist" onclick="startCardMode('tourist')">
-                    <span class="mode-icon">✈️</span>
-                    <h2>Tourist Mode</h2>
-                    <p>Plan your Singapore adventure</p>
-                    <span class="mode-hint">Swipe: Interested / Not interested</span>
-                </div>
+        <img src="SG60.png" alt="SG60" class="mode-logo">
+        <h1>🌏 Singapore TripCard</h1>
+        <p class="mode-subtitle">Discover your favorite places in Singapore</p>
+        <div class="mode-cards">
+            <div class="mode-card local" onclick="startCardMode('local')">
+                <img src="avatar/local_icon.png" alt="Local" class="mode-icon">
+                <h2>Local Mode</h2>
+                <p>Share your Singapore experiences</p>
+                <span class="mode-badge">🏠 Resident</span>
+            </div>
+            <div class="mode-card tourist" onclick="startCardMode('tourist')">
+                <img src="avatar/tourist icon.png" alt="Tourist" class="mode-icon">
+                <h2>Tourist Mode</h2>
+                <p>Explore places you'd like to visit</p>
+                <span class="mode-badge">✈️ Explorer</span>
             </div>
         </div>
     </div>
