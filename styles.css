@@ -611,19 +611,24 @@ body {
 }
 
 /* Highlighted POI marker styles */
-.poi-marker.highlighted {
+.custom-div-icon.highlighted {
     animation: pulseHighlight 1.5s infinite;
     z-index: 999 !important;
+}
+
+.custom-div-icon.highlighted .marker-svg,
+.custom-div-icon.highlighted .custom-marker {
+    filter: drop-shadow(0 0 10px rgba(245, 87, 108, 1)) 
+            drop-shadow(0 0 20px rgba(245, 87, 108, 0.8)) 
+            drop-shadow(0 0 30px rgba(245, 87, 108, 0.6)) !important;
 }
 
 @keyframes pulseHighlight {
     0%, 100% {
         transform: scale(1);
-        filter: drop-shadow(0 0 8px rgba(245, 87, 108, 0.8));
     }
     50% {
-        transform: scale(1.3);
-        filter: drop-shadow(0 0 15px rgba(245, 87, 108, 1));
+        transform: scale(1.4);
     }
 }
 
