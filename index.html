@@ -21,6 +21,33 @@
         <div class="poi-count">共 <span id="poiCount">0</span> 个景点</div>
     </header>
 
+    <!-- 地图样式选择器 -->
+    <div class="map-style-selector">
+        <button class="style-toggle-btn" id="styleToggleBtn">🗺️</button>
+        <div class="style-menu" id="styleMenu">
+            <div class="style-option" data-style="voyager">
+                <span class="style-preview voyager-preview"></span>
+                <span class="style-name">简约</span>
+            </div>
+            <div class="style-option" data-style="positron">
+                <span class="style-preview positron-preview"></span>
+                <span class="style-name">极简白</span>
+            </div>
+            <div class="style-option" data-style="dark">
+                <span class="style-preview dark-preview"></span>
+                <span class="style-name">深色</span>
+            </div>
+            <div class="style-option" data-style="osm">
+                <span class="style-preview osm-preview"></span>
+                <span class="style-name">标准</span>
+            </div>
+            <div class="style-option" data-style="satellite">
+                <span class="style-preview satellite-preview"></span>
+                <span class="style-name">卫星</span>
+            </div>
+        </div>
+    </div>
+
     <!-- 地图容器 -->
     <div id="map"></div>
 

@@ -4,6 +4,42 @@ let markers = [];
 let poiData = [];
 let currentFilter = 'all';
 let visitStatus = {}; // 存储访问状态 {poi_id: 'visited' | 'planned' | 'unvisited'}
+let currentTileLayer = null;
+let currentMapStyle = 'voyager';
+
+// 地图样式配置
+const mapStyles = {
+    voyager: {
+        name: '简约',
+        url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+        attribution: '© OpenStreetMap © CARTO',
+        maxZoom: 19
+    },
+    positron: {
+        name: '极简白',
+        url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+        attribution: '© OpenStreetMap © CARTO',
+        maxZoom: 19
+    },
+    dark: {
+        name: '深色',
+        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        attribution: '© OpenStreetMap © CARTO',
+        maxZoom: 19
+    },
+    osm: {
+        name: '标准',
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    },
+    satellite: {
+        name: '卫星',
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attribution: '© Esri',
+        maxZoom: 19
+    }
+};
 
 // 类别翻译
 const categoryTranslations = {
@@ -56,6 +92,12 @@ function getVisitStatus(poiId) {
 
 // 初始化地图
 function initMap() {
+    // 加载保存的地图样式
+    const savedStyle = localStorage.getItem('map_style');
+    if (savedStyle && mapStyles[savedStyle]) {
+        currentMapStyle = savedStyle;
+    }
+
     // 创建地图实例，中心设在新加坡
     map = L.map('map', {
         center: [1.3521, 103.8198],
@@ -64,12 +106,36 @@ function initMap() {
         attributionControl: true
     });
 
-    // 添加CartoDB Voyager图层（简洁高级风格）
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap contributors © CARTO',
-        maxZoom: 19,
+    // 添加初始图层
+    setMapStyle(currentMapStyle, false);
+}
+
+// 切换地图样式
+function setMapStyle(styleId, savePreference = true) {
+    const style = mapStyles[styleId];
+    if (!style) return;
+
+    // 移除旧图层
+    if (currentTileLayer) {
+        map.removeLayer(currentTileLayer);
+    }
+
+    // 添加新图层
+    currentTileLayer = L.tileLayer(style.url, {
+        attribution: style.attribution,
+        maxZoom: style.maxZoom,
         subdomains: 'abcd'
     }).addTo(map);
+
+    currentMapStyle = styleId;
+
+    // 保存用户选择
+    if (savePreference) {
+        localStorage.setItem('map_style', styleId);
+    }
+
+    // 更新UI
+    updateStyleMenuUI();
 }
 
 // 加载POI数据
@@ -259,6 +325,17 @@ function filterPOIs(category) {
     displayMarkers(filteredData);
 }
 
+// 更新样式菜单UI
+function updateStyleMenuUI() {
+    document.querySelectorAll('.style-option').forEach(option => {
+        if (option.dataset.style === currentMapStyle) {
+            option.classList.add('active');
+        } else {
+            option.classList.remove('active');
+        }
+    });
+}
+
 // 初始化事件监听
 function initEventListeners() {
     // 筛选按钮
@@ -277,6 +354,37 @@ function initEventListeners() {
             closeDetail();
         }
     });
+
+    // 地图样式切换
+    const styleToggleBtn = document.getElementById('styleToggleBtn');
+    const styleMenu = document.getElementById('styleMenu');
+    
+    styleToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        styleMenu.classList.toggle('active');
+    });
+
+    // 点击样式选项
+    document.querySelectorAll('.style-option').forEach(option => {
+        option.addEventListener('click', () => {
+            const styleId = option.dataset.style;
+            setMapStyle(styleId);
+            styleMenu.classList.remove('active');
+        });
+    });
+
+    // 点击页面其他地方关闭菜单
+    document.addEventListener('click', () => {
+        styleMenu.classList.remove('active');
+    });
+
+    // 防止点击菜单本身时关闭
+    styleMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    // 初始化UI
+    updateStyleMenuUI();
 }
 
 // 页面加载完成后初始化

@@ -41,6 +41,111 @@ body {
     backdrop-filter: blur(10px);
 }
 
+/* 地图样式选择器 */
+.map-style-selector {
+    position: fixed;
+    top: 70px;
+    right: 10px;
+    z-index: 1001;
+}
+
+.style-toggle-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #ddd;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.style-toggle-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+}
+
+.style-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+.style-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 8px;
+    min-width: 140px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s;
+}
+
+.style-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.style-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.style-option:hover {
+    background: #f5f5f5;
+}
+
+.style-option.active {
+    background: #e8f0fe;
+}
+
+.style-preview {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 2px solid #ddd;
+    flex-shrink: 0;
+}
+
+.voyager-preview {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+}
+
+.positron-preview {
+    background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+}
+
+.dark-preview {
+    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+}
+
+.osm-preview {
+    background: linear-gradient(135deg, #aad3df 0%, #f4f3d6 100%);
+}
+
+.satellite-preview {
+    background: linear-gradient(135deg, #3d5a3d 0%, #8b7355 100%);
+}
+
+.style-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
 /* 地图容器 */
 #map {
     position: fixed;
