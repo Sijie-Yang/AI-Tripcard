@@ -495,22 +495,38 @@ function initAIAssistant() {
                 return;
             }
             
-            // Build POI context
-            const poiContext = poiData.map(poi => 
-                `${poi.name} (${poi.category_tag}, ${poi.emotion_tag}): ${poi.description}`
-            ).join('\n');
+            // Build POI context with visit status
+            const poiContext = poiData.map(poi => {
+                const status = getVisitStatus(poi.id);
+                const statusText = status === 'visited' ? '[VISITED]' : 
+                                 status === 'planned' ? '[TO VISIT]' : 
+                                 '[NOT VISITED]';
+                return `${poi.name} ${statusText} (${poi.category_tag}, ${poi.emotion_tag}): ${poi.description}`;
+            }).join('\n');
             
             const systemContext = `You are a helpful Singapore travel assistant. You have access to information about 60 amazing places in Singapore across 6 categories: Urban Iconic, Arts & Culture, Heritage, Nature, Social Vibe, and Hidden Gems.
 
-Here are all 60 places:
+Here are all 60 places with their current visit status:
 ${poiContext}
 
 Help users plan their trip, answer questions about Singapore, and provide personalized travel recommendations based on these places. Keep responses concise and friendly.
 
-IMPORTANT: When you recommend or discuss specific places, use their EXACT names as shown above. At the end of your response, add a line starting with "[HIGHLIGHT:" followed by the place names you want to highlight on the map, separated by "|", then close with "]". 
+IMPORTANT INSTRUCTIONS:
+1. When you recommend or discuss specific places, use their EXACT names as shown above.
 
-For example:
-"I recommend visiting Marina Bay Sands for stunning views and Gardens by the Bay for nature. [HIGHLIGHT: Marina Bay Sands | Gardens by the Bay]"
+2. At the end of your response, add special instructions for the system:
+   - To HIGHLIGHT places on map: [HIGHLIGHT: Place1 | Place2 | ...]
+   - To UPDATE visit status: [STATUS: Place1=visited | Place2=planned | Place3=unvisited]
+
+3. Update status when user mentions:
+   - "I visited/went to X" or "I've been to X" → X=visited
+   - "I want to visit X" or "I plan to go to X" → X=planned
+   - "I haven't been to X" or "Remove X from my list" → X=unvisited
+
+Example responses:
+"I recommend Marina Bay Sands for stunning views! [HIGHLIGHT: Marina Bay Sands]"
+"Great! I've marked Marina Bay Sands as visited. [STATUS: Marina Bay Sands=visited][HIGHLIGHT: Marina Bay Sands]"
+"I'll add Gardens by the Bay to your plan. [STATUS: Gardens by the Bay=planned][HIGHLIGHT: Gardens by the Bay]"
 
 Only include places that are the main focus of your recommendation or discussion.`;
             
@@ -557,7 +573,42 @@ Only include places that are the main focus of your recommendation or discussion
                 console.log('AI wants to highlight:', poiNamesToHighlight);
             }
             
+            // Extract status update instructions from AI response
+            const statusMatch = reply.match(/\[STATUS:(.*?)\]/);
+            let statusUpdates = [];
+            
+            if (statusMatch) {
+                // Parse status updates: "POI1=visited | POI2=planned | POI3=unvisited"
+                const statusText = statusMatch[1];
+                const updates = statusText.split('|').map(s => s.trim());
+                
+                updates.forEach(update => {
+                    const [name, status] = update.split('=').map(s => s.trim());
+                    if (name && status) {
+                        statusUpdates.push({ name, status });
+                    }
+                });
+                
+                // Remove the status instruction from display text
+                reply = reply.replace(/\[STATUS:.*?\]/, '').trim();
+                
+                console.log('AI wants to update status:', statusUpdates);
+            }
+            
             chatHistory.push({ role: 'assistant', content: reply });
+            
+            // Execute status updates
+            if (statusUpdates.length > 0) {
+                statusUpdates.forEach(({ name, status }) => {
+                    const poi = poiData.find(p => p.name.toLowerCase() === name.toLowerCase());
+                    if (poi) {
+                        console.log(`Updating ${poi.name} status to ${status}`);
+                        setVisitStatus(poi.id, status);
+                    } else {
+                        console.log(`Could not find POI for status update: ${name}`);
+                    }
+                });
+            }
             
             // Type out the message character by character
             try {
