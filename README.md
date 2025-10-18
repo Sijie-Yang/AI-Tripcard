@@ -2,7 +2,7 @@
 
 > Celebrating 60 years of Singapore with an AI-powered interactive map for discovering 60 iconic locations
 
-**🎯 [截图1：首页loading动画，SG60 logo下降效果]**
+![SG TripCard Homepage](screenshots/SG%20TripCard%20for%20SG%2060.png)
 
 ---
 
@@ -16,7 +16,10 @@ From Marina Bay Sands to hidden hawker centers - explore the best of Singapore a
 - ⭐ **To Visit** - Your wishlist destinations
 - ○ **No Visit** - Not on your radar yet
 
-**🎯 [截图2：地图全景，显示不同颜色的标记点和底部两个色条]**
+![Map Overview with Markers](screenshots/Place%20Overview%20-%20Emotion.png)
+
+![Visit Status Markers](screenshots/Place%20Visit%20Status%20Markers.png)
+*Track your journey with intuitive status markers*
 
 ---
 
@@ -29,14 +32,27 @@ Swipe through 60 beautifully designed cards in two modes:
 
 Swipe right ➡️ for interested/visited, left ⬅️ for not interested/unvisited
 
-**🎯 [截图3：卡片划动界面，显示透明卡片+地图背景+高亮标记]**
+![Card Swiping Interface](screenshots/Tourist%20Mode%20-%20Card%20-%20Marina%20Bay%20Sands.png)
+
+**More Card Examples:**
+
+<table>
+<tr>
+<td width="33%"><img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Gardens%20by%20the%20Bay.png" alt="Gardens by the Bay"/></td>
+<td width="33%"><img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Changi%20Airport.png" alt="Changi Airport"/></td>
+<td width="33%"><img src="screenshots/Review%20card-Chinatown.png" alt="Chinatown"/></td>
+</tr>
+</table>
 
 ### 2️⃣ **Dual Classification System**
 Toggle between two intelligent filtering modes:
 - **🎨 Emotion Tags**: Vibrant, Romantic, Adventurous, Creative, Nostalgic, Calm
 - **🗂️ Category Tags**: Urban Iconic, Arts & Culture, Heritage, Nature, Social Vibe, Hidden Gems
 
-**🎯 [截图4：顶部emotion/category切换器特写]**
+![Emotion and Category Classification](screenshots/Place%20Emotion.png)
+
+![Category Filter - Nature](screenshots/Place%20Category%20-%20Nature.png)
+*Filter locations by category to find exactly what you're looking for*
 
 ### 3️⃣ **AI-Powered Chat Assistant**
 Smart LLM chatbot that helps you:
@@ -45,7 +61,15 @@ Smart LLM chatbot that helps you:
 - 📍 **Update Markers**: Modify visit status directly through conversation
 - 📊 **Trip Summary**: Analyze your journey with visual statistics
 
-**🎯 [截图5：AI聊天界面，显示路线规划+地图上的路线+旅行时间]**
+![AI Route Planning](screenshots/AI%20Route%20Planner-Route.png)
+
+**Additional AI Features:**
+
+![AI Chat Recommendations](screenshots/POI%20Chat%20Recommendation.png)
+*AI provides personalized recommendations based on your preferences*
+
+![Travel Time Analysis](screenshots/AI%20Route%20Planner-Travel%20Time-List.png)
+*Detailed travel times for different transportation modes*
 
 ### 4️⃣ **Review Mode**
 Quickly browse all 60 locations:
@@ -53,7 +77,7 @@ Quickly browse all 60 locations:
 - View each location with map highlight
 - No status changes - pure exploration
 
-**🎯 [截图6：Review模式，显示卡片+灰色背景点+单个高亮点]**
+![Review Mode](screenshots/Review%20Card-Merlion%20Park.png)
 
 ### 5️⃣ **Card Collection Gallery**
 Visual grid of all 60 locations:
@@ -61,7 +85,7 @@ Visual grid of all 60 locations:
 - Click any card to jump to map location
 - Perfect for overview and quick access
 
-**🎯 [截图7：View All Cards网格视图，显示60张完整图片]**
+![Card Collection Gallery](screenshots/Card%20collection.png)
 
 ---
 
@@ -74,7 +98,7 @@ Visual grid of all 60 locations:
 - **Charts**: Chart.js for analytics
 - **Storage**: Browser LocalStorage
 
-**🎯 [截图8：右侧5个控制按钮（地图样式、重置中心、Reset、Review、View All）]**
+![Control Buttons and Map Styles](screenshots/Change%20Map%20Style-Darkmode.png)
 
 ---
 
@@ -108,9 +132,9 @@ open http://localhost:8000
 5. **Use AI**: Chat for recommendations, plan routes, get insights
 6. **Review & Reset**: Use control buttons to review or start over
 
-**🎯 [截图9：模式选择界面，显示Local和Tourist两个选项]**
+![Mode Selection - Local vs Tourist](screenshots/Local%20-%20Tourist%20-%20Mode%20-%20Choice.png)
 
-**🎯 [截图10：底部进度条+统计信息（Visited/To Visit/No Visit数量）]**
+![Journey Progress and Statistics](screenshots/My%20Journey%20Summary.png)
 
 ---
 
@@ -162,4 +186,4 @@ Built with ❤️ for hackathon
 
 **🎊 Start Your Singapore Adventure Today!**
 
-**🎯 [截图11：完成所有卡片后的祝贺界面+Collection按钮]**
+![Swipe Card Guidance](screenshots/Swipe%20Card%20Guidance.png)
