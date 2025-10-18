@@ -3,6 +3,7 @@ let map;
 let markers = [];
 let poiData = [];
 let currentFilter = 'all';
+let visitStatus = {}; // 存储访问状态 {poi_id: 'visited' | 'planned' | 'unvisited'}
 
 // 类别翻译
 const categoryTranslations = {
@@ -23,6 +24,35 @@ const emotionTranslations = {
     'nostalgic': '怀旧',
     'calm': '平静'
 };
+
+// 加载访问状态
+function loadVisitStatus() {
+    const saved = localStorage.getItem('poi_visit_status');
+    if (saved) {
+        visitStatus = JSON.parse(saved);
+    }
+}
+
+// 保存访问状态
+function saveVisitStatus() {
+    localStorage.setItem('poi_visit_status', JSON.stringify(visitStatus));
+}
+
+// 设置POI访问状态
+function setVisitStatus(poiId, status) {
+    visitStatus[poiId] = status;
+    saveVisitStatus();
+    // 重新渲染地图
+    const filteredData = currentFilter === 'all' 
+        ? poiData 
+        : poiData.filter(poi => poi.category === currentFilter);
+    displayMarkers(filteredData);
+}
+
+// 获取POI访问状态
+function getVisitStatus(poiId) {
+    return visitStatus[poiId] || 'unvisited';
+}
 
 // 初始化地图
 function initMap() {
@@ -59,10 +89,22 @@ async function loadPOIData() {
 }
 
 // 创建自定义图标
-function createCustomIcon(color) {
+function createCustomIcon(color, status) {
+    let markerClass = 'custom-marker';
+    let extraStyle = '';
+    let badge = '';
+    
+    if (status === 'visited') {
+        markerClass += ' visited';
+        badge = '<span class="status-badge">✓</span>';
+    } else if (status === 'planned') {
+        markerClass += ' planned';
+        badge = '<span class="status-badge">★</span>';
+    }
+    
     return L.divIcon({
         className: 'custom-div-icon',
-        html: `<div class="custom-marker" style="background-color: ${color}"></div>`,
+        html: `<div class="${markerClass}" style="background-color: ${color}">${badge}</div>`,
         iconSize: [35, 35],
         iconAnchor: [17, 35],
         popupAnchor: [0, -35]
@@ -78,7 +120,8 @@ function displayMarkers(data) {
     markers = [];
 
     data.forEach(poi => {
-        const icon = createCustomIcon(poi.emotion_color);
+        const status = getVisitStatus(poi.id);
+        const icon = createCustomIcon(poi.emotion_color, status);
         
         const marker = L.marker([poi.lat, poi.lng], { icon: icon });
         
@@ -127,6 +170,19 @@ function showDetail(poiId) {
     
     document.getElementById('poiDescription').textContent = poi.description;
 
+    // 更新访问状态按钮
+    const currentStatus = getVisitStatus(poi.id);
+    updateStatusButtons(currentStatus);
+    
+    // 设置状态按钮事件
+    document.querySelectorAll('.status-btn').forEach(btn => {
+        btn.onclick = () => {
+            const status = btn.dataset.status;
+            setVisitStatus(poi.id, status);
+            updateStatusButtons(status);
+        };
+    });
+
     // 设置导航按钮
     const navigateBtn = document.getElementById('navigateBtn');
     navigateBtn.onclick = () => {
@@ -137,6 +193,17 @@ function showDetail(poiId) {
 
     // 显示详情面板
     document.getElementById('poiDetail').classList.add('active');
+}
+
+// 更新状态按钮样式
+function updateStatusButtons(status) {
+    document.querySelectorAll('.status-btn').forEach(btn => {
+        if (btn.dataset.status === status) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 }
 
 // 关闭详情页面
@@ -188,6 +255,7 @@ function initEventListeners() {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
+    loadVisitStatus();
     initMap();
     loadPOIData();
     initEventListeners();
