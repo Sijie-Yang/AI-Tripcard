@@ -241,11 +241,8 @@ function displayMarkers(data) {
         marker.addTo(map);
     });
 
-    // 调整地图视野以包含所有markers
-    if (data.length > 0) {
-        const group = new L.featureGroup(data.map(poi => L.marker([poi.lat, poi.lng])));
-        map.fitBounds(group.getBounds().pad(0.1));
-    }
+    // 不自动调整视野，保持用户当前的缩放级别
+    // 用户可以手动缩放和平移地图查看所有景点
 }
 
 // 显示详情页面
