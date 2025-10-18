@@ -246,6 +246,10 @@ function displayMarkers(data) {
 
         markers.push({ marker, poi });
         marker.addTo(map);
+        
+        // Also store marker by ID for quick lookup (for highlighting)
+        window.poiMarkersById = window.poiMarkersById || {};
+        window.poiMarkersById[poi.id] = marker;
     });
 
     // 调整地图视野以包含所有markers，但限制最小缩放级别
@@ -798,11 +802,14 @@ Help users plan their trip, answer questions about Singapore, and provide person
 function highlightPOIs(poiIds) {
     console.log('highlightPOIs called with IDs:', poiIds);
     const clearBtn = document.getElementById('clearHighlightBtn');
+    const markerMap = window.poiMarkersById || {};
+    
+    console.log('Available markers:', Object.keys(markerMap).length);
     
     let successCount = 0;
     poiIds.forEach(id => {
         highlightedPOIs.add(id);
-        const marker = poiMarkers[id];
+        const marker = markerMap[id];
         console.log(`Marker for ${id}:`, marker ? 'found' : 'NOT FOUND');
         
         if (marker && marker._icon) {
@@ -836,9 +843,10 @@ function highlightPOIs(poiIds) {
 
 function clearHighlights() {
     const clearBtn = document.getElementById('clearHighlightBtn');
+    const markerMap = window.poiMarkersById || {};
     
     highlightedPOIs.forEach(id => {
-        const marker = poiMarkers[id];
+        const marker = markerMap[id];
         if (marker && marker._icon) {
             marker._icon.classList.remove('highlighted');
         }
@@ -846,6 +854,7 @@ function clearHighlights() {
     
     highlightedPOIs.clear();
     clearBtn.classList.remove('active');
+    console.log('Cleared all highlights');
 }
 
 function extractPOIsFromText(text) {
