@@ -584,6 +584,7 @@ window.showDetail = showDetail;
 
 let currentRoute = null;
 let routePolyline = null;
+let routeMarkers = []; // Store route number markers
 
 // Initialize AI Trip Planner
 function initAIPlanner() {
@@ -682,10 +683,18 @@ function initAIPlanner() {
     planNewRouteBtn.addEventListener('click', () => {
         document.getElementById('routeResult').style.display = 'none';
         document.getElementById('poiSelectionSection').style.display = 'block';
+        
+        // Clear route polyline
         if (routePolyline) {
             map.removeLayer(routePolyline);
             routePolyline = null;
         }
+        
+        // Clear all route markers
+        routeMarkers.forEach(marker => {
+            map.removeLayer(marker);
+        });
+        routeMarkers = [];
     });
 }
 
@@ -805,10 +814,17 @@ function displayRouteResult(route) {
 
 // Draw route on map
 function drawRouteOnMap(route) {
-    // Clear existing route
+    // Clear existing route and markers
     if (routePolyline) {
         map.removeLayer(routePolyline);
+        routePolyline = null;
     }
+    
+    // Clear all old route markers
+    routeMarkers.forEach(marker => {
+        map.removeLayer(marker);
+    });
+    routeMarkers = [];
     
     // Create polyline
     const latlngs = route.map(poi => [poi.lat, poi.lng]);
@@ -828,7 +844,8 @@ function drawRouteOnMap(route) {
             iconAnchor: [16, 16]
         });
         
-        L.marker([poi.lat, poi.lng], { icon: numberIcon }).addTo(map);
+        const marker = L.marker([poi.lat, poi.lng], { icon: numberIcon }).addTo(map);
+        routeMarkers.push(marker); // Save marker to array
     });
     
     // Fit map to route
