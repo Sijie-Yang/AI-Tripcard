@@ -873,7 +873,15 @@ Only include places that are the main focus of your recommendation or discussion
             toolsMenu.classList.remove('active');
             
             if (tool === 'planner') {
-                document.getElementById('aiPlannerPanel').classList.add('active');
+                const plannerPanel = document.getElementById('aiPlannerPanel');
+                plannerPanel.classList.add('active');
+                
+                // Refresh POI checklist when opening planner
+                // Find the active filter chip
+                const activeChip = document.querySelector('.filter-chip.active');
+                const activeFilter = activeChip ? activeChip.dataset.filter : 'planned';
+                populatePOIChecklist(activeFilter);
+                console.log('Refreshed POI checklist with filter:', activeFilter);
             } else if (tool === 'recommend') {
                 addChatMessage('assistant', 'Please click on any place on the map to see personalized recommendations based on similar vibes and categories!');
             } else if (tool === 'insights') {
@@ -1196,6 +1204,17 @@ function initAIPlanner() {
         const poiSection = document.getElementById('poiSelectionSection');
         if (apiKeySection) apiKeySection.style.display = 'none';
         if (poiSection) poiSection.style.display = 'block';
+        
+        // Set "To Visit" chip as active by default
+        filterChips.forEach(chip => {
+            if (chip.dataset.filter === 'planned') {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
+        
+        // Populate with planned POIs
         populatePOIChecklist('planned');
     }
     
@@ -1221,6 +1240,16 @@ function initAIPlanner() {
             localStorage.setItem('openai_api_key', apiKey);
             document.getElementById('apiKeySection').style.display = 'none';
             document.getElementById('poiSelectionSection').style.display = 'block';
+            
+            // Set "To Visit" chip as active
+            filterChips.forEach(chip => {
+                if (chip.dataset.filter === 'planned') {
+                    chip.classList.add('active');
+                } else {
+                    chip.classList.remove('active');
+                }
+            });
+            
             populatePOIChecklist('planned');
         } else {
             alert('Please enter a valid API key');
@@ -1292,10 +1321,23 @@ function initAIPlanner() {
 // Populate POI checklist
 function populatePOIChecklist(filter) {
     const checklist = document.getElementById('poiChecklist');
+    if (!checklist) {
+        console.error('POI checklist element not found');
+        return;
+    }
+    
     let pois = poiData;
     
     if (filter === 'planned') {
         pois = poiData.filter(poi => visitStatus[poi.id] === 'planned');
+        console.log(`Filtering for 'planned' POIs: found ${pois.length} out of ${poiData.length}`);
+    } else {
+        console.log(`Showing all POIs: ${poiData.length}`);
+    }
+    
+    if (pois.length === 0 && filter === 'planned') {
+        checklist.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">No places marked "To Visit" yet. Use AI chat or click places on the map to add them to your plan!</div>';
+        return;
     }
     
     checklist.innerHTML = pois.map(poi => `
