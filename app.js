@@ -482,13 +482,8 @@ function initAIAssistant() {
         addChatMessage('user', message);
         
         // Clear old highlights for new conversation
+        // AI will decide what to highlight based on the conversation
         clearHighlights();
-        
-        // Check if user message mentions any POIs and highlight them
-        const userMentionedPOIs = extractPOIsFromText(message);
-        if (userMentionedPOIs.length > 0) {
-            highlightPOIs(userMentionedPOIs);
-        }
         
         // Create assistant message bubble for typing effect
         const assistantBubble = createTypingBubble();
@@ -510,7 +505,14 @@ function initAIAssistant() {
 Here are all 60 places:
 ${poiContext}
 
-Help users plan their trip, answer questions about Singapore, and provide personalized travel recommendations based on these places. Keep responses concise and friendly. When mentioning place names, use their exact names as provided.`;
+Help users plan their trip, answer questions about Singapore, and provide personalized travel recommendations based on these places. Keep responses concise and friendly.
+
+IMPORTANT: When you recommend or discuss specific places, use their EXACT names as shown above. At the end of your response, add a line starting with "[HIGHLIGHT:" followed by the place names you want to highlight on the map, separated by "|", then close with "]". 
+
+For example:
+"I recommend visiting Marina Bay Sands for stunning views and Gardens by the Bay for nature. [HIGHLIGHT: Marina Bay Sands | Gardens by the Bay]"
+
+Only include places that are the main focus of your recommendation or discussion.`;
             
             chatHistory.push({ role: 'user', content: message });
             
@@ -538,49 +540,74 @@ Help users plan their trip, answer questions about Singapore, and provide person
             }
             
             const data = await response.json();
-            const reply = data.choices[0].message.content;
+            let reply = data.choices[0].message.content;
+            
+            // Extract highlight instructions from AI response
+            const highlightMatch = reply.match(/\[HIGHLIGHT:(.*?)\]/);
+            let poiNamesToHighlight = [];
+            
+            if (highlightMatch) {
+                // Parse POI names from highlight instruction
+                const highlightText = highlightMatch[1];
+                poiNamesToHighlight = highlightText.split('|').map(name => name.trim());
+                
+                // Remove the highlight instruction from display text
+                reply = reply.replace(/\[HIGHLIGHT:.*?\]/, '').trim();
+                
+                console.log('AI wants to highlight:', poiNamesToHighlight);
+            }
             
             chatHistory.push({ role: 'assistant', content: reply });
             
             // Type out the message character by character
             try {
                 await typeMessage(assistantBubble, reply);
+                
+                // After typing, highlight the POIs that AI recommended
+                if (poiNamesToHighlight.length > 0) {
+                    const poiIdsToHighlight = [];
+                    poiNamesToHighlight.forEach(name => {
+                        const poi = poiData.find(p => p.name.toLowerCase() === name.toLowerCase());
+                        if (poi) {
+                            poiIdsToHighlight.push(poi.id);
+                            console.log(`Found POI to highlight: ${poi.name} (${poi.id})`);
+                        } else {
+                            console.log(`Could not find POI: ${name}`);
+                        }
+                    });
+                    
+                    if (poiIdsToHighlight.length > 0) {
+                        console.log('Highlighting POIs:', poiIdsToHighlight);
+                        highlightPOIs(poiIdsToHighlight);
+                    }
+                }
             } catch (typeError) {
                 console.error('Type message error:', typeError);
                 // If typing fails, just show the text directly
                 const interactiveText = makeTextInteractive(reply);
                 assistantBubble.innerHTML = interactiveText;
                 
-                // Still try to highlight POIs
-                const mentionedPOIs = extractPOIsFromText(reply);
-                if (mentionedPOIs.length > 0) {
-                    highlightPOIs(mentionedPOIs);
+                // Still try to highlight POIs from AI's instruction
+                if (poiNamesToHighlight.length > 0) {
+                    const poiIdsToHighlight = poiNamesToHighlight
+                        .map(name => poiData.find(p => p.name.toLowerCase() === name.toLowerCase()))
+                        .filter(Boolean)
+                        .map(poi => poi.id);
+                    
+                    if (poiIdsToHighlight.length > 0) {
+                        highlightPOIs(poiIdsToHighlight);
+                    }
                 }
             }
         } catch (error) {
             console.error('Chat error details:', error);
             
-            // If API fails, try to provide a helpful response based on what POIs were mentioned
-            if (userMentionedPOIs.length > 0) {
-                const mentionedNames = userMentionedPOIs.map(id => {
-                    const poi = poiData.find(p => p.id === id);
-                    return poi ? poi.name : '';
-                }).filter(Boolean).join(', ');
-                
-                const fallbackMsg = `I highlighted ${mentionedNames} on the map for you! 
-
-(Note: AI features require an API key. Click the 🛠️ button → Route Planner to set it up, or continue exploring the highlighted places on the map.)`;
-                await typeMessage(assistantBubble, fallbackMsg).catch(e => {
-                    assistantBubble.textContent = fallbackMsg;
-                });
-            } else {
-                const errorMsg = error.message.includes('API Error') 
-                    ? `API Error: ${error.message.split('API Error: ')[1] || 'Please check your API key in the Route Planner tool.'}`
-                    : 'Sorry, I encountered an error. Please check your API key in the Route Planner tool (🛠️ → Route Planner).';
-                await typeMessage(assistantBubble, errorMsg).catch(e => {
-                    assistantBubble.textContent = errorMsg;
-                });
-            }
+            const errorMsg = error.message.includes('API Error') 
+                ? `API Error: ${error.message.split('API Error: ')[1] || 'Please check your API key in the Route Planner tool.'}`
+                : 'Sorry, I encountered an error. Please check your API key in the Route Planner tool (🛠️ → Route Planner).';
+            await typeMessage(assistantBubble, errorMsg).catch(e => {
+                assistantBubble.textContent = errorMsg;
+            });
         }
     }
     
