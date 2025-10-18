@@ -2308,16 +2308,27 @@ function startCardMode(mode) {
     const modeSelector = document.getElementById('cardModeSelector');
     const cardContainer = document.getElementById('cardContainer');
     const progress = document.getElementById('progress');
+    const card = document.getElementById('card');
     
-    console.log('Elements:', { 
+    console.log('Elements found:', { 
         modeSelector: !!modeSelector, 
         cardContainer: !!cardContainer, 
-        progress: !!progress 
+        progress: !!progress,
+        card: !!card
     });
     
+    // Hide mode selector completely
     modeSelector.style.display = 'none';
+    modeSelector.style.visibility = 'hidden';
+    modeSelector.style.pointerEvents = 'none';
+    
+    // Show card interface
     cardContainer.classList.add('active');
     progress.style.display = 'block';
+    
+    console.log('Card container classes:', cardContainer.className);
+    console.log('Card container computed display:', window.getComputedStyle(cardContainer).display);
+    console.log('Card container z-index:', window.getComputedStyle(cardContainer).zIndex);
     
     console.log('✅ Card container activated');
     
