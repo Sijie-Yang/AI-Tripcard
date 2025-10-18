@@ -2454,6 +2454,13 @@ function showNextCard() {
             card.style.display = 'flex';
             card.style.visibility = 'visible';
             card.style.pointerEvents = 'auto';
+            
+            // Reset hints to initial state
+            const leftHint = document.getElementById('leftHint');
+            const rightHint = document.getElementById('rightHint');
+            if (leftHint) leftHint.style.opacity = '0';
+            if (rightHint) rightHint.style.opacity = '0';
+            
             console.log('✅ Card reset and forced visible');
             
             // Test click handler
@@ -2477,10 +2484,14 @@ function handleSwipe(direction) {
     card.style.transform = `translate(${distance}px, -100px) rotate(${rotation}deg)`;
     card.style.opacity = '0';
     
-    // Show hint
-    const hint = direction === 'right' ? 
-        document.getElementById('rightHint') : 
-        document.getElementById('leftHint');
+    // Reset both hints first
+    const leftHint = document.getElementById('leftHint');
+    const rightHint = document.getElementById('rightHint');
+    leftHint.style.opacity = '0';
+    rightHint.style.opacity = '0';
+    
+    // Show hint for swipe direction
+    const hint = direction === 'right' ? rightHint : leftHint;
     hint.style.opacity = '1';
     setTimeout(() => {
         hint.style.opacity = '0';
