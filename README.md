@@ -2,6 +2,12 @@
 
 > Celebrating 60 years of Singapore with an AI-powered interactive map for discovering 60 iconic locations
 
+## ⚡ Powered by Groq + FAL + Exa
+
+**🚀 Groq** - Ultra-fast LLM inference for millisecond-level travel planning and real-time recommendations  
+**🎨 FAL** - AI-generated images for 60 Singapore locations with consistent visual style  
+**🔍 Exa** - Real-time search for latest events, restaurants, and activities across Singapore
+
 <table>
 <tr>
 <td width="50%"><img src="screenshots/SG%20TripCard%20for%20SG%2060.png" alt="SG TripCard Homepage"/></td>
