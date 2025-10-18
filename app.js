@@ -3,9 +3,11 @@ let map;
 let markers = [];
 let poiData = [];
 let currentFilter = 'all';
+let currentFilterType = 'all'; // 'all', 'emotion', 'category'
 let visitStatus = {}; // 存储访问状态 {poi_id: 'visited' | 'planned' | 'unvisited'}
 let currentTileLayer = null;
 let currentMapStyle = 'voyager';
+let colorMode = 'emotion'; // 'emotion' or 'category'
 
 // Map style configuration
 const mapStyles = {
@@ -59,6 +61,16 @@ const emotionTranslations = {
     'creative': 'Creative',
     'nostalgic': 'Nostalgic',
     'calm': 'Calm'
+};
+
+// Category colors
+const categoryColors = {
+    'urban_iconic': '#00f2fe',
+    'creative_scene': '#fee140',
+    'cultural_heritage': '#d57eeb',
+    'serene_nature': '#fed6e3',
+    'social_vibe': '#fecfef',
+    'hidden_gems': '#fcb69f'
 };
 
 // 加载访问状态
@@ -213,7 +225,9 @@ function displayMarkers(data) {
 
     data.forEach(poi => {
         const status = getVisitStatus(poi.id);
-        const icon = createCustomIcon(poi.emotion_color, status);
+        // Choose color based on current color mode
+        const color = colorMode === 'emotion' ? poi.emotion_color : categoryColors[poi.category];
+        const icon = createCustomIcon(color, status);
         
         const marker = L.marker([poi.lat, poi.lng], { icon: icon });
         
@@ -463,34 +477,64 @@ function setVisitStatus(poiId, status) {
     updateStats();
 }
 
-// Color bar toggle functionality
-let currentColorBar = 'emotion'; // 'emotion' or 'category'
+// Get filtered data based on current filter
+function getFilteredData() {
+    if (currentFilterType === 'all') {
+        return poiData;
+    } else if (currentFilterType === 'emotion') {
+        return poiData.filter(poi => poi.emotion_tag === currentFilter);
+    } else if (currentFilterType === 'category') {
+        return poiData.filter(poi => poi.category === currentFilter);
+    }
+    return poiData;
+}
 
+// Color mode toggle functionality
 function initColorBarToggle() {
     const toggleBtn = document.getElementById('colorBarToggle');
-    const emotionBar = document.querySelector('.emotion-bar');
-    const categoryBar = document.querySelector('.category-bar');
     
     toggleBtn.addEventListener('click', () => {
-        if (currentColorBar === 'emotion') {
-            // Switch to category
-            currentColorBar = 'category';
-            emotionBar.classList.add('hidden');
-            categoryBar.classList.remove('hidden');
-            toggleBtn.querySelector('.toggle-text').textContent = 'Categories';
+        if (colorMode === 'emotion') {
+            // Switch to category color mode
+            colorMode = 'category';
+            toggleBtn.querySelector('.toggle-text').textContent = 'Color by Category';
             toggleBtn.querySelector('.toggle-icon').textContent = '🏷️';
         } else {
-            // Switch to emotion
-            currentColorBar = 'emotion';
-            categoryBar.classList.add('hidden');
-            emotionBar.classList.remove('hidden');
-            toggleBtn.querySelector('.toggle-text').textContent = 'Emotions';
+            // Switch to emotion color mode
+            colorMode = 'emotion';
+            toggleBtn.querySelector('.toggle-text').textContent = 'Color by Emotion';
             toggleBtn.querySelector('.toggle-icon').textContent = '🎨';
         }
+        
+        // Redraw all markers with new colors
+        const filteredData = getFilteredData();
+        displayMarkers(filteredData);
     });
+}
+
+// Emotion card click handlers
+function initEmotionCards() {
+    const emotionCards = document.querySelectorAll('.emotion-card');
     
-    // Initialize with category bar hidden
-    categoryBar.classList.add('hidden');
+    emotionCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const emotion = card.dataset.emotion;
+            
+            // Remove active class from all emotion cards
+            emotionCards.forEach(c => c.classList.remove('active'));
+            // Remove active class from all category cards
+            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked card
+            card.classList.add('active');
+            
+            // Filter by emotion
+            currentFilter = emotion;
+            currentFilterType = 'emotion';
+            const filtered = poiData.filter(poi => poi.emotion_tag === emotion);
+            displayMarkers(filtered);
+        });
+    });
 }
 
 // Category card click handlers
@@ -501,28 +545,27 @@ function initCategoryCards() {
         card.addEventListener('click', () => {
             const category = card.dataset.category;
             
-            // Remove active class from all cards
+            // Remove active class from all category cards
             categoryCards.forEach(c => c.classList.remove('active'));
+            // Remove active class from all emotion cards
+            document.querySelectorAll('.emotion-card').forEach(c => c.classList.remove('active'));
             
             // Add active class to clicked card
             card.classList.add('active');
             
-            // Filter POIs
-            filterPOIs(category);
+            // Filter by category
+            if (category === 'all') {
+                currentFilter = 'all';
+                currentFilterType = 'all';
+                displayMarkers(poiData);
+            } else {
+                currentFilter = category;
+                currentFilterType = 'category';
+                const filtered = poiData.filter(poi => poi.category === category);
+                displayMarkers(filtered);
+            }
         });
     });
-}
-
-// Update filter function to work with new cards
-function filterPOIs(category) {
-    currentFilter = category;
-    
-    if (category === 'all') {
-        displayMarkers(poiData);
-    } else {
-        const filtered = poiData.filter(poi => poi.category === category);
-        displayMarkers(filtered);
-    }
 }
 
 // 页面加载完成后初始化
@@ -538,6 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initRecenterButton();
     initColorBarToggle();
     initCategoryCards();
+    initEmotionCards();
 });
 
 // 将showDetail函数暴露到全局作用域，以便popup可以调用

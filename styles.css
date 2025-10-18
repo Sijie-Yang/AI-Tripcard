@@ -313,20 +313,13 @@ body {
 /* Emotion Color Bar */
 .emotion-bar {
     position: fixed;
-    bottom: 0;
+    bottom: 35px;
     left: 0;
     right: 0;
     display: flex;
     gap: 0;
     z-index: 1001;
-    transition: opacity 0.3s, transform 0.3s;
     animation: slideInBottom 0.5s ease-out 0.3s backwards;
-}
-
-.emotion-bar.hidden {
-    opacity: 0;
-    transform: translateY(100%);
-    pointer-events: none;
 }
 
 @keyframes slideInBottom {
@@ -380,13 +373,7 @@ body {
     display: flex;
     gap: 0;
     z-index: 1001;
-    transition: opacity 0.3s, transform 0.3s;
-}
-
-.category-bar.hidden {
-    opacity: 0;
-    transform: translateY(100%);
-    pointer-events: none;
+    animation: slideInBottom 0.5s ease-out 0.35s backwards;
 }
 
 .category-card {
@@ -430,13 +417,13 @@ body {
 /* Color Bar Toggle Button */
 .color-bar-toggle {
     position: fixed;
-    bottom: 50px;
+    bottom: 77px;
     left: 50%;
     transform: translateX(-50%);
     background: white;
     border: 2px solid #667eea;
     border-radius: 20px;
-    padding: 8px 16px;
+    padding: 6px 14px;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -445,6 +432,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.3s;
     animation: slideInBottom 0.5s ease-out 0.4s backwards;
+    white-space: nowrap;
 }
 
 .color-bar-toggle:hover {
@@ -577,7 +565,7 @@ body {
     top: 180px;
     left: 0;
     right: 0;
-    bottom: 35px;
+    bottom: 70px;
     z-index: 1;
 }
 
@@ -948,7 +936,7 @@ body {
     }
     
     .emotion-bar {
-        bottom: 0;
+        bottom: 35px;
     }
     
     .emotion-card {
@@ -958,6 +946,10 @@ body {
     .emotion-label {
         font-size: 9px;
         letter-spacing: 0;
+    }
+    
+    .category-bar {
+        bottom: 0;
     }
     
     .category-card {
@@ -970,16 +962,16 @@ body {
     }
     
     .color-bar-toggle {
-        bottom: 38px;
-        padding: 6px 12px;
+        bottom: 73px;
+        padding: 5px 10px;
     }
     
     .toggle-icon {
-        font-size: 14px;
+        font-size: 13px;
     }
     
     .toggle-text {
-        font-size: 11px;
+        font-size: 10px;
     }
 }
 
