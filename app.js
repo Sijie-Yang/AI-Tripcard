@@ -1143,6 +1143,7 @@ function initCategoryCards() {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Page loaded, initializing...');
     loadVisitStatus();
     initMap();
     loadPOIData().then(() => {
@@ -1157,7 +1158,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initCategoryCards();
     initEmotionCards();
     initAIPlanner();
+    console.log('📊 Calling initJourneyAnalytics...');
     initJourneyAnalytics();
+    console.log('✅ All initialization complete');
 });
 
 // 将showDetail函数暴露到全局作用域，以便popup可以调用
@@ -1459,25 +1462,33 @@ function initJourneyAnalytics() {
     let isExpanded = false;
     
     // Toggle panel on click
-    progressBar.addEventListener('click', () => {
-        console.log('Progress bar clicked, expanding:', !isExpanded);
+    progressBar.addEventListener('click', (e) => {
+        console.log('🖱️ Progress bar clicked!', e.target);
         isExpanded = !isExpanded;
+        console.log('Expanding:', isExpanded);
         
         if (isExpanded) {
+            console.log('Opening analytics panel...');
             updateJourneyAnalytics();
             analyticsPanel.classList.add('active');
             progressBar.classList.add('expanded');
+            console.log('Panel classes:', analyticsPanel.className);
         } else {
+            console.log('Closing analytics panel...');
             analyticsPanel.classList.remove('active');
             progressBar.classList.remove('expanded');
         }
     });
+    
+    console.log('✅ Journey Analytics event listener attached');
 }
 
 // Update Journey Analytics Panel
 function updateJourneyAnalytics() {
+    console.log('📊 updateJourneyAnalytics called');
     const visitedPOIs = poiData.filter(poi => visitStatus[poi.id] === 'visited');
     const plannedPOIs = poiData.filter(poi => visitStatus[poi.id] === 'planned');
+    console.log('Stats:', { visited: visitedPOIs.length, planned: plannedPOIs.length });
     const totalPOIs = poiData.length;
     
     // 1. Update Summary Cards
