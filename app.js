@@ -2,7 +2,6 @@
 let map;
 let markers = [];
 let poiData = [];
-let markerClusterGroup;
 let currentFilter = 'all';
 
 // 类别翻译
@@ -40,16 +39,6 @@ function initMap() {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
     }).addTo(map);
-
-    // 初始化Marker聚合组
-    markerClusterGroup = L.markerClusterGroup({
-        maxClusterRadius: 50,
-        spiderfyOnMaxZoom: true,
-        showCoverageOnHover: false,
-        zoomToBoundsOnClick: true
-    });
-
-    map.addLayer(markerClusterGroup);
 }
 
 // 加载POI数据
@@ -83,7 +72,9 @@ function createCustomIcon(color) {
 // 显示markers
 function displayMarkers(data) {
     // 清除现有markers
-    markerClusterGroup.clearLayers();
+    markers.forEach(item => {
+        map.removeLayer(item.marker);
+    });
     markers = [];
 
     data.forEach(poi => {
@@ -112,7 +103,7 @@ function displayMarkers(data) {
         });
 
         markers.push({ marker, poi });
-        markerClusterGroup.addLayer(marker);
+        marker.addTo(map);
     });
 
     // 调整地图视野以包含所有markers
