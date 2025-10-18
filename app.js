@@ -2361,6 +2361,10 @@ function showMapUI() {
     const styleSelector = document.querySelector('.map-style-selector');
     if (styleSelector) styleSelector.style.display = 'block';
     
+    // Show map style toggle button
+    const styleToggleBtn = document.getElementById('styleToggleBtn');
+    if (styleToggleBtn) styleToggleBtn.style.display = 'flex';
+    
     // Show recenter button
     const recenterBtn = document.getElementById('recenterBtn');
     if (recenterBtn) recenterBtn.style.display = 'flex';
