@@ -1445,10 +1445,22 @@ function initJourneyAnalytics() {
     const analyticsPanel = document.getElementById('journeyAnalyticsPanel');
     const expandIndicator = document.getElementById('expandIndicator');
     
+    console.log('initJourneyAnalytics - Elements found:', {
+        progressBar: !!progressBar,
+        analyticsPanel: !!analyticsPanel,
+        expandIndicator: !!expandIndicator
+    });
+    
+    if (!progressBar || !analyticsPanel) {
+        console.error('Journey Analytics: Required elements not found!');
+        return;
+    }
+    
     let isExpanded = false;
     
     // Toggle panel on click
     progressBar.addEventListener('click', () => {
+        console.log('Progress bar clicked, expanding:', !isExpanded);
         isExpanded = !isExpanded;
         
         if (isExpanded) {
