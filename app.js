@@ -405,107 +405,94 @@ function updateStats() {
 }
 
 // Search functionality
-// AI Assistant (Search + Chat + Tools)
-let chatMode = false;
+// AI Assistant (Auto-detect Search vs Chat)
 let chatHistory = [];
 
 function initAIAssistant() {
     const assistantInput = document.getElementById('assistantInput');
-    const searchResults = document.getElementById('searchResults');
-    const modeBtn = document.getElementById('assistantModeBtn');
+    const sendAssistantBtn = document.getElementById('sendAssistantBtn');
     const toolsBtn = document.getElementById('toolsBtn');
-    const chatPanel = document.getElementById('aiChatPanel');
+    const resultsPanel = document.getElementById('assistantResultsPanel');
+    const searchSection = document.getElementById('searchResultsSection');
+    const chatSection = document.getElementById('chatMessagesSection');
     const toolsMenu = document.getElementById('toolsMenu');
-    const chatInput = document.getElementById('chatInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const clearChatBtn = document.getElementById('clearChatBtn');
     
-    // Toggle chat mode
-    modeBtn.addEventListener('click', () => {
-        chatMode = !chatMode;
-        if (chatMode) {
-            modeBtn.classList.add('active');
-            chatPanel.classList.add('active');
-            searchResults.style.display = 'none';
-            toolsMenu.classList.remove('active');
+    // Handle input submission
+    async function handleInput() {
+        const query = assistantInput.value.trim();
+        if (!query) return;
+        
+        sendAssistantBtn.disabled = true;
+        
+        // Try to match POI names first
+        const searchResults = poiData.filter(poi => 
+            poi.name.toLowerCase().includes(query.toLowerCase()) ||
+            poi.description.toLowerCase().includes(query.toLowerCase())
+        );
+        
+        // If we have search results, show them
+        if (searchResults.length > 0) {
+            showSearchResults(searchResults);
         } else {
-            modeBtn.classList.remove('active');
-            chatPanel.classList.remove('active');
+            // Otherwise, use AI chat
+            await handleAIChat(query);
         }
-    });
+        
+        assistantInput.value = '';
+        sendAssistantBtn.disabled = false;
+    }
     
-    // Toggle tools menu
-    toolsBtn.addEventListener('click', () => {
-        const isActive = toolsMenu.classList.toggle('active');
-        if (isActive) {
-            chatPanel.classList.remove('active');
-            searchResults.style.display = 'none';
-        }
-    });
-    
-    // Search functionality
-    assistantInput.addEventListener('input', (e) => {
-        if (chatMode) return;
+    // Show search results
+    function showSearchResults(results) {
+        const resultsHTML = results.slice(0, 5).map(poi => `
+            <div class="search-result-item" data-poi-id="${poi.id}">
+                <div class="search-result-name">${poi.name}</div>
+                <div class="search-result-category">${categoryTranslations[poi.category_tag] || poi.category_tag}</div>
+            </div>
+        `).join('');
         
-        const query = e.target.value.toLowerCase().trim();
+        searchSection.innerHTML = resultsHTML;
+        searchSection.classList.add('active');
+        chatSection.classList.remove('active');
+        resultsPanel.classList.add('active');
         
-        if (query.length === 0) {
-            searchResults.style.display = 'none';
-            return;
-        }
-        
-        const results = poiData.filter(poi => 
-            poi.name.toLowerCase().includes(query) ||
-            poi.description.toLowerCase().includes(query)
-        ).slice(0, 5);
-        
-        if (results.length > 0) {
-            searchResults.innerHTML = results.map(poi => `
-                <div class="search-result-item" data-poi-id="${poi.id}">
-                    <div class="search-result-name">${poi.name}</div>
-                    <div class="search-result-category">${categoryTranslations[poi.category_tag] || poi.category_tag}</div>
-                </div>
-            `).join('');
-            searchResults.style.display = 'block';
-            
-            // Add click handlers
-            document.querySelectorAll('.search-result-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const poiId = item.dataset.poiId;
-                    const poi = poiData.find(p => p.id === poiId);
-                    if (poi) {
-                        map.setView([poi.lat, poi.lng], 16);
-                        showDetail(poiId);
-                        assistantInput.value = '';
-                        searchResults.style.display = 'none';
-                    }
-                });
+        // Add click handlers
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const poiId = item.dataset.poiId;
+                const poi = poiData.find(p => p.id === poiId);
+                if (poi) {
+                    map.setView([poi.lat, poi.lng], 16);
+                    showDetail(poiId);
+                    resultsPanel.classList.remove('active');
+                }
             });
-        } else {
-            searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
-            searchResults.style.display = 'block';
-        }
-    });
+        });
+    }
     
-    // Chat functionality
-    async function sendChatMessage(message) {
-        if (!message.trim()) return;
-        
+    // Handle AI chat
+    async function handleAIChat(message) {
         // Add user message
         addChatMessage('user', message);
-        chatInput.value = '';
-        sendBtn.disabled = true;
         
         try {
             const apiKey = localStorage.getItem('openai_api_key');
             if (!apiKey) {
-                addChatMessage('assistant', 'Please set your OpenAI API key in the AI Trip Planner tool first.');
-                sendBtn.disabled = false;
+                addChatMessage('assistant', 'Please set your OpenAI API key in the Route Planner tool first. Click the 🛠️ button → Route Planner to set it up.');
                 return;
             }
             
-            // Build context from POI data
-            const context = `You are a helpful Singapore travel assistant. You have access to information about 60 amazing places in Singapore across 6 categories: Urban Iconic, Arts & Culture, Heritage, Nature, Social Vibe, and Hidden Gems. Help users plan their trip, answer questions about Singapore, and provide travel recommendations based on the POI data available.`;
+            // Build POI context
+            const poiContext = poiData.map(poi => 
+                `${poi.name} (${poi.category_tag}, ${poi.emotion_tag}): ${poi.description}`
+            ).join('\n');
+            
+            const systemContext = `You are a helpful Singapore travel assistant. You have access to information about 60 amazing places in Singapore across 6 categories: Urban Iconic, Arts & Culture, Heritage, Nature, Social Vibe, and Hidden Gems.
+
+Here are all 60 places:
+${poiContext}
+
+Help users plan their trip, answer questions about Singapore, and provide personalized travel recommendations based on these places. Keep responses concise and friendly.`;
             
             chatHistory.push({ role: 'user', content: message });
             
@@ -518,7 +505,7 @@ function initAIAssistant() {
                 body: JSON.stringify({
                     model: 'gpt-4o-mini',
                     messages: [
-                        { role: 'system', content: context },
+                        { role: 'system', content: systemContext },
                         ...chatHistory.slice(-10) // Keep last 10 messages
                     ],
                     temperature: 0.7,
@@ -534,35 +521,59 @@ function initAIAssistant() {
             chatHistory.push({ role: 'assistant', content: reply });
             addChatMessage('assistant', reply);
         } catch (error) {
-            addChatMessage('assistant', 'Sorry, I encountered an error. Please try again.');
+            addChatMessage('assistant', 'Sorry, I encountered an error. Please try again or check your API key.');
             console.error(error);
-        } finally {
-            sendBtn.disabled = false;
         }
     }
     
     function addChatMessage(role, content) {
-        const chatMessages = document.getElementById('chatMessages');
+        searchSection.classList.remove('active');
+        chatSection.classList.add('active');
+        resultsPanel.classList.add('active');
+        
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${role}`;
         messageDiv.innerHTML = `<div class="message-bubble">${content}</div>`;
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        chatSection.appendChild(messageDiv);
+        chatSection.scrollTop = chatSection.scrollHeight;
     }
     
-    sendBtn.addEventListener('click', () => {
-        sendChatMessage(chatInput.value);
-    });
+    // Send button click
+    sendAssistantBtn.addEventListener('click', handleInput);
     
-    chatInput.addEventListener('keypress', (e) => {
+    // Enter key press
+    assistantInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            sendChatMessage(chatInput.value);
+            handleInput();
         }
     });
     
-    clearChatBtn.addEventListener('click', () => {
-        document.getElementById('chatMessages').innerHTML = '';
-        chatHistory = [];
+    // Real-time search preview as user types
+    assistantInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (query.length === 0) {
+            resultsPanel.classList.remove('active');
+            return;
+        }
+        
+        // Show instant search results preview
+        const results = poiData.filter(poi => 
+            poi.name.toLowerCase().includes(query) ||
+            poi.description.toLowerCase().includes(query)
+        ).slice(0, 5);
+        
+        if (results.length > 0) {
+            showSearchResults(results);
+        }
+    });
+    
+    // Toggle tools menu
+    toolsBtn.addEventListener('click', () => {
+        const isActive = toolsMenu.classList.toggle('active');
+        if (isActive) {
+            resultsPanel.classList.remove('active');
+        }
     });
     
     // Tools menu handlers
@@ -574,10 +585,7 @@ function initAIAssistant() {
             if (tool === 'planner') {
                 document.getElementById('aiPlannerPanel').classList.add('active');
             } else if (tool === 'recommend') {
-                addChatMessage('assistant', 'Please click on any place to see personalized recommendations!');
-                chatMode = true;
-                modeBtn.classList.add('active');
-                chatPanel.classList.add('active');
+                addChatMessage('assistant', 'Please click on any place on the map to see personalized recommendations based on similar vibes and categories!');
             } else if (tool === 'insights') {
                 document.getElementById('progressBarContainer').click();
             }
@@ -588,7 +596,7 @@ function initAIAssistant() {
     document.addEventListener('click', (e) => {
         const assistantBar = document.querySelector('.ai-assistant-bar');
         if (!assistantBar.contains(e.target)) {
-            searchResults.style.display = 'none';
+            resultsPanel.classList.remove('active');
             toolsMenu.classList.remove('active');
         }
     });
