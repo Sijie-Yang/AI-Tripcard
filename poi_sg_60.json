@@ -2,10 +2,11 @@
     {
       "id": "poi_001",
       "name": "Marina Bay Sands",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.2834,
       "lng": 103.8607,
-      "description": "An iconic hotel and entertainment complex overlooking the bay’s glittering skyline.",
+      "description": "An iconic hotel and entertainment complex overlooking the bay's glittering skyline.",
       "image_prompt": "futuristic towers with skypark, neon glow, waterfront reflections",
       "emotion_tag": "vibrant",
       "emotion_color": "#F6C667"
@@ -13,7 +14,8 @@
     {
       "id": "poi_002",
       "name": "Merlion Park",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.2868,
       "lng": 103.8545,
       "description": "Singapore’s mythical mascot sprays toward Marina Bay amid city lights.",
@@ -24,7 +26,8 @@
     {
       "id": "poi_003",
       "name": "Helix Bridge",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.2869,
       "lng": 103.861,
       "description": "A DNA-inspired pedestrian bridge spirals over the water with elegant curves.",
@@ -35,7 +38,8 @@
     {
       "id": "poi_004",
       "name": "Singapore Flyer",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.2893,
       "lng": 103.8631,
       "description": "A giant observation wheel offering sweeping views of the city and sea.",
@@ -46,7 +50,8 @@
     {
       "id": "poi_005",
       "name": "ArtScience Museum",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.2868,
       "lng": 103.8591,
       "description": "A lotus-like museum where art, science, and architecture meet by the bay.",
@@ -57,7 +62,8 @@
     {
       "id": "poi_006",
       "name": "Gardens by the Bay",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.2816,
       "lng": 103.8653,
       "description": "Futuristic supertrees and cooled conservatories rise from lush waterfront gardens.",
@@ -68,7 +74,8 @@
     {
       "id": "poi_007",
       "name": "Raffles Hotel Singapore",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.294,
       "lng": 103.8553,
       "description": "A colonial-era grande dame famed for its courtyard charm and heritage.",
@@ -79,7 +86,8 @@
     {
       "id": "poi_008",
       "name": "The Fullerton Hotel",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.2863,
       "lng": 103.8536,
       "description": "A neoclassical landmark overlooking the river with timeless grandeur.",
@@ -90,7 +98,8 @@
     {
       "id": "poi_009",
       "name": "Pinnacle@Duxton Skybridge",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.2796,
       "lng": 103.8425,
       "description": "A lofty skybridge with panoramic views across heritage shophouses and towers.",
@@ -101,7 +110,8 @@
     {
       "id": "poi_010",
       "name": "Reflections at Keppel Bay",
-      "category": "urban_iconic",
+      "category_tag": "urban_iconic",
+      "category_color": "#00f2fe",
       "lat": 1.2683,
       "lng": 103.8109,
       "description": "Sculptural waterfront residences glint beside marinas and tropical greenery.",
@@ -112,7 +122,8 @@
     {
       "id": "poi_011",
       "name": "Esplanade - Theatres on the Bay",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.2893,
       "lng": 103.8555,
       "description": "A spiky durian-like arts center buzzing with performances and festivals.",
@@ -123,7 +134,8 @@
     {
       "id": "poi_012",
       "name": "National Gallery Singapore",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.2906,
       "lng": 103.8515,
       "description": "A grand museum housing Southeast Asian masterpieces in historic buildings.",
@@ -134,7 +146,8 @@
     {
       "id": "poi_013",
       "name": "Gillman Barracks",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.2755,
       "lng": 103.802,
       "description": "A leafy cluster of contemporary galleries in former military barracks.",
@@ -145,7 +158,8 @@
     {
       "id": "poi_014",
       "name": "STPI Creative Workshop & Gallery",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.2902,
       "lng": 103.839,
       "description": "An acclaimed print and paper art space where craft meets experimentation.",
@@ -156,7 +170,8 @@
     {
       "id": "poi_015",
       "name": "National Design Centre",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.3,
       "lng": 103.853,
       "description": "A hub for design showcases, talks, and pop-up creativity in the city.",
@@ -167,7 +182,8 @@
     {
       "id": "poi_016",
       "name": "Art Porters Gallery",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.2777,
       "lng": 103.8394,
       "description": "A boutique gallery spotlighting emerging voices in a charming shophouse.",
@@ -178,7 +194,8 @@
     {
       "id": "poi_017",
       "name": "Aliwal Arts Centre",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.3021,
       "lng": 103.8615,
       "description": "A vibrant arts enclave fusing street culture with contemporary practice.",
@@ -189,7 +206,8 @@
     {
       "id": "poi_018",
       "name": "Objectifs - Centre for Photography and Film",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.297,
       "lng": 103.852,
       "description": "A creative home for photography and film with thoughtful exhibitions.",
@@ -200,7 +218,8 @@
     {
       "id": "poi_019",
       "name": "Goodman Arts Centre",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.3028,
       "lng": 103.8839,
       "description": "Studios and stages in a garden campus nurturing artists and communities.",
@@ -211,7 +230,8 @@
     {
       "id": "poi_020",
       "name": "LASALLE College of the Arts",
-      "category": "creative_scene",
+      "category_tag": "creative_scene",
+      "category_color": "#fee140",
       "lat": 1.3032,
       "lng": 103.8501,
       "description": "A bold, modern arts campus pulsing with student energy and avant-garde flair.",
@@ -222,7 +242,8 @@
     {
       "id": "poi_021",
       "name": "Chinatown",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.2835,
       "lng": 103.844,
       "description": "A historic quarter of temples, markets, and vibrant shophouse streets.",
@@ -233,7 +254,8 @@
     {
       "id": "poi_022",
       "name": "Little India",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.3066,
       "lng": 103.85,
       "description": "A sensory tapestry of spices, sarees, and colorful temples and shops.",
@@ -244,7 +266,8 @@
     {
       "id": "poi_023",
       "name": "Kampong Glam",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.3018,
       "lng": 103.8594,
       "description": "A heritage district of Malay-Arab culture with stylish cafes and murals.",
@@ -255,7 +278,8 @@
     {
       "id": "poi_024",
       "name": "Sultan Mosque (Masjid Sultan)",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.3027,
       "lng": 103.8599,
       "description": "A majestic gold-domed mosque anchoring Kampong Glam’s rich traditions.",
@@ -266,7 +290,8 @@
     {
       "id": "poi_025",
       "name": "Thian Hock Keng Temple",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.2817,
       "lng": 103.847,
       "description": "One of the oldest Hokkien temples adorned with detailed wood carvings.",
@@ -277,7 +302,8 @@
     {
       "id": "poi_026",
       "name": "Buddha Tooth Relic Temple",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.2814,
       "lng": 103.8447,
       "description": "A majestic Tang-style temple with ornate halls and a rooftop garden.",
@@ -288,7 +314,8 @@
     {
       "id": "poi_027",
       "name": "Sri Mariamman Temple",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.2824,
       "lng": 103.8452,
       "description": "Singapore’s oldest Hindu temple with a vibrant gopuram of deities.",
@@ -299,7 +326,8 @@
     {
       "id": "poi_028",
       "name": "Asian Civilisations Museum",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.2878,
       "lng": 103.8515,
       "description": "A riverside museum tracing Asia’s diverse cultures and maritime links.",
@@ -310,7 +338,8 @@
     {
       "id": "poi_029",
       "name": "Peranakan Museum",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.2941,
       "lng": 103.8496,
       "description": "A dedicated museum celebrating Peranakan craftsmanship, fashion, and heritage.",
@@ -321,7 +350,8 @@
     {
       "id": "poi_030",
       "name": "Fort Canning Park (Heritage Trails)",
-      "category": "cultural_heritage",
+      "category_tag": "cultural_heritage",
+      "category_color": "#d57eeb",
       "lat": 1.2966,
       "lng": 103.8459,
       "description": "Historic hilltop grounds revealing centuries of Singapore’s evolving story.",
@@ -332,7 +362,8 @@
     {
       "id": "poi_031",
       "name": "Singapore Botanic Gardens",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.3138,
       "lng": 103.8159,
       "description": "A UNESCO-listed oasis of palm-lined lakes, orchids, and quiet lawns.",
@@ -343,7 +374,8 @@
     {
       "id": "poi_032",
       "name": "MacRitchie Reservoir",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.3456,
       "lng": 103.8333,
       "description": "Boardwalks and forest trails wrap a tranquil reservoir teeming with life.",
@@ -354,7 +386,8 @@
     {
       "id": "poi_033",
       "name": "Bukit Timah Nature Reserve",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.3483,
       "lng": 103.7775,
       "description": "A dense primary rainforest climb to Singapore’s highest natural point.",
@@ -365,7 +398,8 @@
     {
       "id": "poi_034",
       "name": "Sungei Buloh Wetland Reserve",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.4424,
       "lng": 103.7303,
       "description": "Mangroves and mudflats where herons, mudskippers, and crocs roam quietly.",
@@ -376,7 +410,8 @@
     {
       "id": "poi_035",
       "name": "Coney Island Park",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.4167,
       "lng": 103.9065,
       "description": "A rustic coastal park of casuarina groves and breezy, sandy paths.",
@@ -387,7 +422,8 @@
     {
       "id": "poi_036",
       "name": "Southern Ridges",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.277,
       "lng": 103.802,
       "description": "Undulating hilltop walks link parks with sweeping city-and-sea views.",
@@ -398,7 +434,8 @@
     {
       "id": "poi_037",
       "name": "Labrador Nature Reserve",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.2724,
       "lng": 103.802,
       "description": "Seafront cliffs, coastal boardwalks, and relics of wartime history blend here.",
@@ -409,7 +446,8 @@
     {
       "id": "poi_038",
       "name": "Mount Faber Park",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.2736,
       "lng": 103.8175,
       "description": "A hilltop lookout above cable cars and lush treetops near the sea.",
@@ -420,7 +458,8 @@
     {
       "id": "poi_039",
       "name": "Jurong Lake Gardens",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.3333,
       "lng": 103.724,
       "description": "A sprawling lakeside landscape with wetlands, meadows, and play gardens.",
@@ -431,7 +470,8 @@
     {
       "id": "poi_040",
       "name": "East Coast Park",
-      "category": "serene_nature",
+      "category_tag": "serene_nature",
+      "category_color": "#fed6e3",
       "lat": 1.3,
       "lng": 103.911,
       "description": "A long breezy beachfront for cycling, picnics, and sea-watching.",
@@ -442,7 +482,8 @@
     {
       "id": "poi_041",
       "name": "Clarke Quay",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.2906,
       "lng": 103.8463,
       "description": "Riverside warehouses turned nightlife hub, alive with color and music.",
@@ -453,7 +494,8 @@
     {
       "id": "poi_042",
       "name": "Holland Village",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.3105,
       "lng": 103.7958,
       "description": "A laid-back enclave of cafes, bars, and late-night chatter.",
@@ -464,7 +506,8 @@
     {
       "id": "poi_043",
       "name": "Tiong Bahru",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.2854,
       "lng": 103.832,
       "description": "Streamline-modern blocks meet hip bakeries and murals in a cool neighborhood.",
@@ -475,7 +518,8 @@
     {
       "id": "poi_044",
       "name": "Marina Barrage",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.2803,
       "lng": 103.8703,
       "description": "A grassy rooftop for kite-flying with spectacular bay panoramas.",
@@ -486,7 +530,8 @@
     {
       "id": "poi_045",
       "name": "Boat Quay",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.2867,
       "lng": 103.8482,
       "description": "Heritage shophouses line a lively riverfront of eateries and pubs.",
@@ -497,7 +542,8 @@
     {
       "id": "poi_046",
       "name": "Jewel Changi Airport",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.3592,
       "lng": 103.9894,
       "description": "A soaring glass biodome with a dramatic indoor waterfall and gardens.",
@@ -508,7 +554,8 @@
     {
       "id": "poi_047",
       "name": "Orchard Road",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.304,
       "lng": 103.8318,
       "description": "Singapore’s shopping boulevard sparkles with flagship stores and lights.",
@@ -519,7 +566,8 @@
     {
       "id": "poi_048",
       "name": "Siloso Beach, Sentosa",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.2518,
       "lng": 103.8099,
       "description": "A sandy strip of beach bars, volleyball, and golden tropical sunsets.",
@@ -530,7 +578,8 @@
     {
       "id": "poi_049",
       "name": "CHIJMES",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.2967,
       "lng": 103.852,
       "description": "A restored cloister of dining courtyards and a gothic chapel centerpiece.",
@@ -541,7 +590,8 @@
     {
       "id": "poi_050",
       "name": "Bugis Street",
-      "category": "social_vibe",
+      "category_tag": "social_vibe",
+      "category_color": "#fecfef",
       "lat": 1.299,
       "lng": 103.8559,
       "description": "A bustling warren of affordable fashion, snacks, and neon-lit stalls.",
@@ -552,7 +602,8 @@
     {
       "id": "poi_051",
       "name": "Japanese Cemetery Park",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.3659,
       "lng": 103.8778,
       "description": "A serene, flower-framed resting place with quiet, reflective paths.",
@@ -563,7 +614,8 @@
     {
       "id": "poi_052",
       "name": "Bukit Brown Cemetery",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.329,
       "lng": 103.827,
       "description": "Overgrown heritage graves and forest trails whisper stories of the past.",
@@ -574,7 +626,8 @@
     {
       "id": "poi_053",
       "name": "Tampines Quarry Park",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.3545,
       "lng": 103.916,
       "description": "A mirror-still quarry lake hidden behind wild scrub and footpaths.",
@@ -585,7 +638,8 @@
     {
       "id": "poi_054",
       "name": "Kranji Marshes",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.4375,
       "lng": 103.7449,
       "description": "Far-north wetlands where boardwalks cut through reeds and birdsong.",
@@ -596,7 +650,8 @@
     {
       "id": "poi_055",
       "name": "Lazarus Island Beach",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.2255,
       "lng": 103.8562,
       "description": "A crescent of clear waters and powdery sand on a quiet southern isle.",
@@ -607,7 +662,8 @@
     {
       "id": "poi_056",
       "name": "Yishun Dam",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.4302,
       "lng": 103.8397,
       "description": "A breezy causeway with sunset anglers and wide views of the straits.",
@@ -618,7 +674,8 @@
     {
       "id": "poi_057",
       "name": "Rail Corridor (Bukit Timah)",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.3332,
       "lng": 103.792,
       "description": "A green trail along former railway lines linking parks and neighborhoods.",
@@ -629,7 +686,8 @@
     {
       "id": "poi_058",
       "name": "Bukit Timah Railway Station",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.3309,
       "lng": 103.7901,
       "description": "A lovingly restored station house evoking a bygone travel era.",
@@ -640,7 +698,8 @@
     {
       "id": "poi_059",
       "name": "Kampong Lorong Buangkok",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.382,
       "lng": 103.8798,
       "description": "Singapore’s last kampong where zinc-roof homes sit amid greenery.",
@@ -651,7 +710,8 @@
     {
       "id": "poi_060",
       "name": "Raffles Marina Lighthouse",
-      "category": "hidden_gems",
+      "category_tag": "hidden_gems",
+      "category_color": "#fcb69f",
       "lat": 1.3389,
       "lng": 103.6389,
       "description": "A petite lighthouse at the far west, perfect for sunset strolls.",

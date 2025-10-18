@@ -63,15 +63,7 @@ const emotionTranslations = {
     'calm': 'Calm'
 };
 
-// Category colors
-const categoryColors = {
-    'urban_iconic': '#00f2fe',
-    'creative_scene': '#fee140',
-    'cultural_heritage': '#d57eeb',
-    'serene_nature': '#fed6e3',
-    'social_vibe': '#fecfef',
-    'hidden_gems': '#fcb69f'
-};
+// Category colors are now stored in each POI's category_color field
 
 // 加载访问状态
 function loadVisitStatus() {
@@ -93,7 +85,7 @@ function setVisitStatus(poiId, status) {
     // 重新渲染地图
     const filteredData = currentFilter === 'all' 
         ? poiData 
-        : poiData.filter(poi => poi.category === currentFilter);
+        : poiData.filter(poi => poi.category_tag === currentFilter);
     displayMarkers(filteredData);
 }
 
@@ -226,7 +218,7 @@ function displayMarkers(data) {
     data.forEach(poi => {
         const status = getVisitStatus(poi.id);
         // Choose color based on current color mode
-        const color = colorMode === 'emotion' ? poi.emotion_color : categoryColors[poi.category];
+        const color = colorMode === 'emotion' ? poi.emotion_color : poi.category_color;
         const icon = createCustomIcon(color, status);
         
         const marker = L.marker([poi.lat, poi.lng], { icon: icon });
@@ -234,7 +226,7 @@ function displayMarkers(data) {
         // Create popup content
         const popupContent = `
             <div class="popup-title">${poi.name}</div>
-            <div class="popup-category">${categoryTranslations[poi.category] || poi.category}</div>
+            <div class="popup-category">${categoryTranslations[poi.category_tag] || poi.category_tag}</div>
             <div class="popup-description">${poi.description}</div>
             <div class="popup-more" onclick="showDetail('${poi.id}')">View Details →</div>
         `;
@@ -270,7 +262,7 @@ function showDetail(poiId) {
     if (!poi) return;
 
     document.getElementById('poiName').textContent = poi.name;
-    document.getElementById('poiCategory').textContent = categoryTranslations[poi.category] || poi.category;
+    document.getElementById('poiCategory').textContent = categoryTranslations[poi.category_tag] || poi.category_tag;
     
     const emotionEl = document.getElementById('poiEmotion');
     emotionEl.textContent = emotionTranslations[poi.emotion_tag] || poi.emotion_tag;
@@ -421,7 +413,7 @@ function initSearch() {
             searchResults.innerHTML = results.map(poi => `
                 <div class="search-result-item" data-poi-id="${poi.id}">
                     <div class="search-result-name">${poi.name}</div>
-                    <div class="search-result-category">${categoryTranslations[poi.category] || poi.category}</div>
+                    <div class="search-result-category">${categoryTranslations[poi.category_tag] || poi.category_tag}</div>
                 </div>
             `).join('');
             searchResults.classList.add('active');
@@ -484,7 +476,7 @@ function getFilteredData() {
     } else if (currentFilterType === 'emotion') {
         return poiData.filter(poi => poi.emotion_tag === currentFilter);
     } else if (currentFilterType === 'category') {
-        return poiData.filter(poi => poi.category === currentFilter);
+        return poiData.filter(poi => poi.category_tag === currentFilter);
     }
     return poiData;
 }
@@ -561,7 +553,7 @@ function initCategoryCards() {
             } else {
                 currentFilter = category;
                 currentFilterType = 'category';
-                const filtered = poiData.filter(poi => poi.category === category);
+                const filtered = poiData.filter(poi => poi.category_tag === category);
                 displayMarkers(filtered);
             }
         });
