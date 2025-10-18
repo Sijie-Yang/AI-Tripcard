@@ -407,6 +407,7 @@ function updateStats() {
 // Search functionality
 // AI Assistant (Auto-detect Search vs Chat)
 let chatHistory = [];
+let highlightedPOIs = new Set();
 
 function initAIAssistant() {
     const assistantInput = document.getElementById('assistantInput');
@@ -588,6 +589,28 @@ Help users plan their trip, answer questions about Singapore, and provide person
             // Add small delay between characters (adjust for speed)
             await new Promise(resolve => setTimeout(resolve, 20));
         }
+        
+        // After typing is complete, make text interactive and highlight POIs
+        const interactiveText = makeTextInteractive(text);
+        bubble.innerHTML = interactiveText;
+        
+        // Add click handlers to POI links
+        bubble.querySelectorAll('.poi-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const poiId = link.dataset.poiId;
+                const poi = poiData.find(p => p.id === poiId);
+                if (poi) {
+                    map.setView([poi.lat, poi.lng], 16);
+                    showDetail(poiId);
+                }
+            });
+        });
+        
+        // Extract and highlight POIs mentioned in the response
+        const mentionedPOIs = extractPOIsFromText(text);
+        if (mentionedPOIs.length > 0) {
+            highlightPOIs(mentionedPOIs);
+        }
     }
     
     // Send button click (main input)
@@ -699,6 +722,94 @@ Help users plan their trip, answer questions about Singapore, and provide person
     updateChatHistoryButton();
 }
 
+// POI Highlighting Functions
+function highlightPOIs(poiIds) {
+    const clearBtn = document.getElementById('clearHighlightBtn');
+    
+    poiIds.forEach(id => {
+        highlightedPOIs.add(id);
+        const marker = poiMarkers[id];
+        if (marker && marker._icon) {
+            marker._icon.classList.add('highlighted');
+        }
+    });
+    
+    if (highlightedPOIs.size > 0) {
+        clearBtn.classList.add('active');
+        
+        // Fit map to show all highlighted POIs
+        if (poiIds.length > 0) {
+            const bounds = L.latLngBounds(
+                poiIds.map(id => {
+                    const poi = poiData.find(p => p.id === id);
+                    return poi ? [poi.lat, poi.lng] : null;
+                }).filter(Boolean)
+            );
+            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+        }
+    }
+}
+
+function clearHighlights() {
+    const clearBtn = document.getElementById('clearHighlightBtn');
+    
+    highlightedPOIs.forEach(id => {
+        const marker = poiMarkers[id];
+        if (marker && marker._icon) {
+            marker._icon.classList.remove('highlighted');
+        }
+    });
+    
+    highlightedPOIs.clear();
+    clearBtn.classList.remove('active');
+}
+
+function extractPOIsFromText(text) {
+    const foundPOIs = [];
+    
+    // Search for POI names in the text
+    poiData.forEach(poi => {
+        // Case-insensitive search
+        const regex = new RegExp(`\\b${poi.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+        if (regex.test(text)) {
+            foundPOIs.push(poi.id);
+        }
+    });
+    
+    return foundPOIs;
+}
+
+function makeTextInteractive(text) {
+    let interactiveText = text;
+    const replacements = [];
+    
+    // Find all POI mentions and prepare replacements
+    poiData.forEach(poi => {
+        const regex = new RegExp(`\\b(${poi.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
+        const matches = [...text.matchAll(regex)];
+        
+        matches.forEach(match => {
+            replacements.push({
+                original: match[0],
+                replacement: `<span class="poi-link" data-poi-id="${poi.id}">${match[0]}</span>`,
+                index: match.index
+            });
+        });
+    });
+    
+    // Sort by index (descending) to avoid messing up indices during replacement
+    replacements.sort((a, b) => b.index - a.index);
+    
+    // Apply replacements
+    replacements.forEach(r => {
+        interactiveText = interactiveText.substring(0, r.index) + 
+                         r.replacement + 
+                         interactiveText.substring(r.index + r.original.length);
+    });
+    
+    return interactiveText;
+}
+
 // Recenter button
 function initRecenterButton() {
     document.getElementById('recenterBtn').addEventListener('click', () => {
@@ -707,6 +818,11 @@ function initRecenterButton() {
             duration: 1
         });
     });
+}
+
+// Clear Highlight button
+function initClearHighlightButton() {
+    document.getElementById('clearHighlightBtn').addEventListener('click', clearHighlights);
 }
 
 // Hide loading screen
@@ -817,6 +933,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initEventListeners();
     initAIAssistant();
     initRecenterButton();
+    initClearHighlightButton();
     initColorBarToggle();
     initCategoryCards();
     initEmotionCards();
@@ -1365,4 +1482,13 @@ function generateRecommendations(currentPOI) {
             <div class="recommendation-match">${poi.matchReason}</div>
         </div>
     `).join('');
+    
+    // Highlight recommended POIs on map
+    const recommendedIds = recommendations.map(poi => poi.id);
+    if (recommendedIds.length > 0) {
+        // Clear previous highlights first
+        clearHighlights();
+        // Highlight new recommendations
+        highlightPOIs(recommendedIds);
+    }
 }
