@@ -2625,8 +2625,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(5px);
+    background: transparent;
 }
 
 .card-title {
@@ -2635,6 +2634,12 @@ body {
     text-align: center;
     font-weight: 700;
     letter-spacing: -0.01em;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    width: fit-content;
+    margin: 0 auto;
 }
 
 .swipe-hint {
