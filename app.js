@@ -292,6 +292,9 @@ function showDetail(poiId) {
         window.open(url, '_blank');
     };
 
+    // Generate recommendations for this POI
+    generateRecommendations(poi);
+    
     // 显示详情面板
     document.getElementById('poiDetail').classList.add('active');
 }
@@ -1028,23 +1031,3 @@ function generateRecommendations(currentPOI) {
         </div>
     `).join('');
 }
-
-// ==================== Update showDetail to include recommendations ====================
-
-// Store original showDetail
-const originalShowDetail = showDetail;
-
-// Override showDetail to include recommendations
-function showDetail(poiId) {
-    originalShowDetail(poiId);
-    
-    // Generate recommendations for this POI
-    const poi = poiData.find(p => p.id === poiId);
-    if (poi) {
-        generateRecommendations(poi);
-    }
-}
-
-// Re-expose to global
-window.showDetail = showDetail;
-
