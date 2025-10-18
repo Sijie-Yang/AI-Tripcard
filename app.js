@@ -2404,34 +2404,63 @@ function showNextCard() {
     setTimeout(() => {
         const cardImage = document.getElementById('cardImage');
         const cardTitle = document.getElementById('cardTitle');
+        const card = document.getElementById('card');
+        const cardContainer = document.getElementById('cardContainer');
         
         if (!cardImage || !cardTitle) {
             console.error('Card elements not found!');
             return;
         }
         
+        // Debug card visibility
+        console.log('=== CARD VISIBILITY DEBUG ===');
+        console.log('Card element:', card);
+        console.log('Card display:', window.getComputedStyle(card).display);
+        console.log('Card visibility:', window.getComputedStyle(card).visibility);
+        console.log('Card opacity:', window.getComputedStyle(card).opacity);
+        console.log('Card pointer-events:', window.getComputedStyle(card).pointerEvents);
+        console.log('Card z-index:', window.getComputedStyle(card).zIndex);
+        console.log('Card position:', window.getComputedStyle(card).position);
+        console.log('Container display:', window.getComputedStyle(cardContainer).display);
+        console.log('Container pointer-events:', window.getComputedStyle(cardContainer).pointerEvents);
+        
         // Use POI images
         const imageId = String(poi.id).padStart(3, '0');
         const imagePath = `60 images/poi_${imageId}.png`;
         console.log(`🖼️  Loading image: ${imagePath}`);
         
+        // Force display image
+        cardImage.style.display = 'block';
+        cardImage.style.visibility = 'visible';
+        cardImage.style.opacity = '1';
+        
         cardImage.src = imagePath;
         cardImage.onerror = () => {
             console.error(`❌ Failed to load image: ${imagePath}`);
-            cardImage.style.display = 'none';
+            // Don't hide on error, show placeholder
+            console.log('Image dimensions:', cardImage.width, 'x', cardImage.height);
         };
         cardImage.onload = () => {
-            console.log(`✅ Image loaded successfully`);
+            console.log(`✅ Image loaded: ${cardImage.width}x${cardImage.height}`);
         };
-        cardImage.style.display = 'block'; // Reset display
+        
         cardTitle.textContent = poi.name;
+        cardTitle.style.display = 'block';
+        cardTitle.style.visibility = 'visible';
         
         // Reset card position
-        const card = document.getElementById('card');
         if (card) {
             card.style.transform = 'translate(0, 0) rotate(0deg)';
             card.style.opacity = '1';
-            console.log('✅ Card reset and ready');
+            card.style.display = 'flex';
+            card.style.visibility = 'visible';
+            card.style.pointerEvents = 'auto';
+            console.log('✅ Card reset and forced visible');
+            
+            // Test click handler
+            card.onclick = function(e) {
+                console.log('🖱️ CARD CLICKED!', e.target);
+            };
         } else {
             console.error('❌ Card element not found!');
         }
