@@ -36,7 +36,7 @@
     </header>
 
     <!-- Progress Bar -->
-    <div class="progress-bar-container">
+    <div class="progress-bar-container" id="progressBarContainer">
         <div class="progress-info">
             <span class="progress-label">📊 My Journey</span>
             <span class="progress-stats">
@@ -44,10 +44,61 @@
                 <span class="progress-stat"><span class="stat-dot planned-dot"></span><span id="plannedCount">0</span> To Visit</span>
                 <span class="progress-percent" id="progressPercent">0%</span>
             </span>
+            <span class="expand-indicator" id="expandIndicator">▼</span>
         </div>
         <div class="progress-track">
             <div class="progress-fill visited-segment" id="visitedBar"></div>
             <div class="progress-fill planned-segment" id="plannedBar"></div>
+        </div>
+    </div>
+
+    <!-- Journey Analytics Panel -->
+    <div class="journey-analytics-panel" id="journeyAnalyticsPanel">
+        <div class="analytics-content">
+            <!-- Summary Cards -->
+            <div class="analytics-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">🎯</div>
+                    <div class="summary-value" id="completionRate">0%</div>
+                    <div class="summary-label">Completion Rate</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">🗺️</div>
+                    <div class="summary-value" id="totalPlaces">0</div>
+                    <div class="summary-label">Total Places</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">⭐</div>
+                    <div class="summary-value" id="favoriteEmotion">-</div>
+                    <div class="summary-label">Favorite Vibe</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">🏆</div>
+                    <div class="summary-value" id="topCategory">-</div>
+                    <div class="summary-label">Top Category</div>
+                </div>
+            </div>
+
+            <!-- Emotion Radar Chart -->
+            <div class="analytics-section">
+                <h3 class="section-title">📊 Emotion Distribution</h3>
+                <div class="radar-chart-container">
+                    <canvas id="emotionRadarChart"></canvas>
+                </div>
+                <div class="radar-stats" id="radarStats"></div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div class="analytics-section">
+                <h3 class="section-title">🏷️ Category Breakdown</h3>
+                <div class="category-breakdown" id="categoryBreakdown"></div>
+            </div>
+
+            <!-- Travel Insights -->
+            <div class="analytics-section">
+                <h3 class="section-title">💡 Travel Insights</h3>
+                <div class="insights-list" id="insightsList"></div>
+            </div>
         </div>
     </div>
 
@@ -118,11 +169,6 @@
     <button class="ai-planner-btn" id="aiPlannerBtn" title="AI Trip Planner">
         <span class="planner-icon">🤖</span>
         <span class="planner-text">AI Planner</span>
-    </button>
-
-    <!-- Emotion Radar Button -->
-    <button class="radar-btn" id="radarBtn" title="My Emotion Radar">
-        <span class="radar-icon">📊</span>
     </button>
 
     <!-- Loading Screen -->
@@ -254,19 +300,6 @@
                     <button class="route-action-btn secondary" id="planNewRoute">Plan New Route</button>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Emotion Radar Panel -->
-    <div class="radar-panel" id="radarPanel">
-        <div class="radar-content">
-            <button class="close-btn" id="closeRadar">&times;</button>
-            <h2>📊 My Emotion Radar</h2>
-            <p class="radar-subtitle">Your travel mood distribution based on visited places</p>
-            <div class="radar-chart-container">
-                <canvas id="emotionRadarChart"></canvas>
-            </div>
-            <div class="radar-stats" id="radarStats"></div>
         </div>
     </div>
 

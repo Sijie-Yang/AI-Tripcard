@@ -131,6 +131,16 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1001;
     animation: slideInTop 0.5s ease-out;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.progress-bar-container:hover {
+    background: #f9f9f9;
+}
+
+.progress-bar-container.expanded {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes slideInTop {
@@ -193,6 +203,17 @@ body {
     font-weight: 700;
     color: #667eea;
     font-size: 14px;
+}
+
+.expand-indicator {
+    font-size: 12px;
+    color: #999;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+.progress-bar-container.expanded .expand-indicator {
+    transform: rotate(180deg);
 }
 
 .progress-track {
@@ -1065,30 +1086,194 @@ body {
     }
 }
 
-/* ==================== Emotion Radar Button ==================== */
-.radar-btn {
+/* ==================== Journey Analytics Panel ==================== */
+.journey-analytics-panel {
     position: fixed;
-    bottom: 280px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
-    cursor: pointer;
-    z-index: 1500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    transition: all 0.3s ease;
+    top: 110px;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.radar-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+.journey-analytics-panel.active {
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.analytics-content {
+    padding: 20px;
+}
+
+/* Summary Cards */
+.analytics-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.summary-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.summary-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.summary-label {
+    font-size: 12px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Analytics Sections */
+.analytics-section {
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.radar-chart-container {
+    position: relative;
+    height: 250px;
+    margin-bottom: 15px;
+}
+
+.radar-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.radar-stat-item {
+    background: white;
+    padding: 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.radar-stat-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+}
+
+.radar-stat-label {
+    flex: 1;
+    font-size: 13px;
+    color: #666;
+}
+
+.radar-stat-value {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Category Breakdown */
+.category-breakdown {
+    display: grid;
+    gap: 12px;
+}
+
+.category-bar-item {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.category-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.category-bar-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.category-bar-count {
+    font-size: 13px;
+    color: #999;
+}
+
+.category-bar-fill {
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.category-bar-progress {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+/* Travel Insights */
+.insights-list {
+    display: grid;
+    gap: 12px;
+}
+
+.insight-item {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.insight-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.insight-text {
+    flex: 1;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
 }
 
 /* ==================== AI Trip Planner Panel ==================== */
@@ -1378,86 +1563,6 @@ body {
     border: 2px solid #667eea;
 }
 
-/* ==================== Emotion Radar Panel ==================== */
-.radar-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 2500;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.3s ease;
-}
-
-.radar-panel.active {
-    display: flex;
-}
-
-.radar-content {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    max-width: 500px;
-    width: 90%;
-    position: relative;
-    animation: slideUp 0.3s ease;
-}
-
-.radar-content h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.radar-subtitle {
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 25px;
-}
-
-.radar-chart-container {
-    position: relative;
-    height: 300px;
-    margin-bottom: 20px;
-}
-
-.radar-stats {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.radar-stat-item {
-    background: #f9f9f9;
-    padding: 12px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.radar-stat-color {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-}
-
-.radar-stat-label {
-    flex: 1;
-    font-size: 13px;
-    color: #666;
-}
-
-.radar-stat-value {
-    font-weight: 600;
-    color: #333;
-    font-size: 14px;
-}
-
 /* ==================== Recommendations Section ==================== */
 .recommendations-section {
     margin-top: 30px;
@@ -1550,16 +1655,7 @@ body {
         font-size: 24px;
     }
     
-    .radar-btn {
-        bottom: 250px;
-        right: 15px;
-        width: 45px;
-        height: 45px;
-        font-size: 20px;
-    }
-    
-    .planner-content,
-    .radar-content {
+    .planner-content {
         padding: 20px;
         width: 95%;
         max-height: 85vh;
@@ -1567,6 +1663,31 @@ body {
     
     .recommendations-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .analytics-summary {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .summary-card {
+        padding: 12px;
+    }
+    
+    .summary-icon {
+        font-size: 24px;
+    }
+    
+    .summary-value {
+        font-size: 20px;
+    }
+    
+    .radar-chart-container {
+        height: 200px;
+    }
+    
+    .radar-stats {
+        grid-template-columns: 1fr;
     }
 }
 
