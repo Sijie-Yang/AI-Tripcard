@@ -2652,7 +2652,47 @@ document.getElementById('collectionBtn').addEventListener('click', () => {
     panel.classList.add('active');
 });
 
+// Reset all POIs to 'not visit' status
+function resetAllPOIs() {
+    if (!confirm('⚠️ Are you sure you want to reset all places to "Not Visit"?\n\nThis will clear all your visited and to-visit records.')) {
+        return;
+    }
+
+    // Reset all POIs in visitStatus
+    poiData.forEach(poi => {
+        visitStatus[poi.id] = 'not visit';
+    });
+
+    // Save to localStorage
+    localStorage.setItem('visitStatus', JSON.stringify(visitStatus));
+
+    // Clear card mode data
+    localStorage.removeItem('cardSwipeData');
+    localStorage.removeItem('cardModeComplete');
+
+    // Update map markers
+    displayMarkers();
+
+    // Update analytics
+    updateJourneyAnalytics();
+
+    // Update stats
+    updateStats();
+
+    // Close the analytics panel
+    const panel = document.getElementById('journeyAnalyticsPanel');
+    const progressBarContainer = document.getElementById('progressBarContainer');
+    if (panel && progressBarContainer) {
+        panel.classList.remove('active');
+        progressBarContainer.classList.remove('active');
+    }
+
+    // Show success message
+    alert('✅ All places have been reset to "Not Visit"!');
+}
+
 // Make functions global
 window.startCardMode = startCardMode;
 window.skipCardMode = skipCardMode;
 window.restartCardMode = restartCardMode;
+window.resetAllPOIs = resetAllPOIs;

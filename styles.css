@@ -1744,9 +1744,46 @@ body {
 
 .insight-text {
     flex: 1;
-    font-size: 14px;
-    color: #666;
-    line-height: 1.5;
+}
+
+/* Reset Button */
+.reset-all-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.reset-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    background: linear-gradient(135deg, #EE5A6F 0%, #FF6B6B 100%);
+}
+
+.reset-all-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
+}
+
+.reset-icon {
+    font-size: 22px;
+    animation: rotateReset 2s ease-in-out infinite;
+}
+
+@keyframes rotateReset {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg); }
 }
 
 /* ==================== AI Trip Planner Panel ==================== */
