@@ -738,8 +738,9 @@ body {
     background: #f0f0f0;
     border-radius: 15px;
     font-size: 13px;
-    color: #666;
+    color: white;
     margin-bottom: 10px;
+    font-weight: 600;
 }
 
 .poi-emotion {

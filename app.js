@@ -263,7 +263,10 @@ function showDetail(poiId) {
     if (!poi) return;
 
     document.getElementById('poiName').textContent = poi.name;
-    document.getElementById('poiCategory').textContent = categoryTranslations[poi.category_tag] || poi.category_tag;
+    
+    const categoryEl = document.getElementById('poiCategory');
+    categoryEl.textContent = categoryTranslations[poi.category_tag] || poi.category_tag;
+    categoryEl.style.backgroundColor = poi.category_color;
     
     const emotionEl = document.getElementById('poiEmotion');
     emotionEl.textContent = emotionTranslations[poi.emotion_tag] || poi.emotion_tag;
@@ -714,7 +717,7 @@ function populatePOIChecklist(filter) {
         <div class="poi-check-item">
             <input type="checkbox" id="poi-${poi.id}" value="${poi.id}">
             <label for="poi-${poi.id}" class="poi-check-label">${poi.name}</label>
-            <span class="poi-check-category">${categoryTranslations[poi.category_tag]}</span>
+            <span class="poi-check-category" style="background-color: ${poi.category_color}; color: white;">${categoryTranslations[poi.category_tag]}</span>
         </div>
     `).join('');
 }
@@ -1026,7 +1029,7 @@ function generateRecommendations(currentPOI) {
     recommendationsGrid.innerHTML = recommendations.map(poi => `
         <div class="recommendation-card" onclick="showDetail('${poi.id}')">
             <div class="recommendation-name">${poi.name}</div>
-            <div class="recommendation-category">${categoryTranslations[poi.category_tag]}</div>
+            <div class="recommendation-category" style="background-color: ${poi.category_color}; color: white; padding: 3px 8px; border-radius: 8px; display: inline-block; font-size: 10px;">${categoryTranslations[poi.category_tag]}</div>
             <div class="recommendation-match">${poi.matchReason}</div>
         </div>
     `).join('');
