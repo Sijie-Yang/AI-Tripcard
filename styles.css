@@ -575,6 +575,11 @@ body {
     color: #667eea;
 }
 
+/* Hide Leaflet Routing Machine control panel */
+.leaflet-routing-container {
+    display: none !important;
+}
+
 /* Clear Highlight button */
 .clear-highlight-btn {
     position: fixed;
@@ -1888,6 +1893,58 @@ body {
 .route-stop-details {
     font-size: 13px;
     color: #666;
+}
+
+.travel-times {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.travel-times h4 {
+    font-size: 15px;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.time-estimates {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.time-card {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.time-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.time-icon {
+    font-size: 24px;
+}
+
+.time-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+}
+
+.time-value {
+    font-size: 14px;
+    font-weight: bold;
+    color: #667eea;
 }
 
 .route-actions {

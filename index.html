@@ -23,6 +23,9 @@
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
           crossorigin=""/>
     
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    
     <!-- Chart.js for radar chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     
@@ -347,6 +350,34 @@
             <!-- Route Result -->
             <div class="route-result" id="routeResult" style="display: none;">
                 <h3>🗺️ Your Optimized Route</h3>
+                
+                <!-- Travel Time Estimates -->
+                <div class="travel-times" id="travelTimes">
+                    <h4>⏱️ Estimated Travel Times:</h4>
+                    <div class="time-estimates">
+                        <div class="time-card">
+                            <span class="time-icon">🚗</span>
+                            <span class="time-label">Car</span>
+                            <span class="time-value" id="carTime">--</span>
+                        </div>
+                        <div class="time-card">
+                            <span class="time-icon">🚌</span>
+                            <span class="time-label">Bus</span>
+                            <span class="time-value" id="busTime">--</span>
+                        </div>
+                        <div class="time-card">
+                            <span class="time-icon">🚴</span>
+                            <span class="time-label">Bike</span>
+                            <span class="time-value" id="bikeTime">--</span>
+                        </div>
+                        <div class="time-card">
+                            <span class="time-icon">🚶</span>
+                            <span class="time-label">Walk</span>
+                            <span class="time-value" id="walkTime">--</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="route-info" id="routeInfo"></div>
                 <div class="route-actions">
                     <button class="route-action-btn" id="showRouteOnMap">Show on Map</button>
@@ -360,6 +391,9 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
             crossorigin=""></script>
+    
+    <!-- Leaflet Routing Machine JS -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
     
     <script src="app.js"></script>
 </body>

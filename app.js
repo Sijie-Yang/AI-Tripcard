@@ -1060,6 +1060,12 @@ function initClearRouteButton() {
 function clearRoute() {
     const clearBtn = document.getElementById('clearRouteBtn');
     
+    // Clear routing control
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+    }
+    
     // Clear route polyline
     if (routePolyline) {
         map.removeLayer(routePolyline);
@@ -1206,6 +1212,7 @@ window.showDetail = showDetail;
 let currentRoute = null;
 let routePolyline = null;
 let routeMarkers = []; // Store route number markers
+let routingControl = null; // Store routing control instance
 
 // Initialize AI Trip Planner
 function initAIPlanner() {
@@ -1330,6 +1337,12 @@ function initAIPlanner() {
     planNewRouteBtn.addEventListener('click', () => {
         document.getElementById('routeResult').style.display = 'none';
         document.getElementById('poiSelectionSection').style.display = 'block';
+        
+        // Clear routing control
+        if (routingControl) {
+            map.removeControl(routingControl);
+            routingControl = null;
+        }
         
         // Clear route polyline
         if (routePolyline) {
@@ -1488,9 +1501,14 @@ function displayRouteResult(route) {
     `).join('');
 }
 
-// Draw route on map
-function drawRouteOnMap(route) {
+// Draw route on map with real roads
+async function drawRouteOnMap(route) {
     // Clear existing route and markers
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+    }
+    
     if (routePolyline) {
         map.removeLayer(routePolyline);
         routePolyline = null;
@@ -1502,36 +1520,116 @@ function drawRouteOnMap(route) {
     });
     routeMarkers = [];
     
-    // Create polyline
-    const latlngs = route.map(poi => [poi.lat, poi.lng]);
-    routePolyline = L.polyline(latlngs, {
-        color: '#667eea',
-        weight: 4,
-        opacity: 0.8,
-        dashArray: '10, 10'
+    // Create waypoints for routing
+    const waypoints = route.map(poi => L.latLng(poi.lat, poi.lng));
+    
+    // Create routing control with OSRM (car routing)
+    routingControl = L.Routing.control({
+        waypoints: waypoints,
+        router: L.Routing.osrmv1({
+            serviceUrl: 'https://router.project-osrm.org/route/v1',
+            profile: 'driving' // Use driving profile for car
+        }),
+        lineOptions: {
+            styles: [{ 
+                color: '#667eea', 
+                opacity: 0.8, 
+                weight: 4 
+            }]
+        },
+        addWaypoints: false,
+        draggableWaypoints: false,
+        fitSelectedRoutes: true,
+        showAlternatives: false,
+        createMarker: function(i, waypoint, n) {
+            // Create numbered markers
+            const numberIcon = L.divIcon({
+                className: 'route-marker',
+                html: `<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">${i + 1}</div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+            
+            const marker = L.marker(waypoint.latLng, { 
+                icon: numberIcon,
+                draggable: false
+            });
+            routeMarkers.push(marker);
+            return marker;
+        }
     }).addTo(map);
     
-    // Add numbered markers
-    route.forEach((poi, index) => {
-        const numberIcon = L.divIcon({
-            className: 'route-marker',
-            html: `<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">${index + 1}</div>`,
-            iconSize: [32, 32],
-            iconAnchor: [16, 16]
-        });
-        
-        const marker = L.marker([poi.lat, poi.lng], { icon: numberIcon }).addTo(map);
-        routeMarkers.push(marker); // Save marker to array
-    });
+    // Hide the default routing instructions panel
+    const routingContainer = document.querySelector('.leaflet-routing-container');
+    if (routingContainer) {
+        routingContainer.style.display = 'none';
+    }
     
-    // Fit map to route
-    map.fitBounds(routePolyline.getBounds().pad(0.1));
+    // Calculate travel times for different modes
+    try {
+        await calculateTravelTimes(route);
+    } catch (error) {
+        console.error('Error calculating travel times:', error);
+    }
     
     // Show clear route button
     const clearBtn = document.getElementById('clearRouteBtn');
     if (clearBtn) {
         clearBtn.classList.add('active');
     }
+}
+
+// Calculate travel times for different transportation modes
+async function calculateTravelTimes(route) {
+    const waypoints = route.map(poi => `${poi.lng},${poi.lat}`).join(';');
+    
+    try {
+        // Car (driving)
+        const carResponse = await fetch(`https://router.project-osrm.org/route/v1/driving/${waypoints}?overview=false`);
+        const carData = await carResponse.json();
+        if (carData.routes && carData.routes[0]) {
+            const carMinutes = Math.round(carData.routes[0].duration / 60);
+            document.getElementById('carTime').textContent = formatTime(carMinutes);
+        }
+        
+        // Bike (cycling)
+        const bikeResponse = await fetch(`https://router.project-osrm.org/route/v1/cycling/${waypoints}?overview=false`);
+        const bikeData = await bikeResponse.json();
+        if (bikeData.routes && bikeData.routes[0]) {
+            const bikeMinutes = Math.round(bikeData.routes[0].duration / 60);
+            document.getElementById('bikeTime').textContent = formatTime(bikeMinutes);
+        }
+        
+        // Walk (foot)
+        const walkResponse = await fetch(`https://router.project-osrm.org/route/v1/foot/${waypoints}?overview=false`);
+        const walkData = await walkResponse.json();
+        if (walkData.routes && walkData.routes[0]) {
+            const walkMinutes = Math.round(walkData.routes[0].duration / 60);
+            document.getElementById('walkTime').textContent = formatTime(walkMinutes);
+        }
+        
+        // Bus (estimate as 1.3x car time due to stops)
+        if (carData.routes && carData.routes[0]) {
+            const busMinutes = Math.round(carData.routes[0].duration / 60 * 1.3);
+            document.getElementById('busTime').textContent = formatTime(busMinutes);
+        }
+    } catch (error) {
+        console.error('Error fetching travel times:', error);
+        document.getElementById('carTime').textContent = 'N/A';
+        document.getElementById('busTime').textContent = 'N/A';
+        document.getElementById('bikeTime').textContent = 'N/A';
+        document.getElementById('walkTime').textContent = 'N/A';
+    }
+}
+
+// Format time in minutes to hours and minutes
+function formatTime(minutes) {
+    if (minutes < 60) {
+        return `${minutes}min`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}h ${mins}min` : `${hours}h`;
 }
 
 // ==================== Emotion Radar Chart ====================
