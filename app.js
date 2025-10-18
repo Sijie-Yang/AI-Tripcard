@@ -239,9 +239,21 @@ function displayMarkers(data) {
         
         const marker = L.marker([poi.lat, poi.lng], { icon: icon });
         
-        // 点击marker时直接显示详情面板
-        marker.on('click', () => {
-            showDetail(poi.id);
+        // Create small popup with basic info
+        const popupContent = `
+            <div class="mini-popup">
+                <h3 class="mini-popup-title">${poi.name}</h3>
+                <div class="mini-popup-meta">
+                    <span class="mini-popup-category" style="background-color: ${poi.category_color};">${categoryTranslations[poi.category_tag]}</span>
+                    <span class="mini-popup-emotion">${emotionIcons[poi.emotion_tag]} ${emotionTranslations[poi.emotion_tag]}</span>
+                </div>
+                <button class="mini-popup-btn" onclick="showDetail(${poi.id})">View Details →</button>
+            </div>
+        `;
+        
+        marker.bindPopup(popupContent, {
+            maxWidth: 250,
+            className: 'custom-mini-popup'
         });
 
         markers.push({ marker, poi });
