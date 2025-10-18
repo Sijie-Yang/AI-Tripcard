@@ -1213,12 +1213,12 @@ function clearRoute() {
     }
 }
 
-// Hide loading screen - removed, no longer using loading screen
-// function hideLoadingScreen() {
-//     setTimeout(() => {
-//         document.getElementById('loadingScreen').classList.add('hidden');
-//     }, 1500);
-// }
+// Hide loading screen
+function hideLoadingScreen() {
+    setTimeout(() => {
+        document.getElementById('loadingScreen').classList.add('hidden');
+    }, 1500);
+}
 
 // setVisitStatus and getFilteredData are defined earlier in the file
 
@@ -1317,7 +1317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMap();
     loadPOIData().then(() => {
         updateStats();
-        // hideLoadingScreen(); // No longer needed
+        hideLoadingScreen();
     });
     initEventListeners();
     initAIAssistant();
@@ -2297,6 +2297,81 @@ let isCardModeComplete = false;
 let currentHighlightedMarker = null; // Track currently highlighted marker
 let isCardModeActive = false; // Track if card mode is currently active
 
+// Hide UI elements during card mode
+function hideMapUI() {
+    const elementsToHide = [
+        'progressBarContainer',
+        'aiAssistantBar',
+        'emotionBar',
+        'categoryBar',
+        'colorModeSlider',
+        'styleToggleBtn',
+        'recenterBtn',
+        'clearHighlightBtn',
+        'clearRouteBtn',
+        'collectionBtn',
+        'restartCardBtn'
+    ];
+    
+    elementsToHide.forEach(id => {
+        const element = document.getElementById(id) || document.querySelector(`.${id.replace(/([A-Z])/g, '-$1').toLowerCase()}`);
+        if (element) {
+            element.style.display = 'none';
+        }
+    });
+    
+    // Also hide by class names
+    const classesToHide = [
+        '.emotion-bar',
+        '.category-bar',
+        '.color-mode-slider',
+        '.map-style-selector',
+        '.ai-assistant-bar',
+        '.progress-bar-container'
+    ];
+    
+    classesToHide.forEach(className => {
+        const elements = document.querySelectorAll(className);
+        elements.forEach(el => el.style.display = 'none');
+    });
+}
+
+// Show UI elements after card mode
+function showMapUI() {
+    // Show progress bar
+    const progressBar = document.getElementById('progressBarContainer') || document.querySelector('.progress-bar-container');
+    if (progressBar) progressBar.style.display = 'block';
+    
+    // Show AI assistant
+    const aiBar = document.getElementById('aiAssistantBar') || document.querySelector('.ai-assistant-bar');
+    if (aiBar) aiBar.style.display = 'flex';
+    
+    // Show emotion bar
+    const emotionBar = document.querySelector('.emotion-bar');
+    if (emotionBar) emotionBar.style.display = 'flex';
+    
+    // Show category bar (initially hidden, will be shown when toggled)
+    const categoryBar = document.querySelector('.category-bar');
+    if (categoryBar) categoryBar.style.display = 'none'; // Keep hidden by default
+    
+    // Show color mode slider
+    const colorSlider = document.querySelector('.color-mode-slider');
+    if (colorSlider) colorSlider.style.display = 'flex';
+    
+    // Show map style selector
+    const styleSelector = document.querySelector('.map-style-selector');
+    if (styleSelector) styleSelector.style.display = 'block';
+    
+    // Show recenter button
+    const recenterBtn = document.getElementById('recenterBtn');
+    if (recenterBtn) recenterBtn.style.display = 'flex';
+    
+    // Show clear buttons if needed (they'll manage their own visibility)
+    const clearHighlightBtn = document.getElementById('clearHighlightBtn');
+    const clearRouteBtn = document.getElementById('clearRouteBtn');
+    // Don't force show these, they have their own logic
+}
+
 // Initialize card mode status (will be called after DOM loads)
 function initCardModeStatus() {
     console.log('🎴 initCardModeStatus called');
@@ -2313,6 +2388,8 @@ function initCardModeStatus() {
             modeSelector.style.pointerEvents = 'none';
         }
         if (collectionBtn) collectionBtn.style.display = 'flex';
+        // Show all UI elements
+        showMapUI();
     } else if (localStorage.getItem('cardModeSkipped') === 'true') {
         console.log('⏭️ Card mode was skipped, hiding selector');
         // User skipped card mode, hide mode selector, show restart button
@@ -2324,8 +2401,12 @@ function initCardModeStatus() {
             modeSelector.style.pointerEvents = 'none';
         }
         if (restartBtn) restartBtn.style.display = 'flex';
+        // Show all UI elements
+        showMapUI();
     } else {
         console.log('📝 First time, showing mode selector');
+        // Hide UI elements when showing mode selector
+        hideMapUI();
     }
 }
 
@@ -2334,6 +2415,9 @@ function startCardMode(mode) {
     console.log(`🎴 Starting card mode: ${mode}`);
     cardMode = mode;
     isCardModeActive = true; // Activate card mode to prevent map fitBounds
+    
+    // Hide all UI elements during card mode
+    hideMapUI();
     
     const modeSelector = document.getElementById('cardModeSelector');
     const cardContainer = document.getElementById('cardContainer');
@@ -2390,6 +2474,9 @@ function skipCardMode() {
     // Mark as skipped in local storage
     localStorage.setItem('cardModeSkipped', 'true');
     
+    // Show all UI elements
+    showMapUI();
+    
     // Show the restart button
     document.getElementById('restartCardBtn').style.display = 'flex';
     
@@ -2407,6 +2494,9 @@ function restartCardMode() {
     
     // Clear skip status
     localStorage.removeItem('cardModeSkipped');
+    
+    // Hide UI elements when showing mode selector
+    hideMapUI();
     
     // Show mode selector
     const modeSelector = document.getElementById('cardModeSelector');
@@ -2606,6 +2696,9 @@ function completeCardMode() {
         currentHighlightedMarker._icon.classList.remove('highlighted');
     }
     currentHighlightedMarker = null;
+    
+    // Show all UI elements
+    showMapUI();
     
     // Show collection button
     document.getElementById('collectionBtn').style.display = 'flex';
