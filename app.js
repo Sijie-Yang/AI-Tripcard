@@ -2310,7 +2310,6 @@ function hideMapUI() {
         'clearHighlightBtn',
         'clearRouteBtn',
         'collectionBtn',
-        'restartCardBtn',
         'resetBtn',
         'reviewBtn',
         'viewAllBtn'
@@ -2435,8 +2434,6 @@ function initCardModeStatus() {
             markerExplanation.style.visibility = 'hidden';
             markerExplanation.style.pointerEvents = 'none';
         }
-        const restartBtn = document.getElementById('restartCardBtn');
-        if (restartBtn) restartBtn.style.display = 'flex';
         // Show all UI elements
         showMapUI();
     } else {
@@ -2594,9 +2591,6 @@ function skipCardMode() {
     // Show all UI elements
     showMapUI();
     
-    // Show the restart button
-    document.getElementById('restartCardBtn').style.display = 'flex';
-    
     // Show the map with all markers
     displayMarkers();
     updateStats();
@@ -2606,9 +2600,6 @@ function skipCardMode() {
 
 // Restart card mode (show mode selector again)
 function restartCardMode() {
-    // Hide restart button
-    document.getElementById('restartCardBtn').style.display = 'none';
-    
     // Clear skip status
     localStorage.removeItem('cardModeSkipped');
     
@@ -2876,13 +2867,9 @@ function skipCurrentCardMode() {
         return;
     }
     
-    // If it was normal card mode, reset to appropriate state
+    // If it was normal card mode, just exit
     if (!isCardModeComplete) {
-        // Was in progress but skipped
         console.log('Card mode skipped mid-way');
-        // Show restart button if they want to try again
-        const restartBtn = document.getElementById('restartCardBtn');
-        if (restartBtn) restartBtn.style.display = 'flex';
     }
 }
 
@@ -3087,11 +3074,9 @@ function resetAllPOIs() {
         progressBarContainer.classList.remove('active');
     }
     
-    // Hide collection button, show restart card button
+    // Hide collection button
     const collectionBtn = document.getElementById('collectionBtn');
-    const restartCardBtn = document.getElementById('restartCardBtn');
     if (collectionBtn) collectionBtn.style.display = 'none';
-    if (restartCardBtn) restartCardBtn.style.display = 'flex';
 
     // Show success message
     alert('✅ All places have been reset to "Not Visit"!\n\nYou can now start the card experience again.');
@@ -3117,11 +3102,9 @@ function resetAndRestart() {
     currentCardIndex = 0;
     cardSwipeData = [];
     
-    // Hide all buttons
+    // Hide collection button
     const collectionBtn = document.getElementById('collectionBtn');
-    const restartCardBtn = document.getElementById('restartCardBtn');
     if (collectionBtn) collectionBtn.style.display = 'none';
-    if (restartCardBtn) restartCardBtn.style.display = 'none';
     
     // Start from introduction
     restartCardMode();
