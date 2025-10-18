@@ -1091,6 +1091,7 @@ body {
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s;
+    z-index: 1003;
 }
 
 .style-menu.active {
