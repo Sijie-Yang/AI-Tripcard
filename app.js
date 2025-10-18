@@ -578,3 +578,476 @@ document.addEventListener('DOMContentLoaded', () => {
 // 将showDetail函数暴露到全局作用域，以便popup可以调用
 window.showDetail = showDetail;
 
+// ==================== AI Trip Planner ====================
+
+let currentRoute = null;
+let routePolyline = null;
+
+// Initialize AI Trip Planner
+function initAIPlanner() {
+    const plannerBtn = document.getElementById('aiPlannerBtn');
+    const plannerPanel = document.getElementById('aiPlannerPanel');
+    const closePlanner = document.getElementById('closePlanner');
+    const saveKeyBtn = document.getElementById('saveKeyBtn');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const generateRouteBtn = document.getElementById('generateRouteBtn');
+    const showRouteOnMapBtn = document.getElementById('showRouteOnMap');
+    const planNewRouteBtn = document.getElementById('planNewRoute');
+    const filterChips = document.querySelectorAll('.filter-chip');
+    
+    // Check if API key exists
+    const savedApiKey = localStorage.getItem('openai_api_key');
+    if (savedApiKey) {
+        apiKeyInput.value = savedApiKey;
+        document.getElementById('apiKeySection').style.display = 'none';
+        document.getElementById('poiSelectionSection').style.display = 'block';
+        populatePOIChecklist('planned');
+    }
+    
+    // Open planner
+    plannerBtn.addEventListener('click', () => {
+        plannerPanel.classList.add('active');
+    });
+    
+    // Close planner
+    closePlanner.addEventListener('click', () => {
+        plannerPanel.classList.remove('active');
+    });
+    
+    plannerPanel.addEventListener('click', (e) => {
+        if (e.target === plannerPanel) {
+            plannerPanel.classList.remove('active');
+        }
+    });
+    
+    // Save API key
+    saveKeyBtn.addEventListener('click', () => {
+        const apiKey = apiKeyInput.value.trim();
+        if (apiKey) {
+            localStorage.setItem('openai_api_key', apiKey);
+            document.getElementById('apiKeySection').style.display = 'none';
+            document.getElementById('poiSelectionSection').style.display = 'block';
+            populatePOIChecklist('planned');
+        } else {
+            alert('Please enter a valid API key');
+        }
+    });
+    
+    // Filter chips
+    filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            filterChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            const filter = chip.dataset.filter;
+            populatePOIChecklist(filter);
+        });
+    });
+    
+    // Generate route
+    generateRouteBtn.addEventListener('click', async () => {
+        const selectedPOIs = getSelectedPOIs();
+        if (selectedPOIs.length < 2) {
+            alert('Please select at least 2 places to plan a route');
+            return;
+        }
+        
+        generateRouteBtn.disabled = true;
+        generateRouteBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">Generating...</span>';
+        
+        try {
+            const route = await generateOptimalRoute(selectedPOIs);
+            currentRoute = route;
+            displayRouteResult(route);
+            document.getElementById('poiSelectionSection').style.display = 'none';
+            document.getElementById('routeResult').style.display = 'block';
+        } catch (error) {
+            alert('Failed to generate route: ' + error.message);
+        } finally {
+            generateRouteBtn.disabled = false;
+            generateRouteBtn.innerHTML = '<span class="btn-icon">✨</span><span class="btn-text">Generate Optimal Route</span>';
+        }
+    });
+    
+    // Show route on map
+    showRouteOnMapBtn.addEventListener('click', () => {
+        if (currentRoute) {
+            drawRouteOnMap(currentRoute);
+            plannerPanel.classList.remove('active');
+        }
+    });
+    
+    // Plan new route
+    planNewRouteBtn.addEventListener('click', () => {
+        document.getElementById('routeResult').style.display = 'none';
+        document.getElementById('poiSelectionSection').style.display = 'block';
+        if (routePolyline) {
+            map.removeLayer(routePolyline);
+            routePolyline = null;
+        }
+    });
+}
+
+// Populate POI checklist
+function populatePOIChecklist(filter) {
+    const checklist = document.getElementById('poiChecklist');
+    let pois = poiData;
+    
+    if (filter === 'planned') {
+        pois = poiData.filter(poi => visitStatus[poi.id] === 'planned');
+    }
+    
+    checklist.innerHTML = pois.map(poi => `
+        <div class="poi-check-item">
+            <input type="checkbox" id="poi-${poi.id}" value="${poi.id}">
+            <label for="poi-${poi.id}" class="poi-check-label">${poi.name}</label>
+            <span class="poi-check-category">${categoryTranslations[poi.category_tag]}</span>
+        </div>
+    `).join('');
+}
+
+// Get selected POIs
+function getSelectedPOIs() {
+    const checkboxes = document.querySelectorAll('.poi-checklist input[type="checkbox"]:checked');
+    return Array.from(checkboxes).map(cb => {
+        const poiId = cb.value;
+        return poiData.find(p => p.id === poiId);
+    });
+}
+
+// Generate optimal route using OpenAI
+async function generateOptimalRoute(pois) {
+    const apiKey = localStorage.getItem('openai_api_key');
+    
+    const prompt = `You are a Singapore travel expert. Given these tourist attractions, create an optimal visiting route considering:
+- Geographic proximity (minimize travel distance)
+- Best time to visit each place
+- Logical flow (e.g., morning/afternoon/evening activities)
+
+Attractions:
+${pois.map((poi, i) => `${i + 1}. ${poi.name} (${poi.category_tag}, ${poi.emotion_tag})\n   Location: ${poi.lat}, ${poi.lng}\n   Description: ${poi.description}`).join('\n')}
+
+Return ONLY a JSON array with the optimal order (use the same names), each with a brief reason. Format:
+[
+  {"name": "Attraction Name", "reason": "Best to start here because...", "time_suggestion": "Morning/Afternoon/Evening"}
+]`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+                {
+                    role: 'system',
+                    content: 'You are a helpful Singapore travel planning assistant. Always respond with valid JSON only.'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.7,
+            max_tokens: 1500
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to get AI response');
+    }
+
+    const data = await response.json();
+    const content = data.choices[0].message.content.trim();
+    
+    // Extract JSON from markdown code blocks if present
+    let jsonContent = content;
+    if (content.includes('```json')) {
+        jsonContent = content.match(/```json\n([\s\S]*?)\n```/)[1];
+    } else if (content.includes('```')) {
+        jsonContent = content.match(/```\n([\s\S]*?)\n```/)[1];
+    }
+    
+    const routeOrder = JSON.parse(jsonContent);
+    
+    // Match route order with actual POI objects
+    const orderedPOIs = routeOrder.map(item => {
+        const poi = pois.find(p => p.name === item.name);
+        return {
+            ...poi,
+            reason: item.reason,
+            time_suggestion: item.time_suggestion
+        };
+    });
+    
+    return orderedPOIs;
+}
+
+// Display route result
+function displayRouteResult(route) {
+    const routeInfo = document.getElementById('routeInfo');
+    routeInfo.innerHTML = route.map((poi, index) => `
+        <div class="route-stop">
+            <div class="route-number">${index + 1}</div>
+            <div class="route-stop-info">
+                <div class="route-stop-name">${poi.name}</div>
+                <div class="route-stop-details">
+                    ${poi.time_suggestion ? `⏰ ${poi.time_suggestion}<br>` : ''}
+                    💡 ${poi.reason}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Draw route on map
+function drawRouteOnMap(route) {
+    // Clear existing route
+    if (routePolyline) {
+        map.removeLayer(routePolyline);
+    }
+    
+    // Create polyline
+    const latlngs = route.map(poi => [poi.lat, poi.lng]);
+    routePolyline = L.polyline(latlngs, {
+        color: '#667eea',
+        weight: 4,
+        opacity: 0.8,
+        dashArray: '10, 10'
+    }).addTo(map);
+    
+    // Add numbered markers
+    route.forEach((poi, index) => {
+        const numberIcon = L.divIcon({
+            className: 'route-marker',
+            html: `<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">${index + 1}</div>`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
+        });
+        
+        L.marker([poi.lat, poi.lng], { icon: numberIcon }).addTo(map);
+    });
+    
+    // Fit map to route
+    map.fitBounds(routePolyline.getBounds().pad(0.1));
+}
+
+// ==================== Emotion Radar Chart ====================
+
+let emotionChart = null;
+
+// Initialize Emotion Radar
+function initEmotionRadar() {
+    const radarBtn = document.getElementById('radarBtn');
+    const radarPanel = document.getElementById('radarPanel');
+    const closeRadar = document.getElementById('closeRadar');
+    
+    // Open radar
+    radarBtn.addEventListener('click', () => {
+        updateEmotionRadar();
+        radarPanel.classList.add('active');
+    });
+    
+    // Close radar
+    closeRadar.addEventListener('click', () => {
+        radarPanel.classList.remove('active');
+    });
+    
+    radarPanel.addEventListener('click', (e) => {
+        if (e.target === radarPanel) {
+            radarPanel.classList.remove('active');
+        }
+    });
+}
+
+// Update emotion radar chart
+function updateEmotionRadar() {
+    const visitedPOIs = poiData.filter(poi => visitStatus[poi.id] === 'visited');
+    
+    if (visitedPOIs.length === 0) {
+        document.querySelector('.radar-chart-container').innerHTML = '<p style="text-align: center; color: #999; padding: 80px 20px;">Visit some places first to see your emotion radar! 🗺️</p>';
+        document.getElementById('radarStats').innerHTML = '';
+        return;
+    }
+    
+    // Count emotions
+    const emotionCounts = {};
+    const emotionColors = {
+        'vibrant': '#F6C667',
+        'romantic': '#E57373',
+        'adventurous': '#6CB5F5',
+        'creative': '#C26EF1',
+        'nostalgic': '#A8875C',
+        'calm': '#4FB0AE'
+    };
+    
+    visitedPOIs.forEach(poi => {
+        const emotion = poi.emotion_tag;
+        emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+    });
+    
+    // Prepare chart data
+    const emotions = Object.keys(emotionColors);
+    const data = emotions.map(emotion => emotionCounts[emotion] || 0);
+    const colors = emotions.map(emotion => emotionColors[emotion]);
+    
+    // Create or update chart
+    const ctx = document.getElementById('emotionRadarChart');
+    
+    if (emotionChart) {
+        emotionChart.destroy();
+    }
+    
+    emotionChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: emotions.map(e => emotionTranslations[e]),
+            datasets: [{
+                label: 'Visited Places',
+                data: data,
+                backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                borderColor: '#667eea',
+                borderWidth: 2,
+                pointBackgroundColor: colors,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 6,
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    },
+                    pointLabels: {
+                        font: {
+                            size: 12,
+                            weight: '600'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+    
+    // Update stats
+    const statsHTML = emotions.map(emotion => {
+        const count = emotionCounts[emotion] || 0;
+        if (count === 0) return '';
+        return `
+            <div class="radar-stat-item">
+                <div class="radar-stat-color" style="background: ${emotionColors[emotion]}"></div>
+                <div class="radar-stat-label">${emotionTranslations[emotion]}</div>
+                <div class="radar-stat-value">${count}</div>
+            </div>
+        `;
+    }).join('');
+    
+    document.getElementById('radarStats').innerHTML = statsHTML;
+}
+
+// ==================== Smart Recommendations ====================
+
+// Generate recommendations for a POI
+function generateRecommendations(currentPOI) {
+    const recommendationsGrid = document.getElementById('recommendationsGrid');
+    
+    // Get POIs with same emotion or category, excluding current and visited
+    const recommendations = poiData
+        .filter(poi => {
+            // Exclude current POI and already visited ones
+            if (poi.id === currentPOI.id || visitStatus[poi.id] === 'visited') {
+                return false;
+            }
+            
+            // Include if same emotion or same category
+            return poi.emotion_tag === currentPOI.emotion_tag || 
+                   poi.category_tag === currentPOI.category_tag;
+        })
+        .map(poi => {
+            // Calculate match score
+            let matchScore = 0;
+            let matchReason = '';
+            
+            if (poi.emotion_tag === currentPOI.emotion_tag && poi.category_tag === currentPOI.category_tag) {
+                matchScore = 2;
+                matchReason = '🎯 Perfect Match';
+            } else if (poi.emotion_tag === currentPOI.emotion_tag) {
+                matchScore = 1.5;
+                matchReason = `🎨 Same Vibe (${emotionTranslations[poi.emotion_tag]})`;
+            } else {
+                matchScore = 1;
+                matchReason = `🏷️ Similar Type (${categoryTranslations[poi.category_tag]})`;
+            }
+            
+            return { ...poi, matchScore, matchReason };
+        })
+        .sort((a, b) => b.matchScore - a.matchScore)
+        .slice(0, 6); // Top 6 recommendations
+    
+    if (recommendations.length === 0) {
+        recommendationsGrid.innerHTML = '<p style="text-align: center; color: #999; grid-column: 1/-1;">No recommendations available</p>';
+        return;
+    }
+    
+    recommendationsGrid.innerHTML = recommendations.map(poi => `
+        <div class="recommendation-card" onclick="showDetail('${poi.id}')">
+            <div class="recommendation-name">${poi.name}</div>
+            <div class="recommendation-category">${categoryTranslations[poi.category_tag]}</div>
+            <div class="recommendation-match">${poi.matchReason}</div>
+        </div>
+    `).join('');
+}
+
+// ==================== Update showDetail to include recommendations ====================
+
+// Store original showDetail
+const originalShowDetail = showDetail;
+
+// Override showDetail to include recommendations
+function showDetail(poiId) {
+    originalShowDetail(poiId);
+    
+    // Generate recommendations for this POI
+    const poi = poiData.find(p => p.id === poiId);
+    if (poi) {
+        generateRecommendations(poi);
+    }
+}
+
+// Re-expose to global
+window.showDetail = showDetail;
+
+// ==================== Initialize all new features ====================
+
+// Add to DOMContentLoaded
+const originalDOMContentLoaded = document.querySelector('script[src="app.js"]');
+if (originalDOMContentLoaded) {
+    document.addEventListener('DOMContentLoaded', () => {
+        initAIPlanner();
+        initEmotionRadar();
+    });
+}
+
+// If DOM already loaded, init immediately
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initAIPlanner();
+        initEmotionRadar();
+    });
+} else {
+    initAIPlanner();
+    initEmotionRadar();
+}
+

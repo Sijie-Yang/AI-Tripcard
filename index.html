@@ -23,6 +23,9 @@
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
           crossorigin=""/>
     
+    <!-- Chart.js for radar chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -111,6 +114,17 @@
         <span class="recenter-icon">⊕</span>
     </button>
 
+    <!-- AI Trip Planner Button -->
+    <button class="ai-planner-btn" id="aiPlannerBtn" title="AI Trip Planner">
+        <span class="planner-icon">🤖</span>
+        <span class="planner-text">AI Planner</span>
+    </button>
+
+    <!-- Emotion Radar Button -->
+    <button class="radar-btn" id="radarBtn" title="My Emotion Radar">
+        <span class="radar-icon">📊</span>
+    </button>
+
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-content">
@@ -191,6 +205,68 @@
             <button class="navigate-btn" id="navigateBtn">
                 📍 Navigate Here
             </button>
+
+            <!-- Smart Recommendations -->
+            <div class="recommendations-section" id="recommendationsSection">
+                <h3 class="recommendations-title">💡 You May Also Like</h3>
+                <div class="recommendations-grid" id="recommendationsGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Trip Planner Panel -->
+    <div class="ai-planner-panel" id="aiPlannerPanel">
+        <div class="planner-content">
+            <button class="close-btn" id="closePlanner">&times;</button>
+            <h2>🤖 AI Trip Planner</h2>
+            <p class="planner-subtitle">Select places you want to visit, and AI will create the perfect route!</p>
+            
+            <!-- API Key Input -->
+            <div class="api-key-section" id="apiKeySection">
+                <label for="apiKeyInput">OpenAI API Key:</label>
+                <div class="api-key-input-group">
+                    <input type="password" id="apiKeyInput" placeholder="sk-..." />
+                    <button class="save-key-btn" id="saveKeyBtn">Save</button>
+                </div>
+                <p class="api-key-hint">🔒 Stored locally in your browser</p>
+            </div>
+
+            <!-- POI Selection -->
+            <div class="poi-selection-section" id="poiSelectionSection" style="display: none;">
+                <h3>Select Places to Visit:</h3>
+                <div class="filter-chips">
+                    <button class="filter-chip active" data-filter="planned">To Visit Only</button>
+                    <button class="filter-chip" data-filter="all">All Places</button>
+                </div>
+                <div class="poi-checklist" id="poiChecklist"></div>
+                <button class="generate-route-btn" id="generateRouteBtn">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-text">Generate Optimal Route</span>
+                </button>
+            </div>
+
+            <!-- Route Result -->
+            <div class="route-result" id="routeResult" style="display: none;">
+                <h3>🗺️ Your Optimized Route</h3>
+                <div class="route-info" id="routeInfo"></div>
+                <div class="route-actions">
+                    <button class="route-action-btn" id="showRouteOnMap">Show on Map</button>
+                    <button class="route-action-btn secondary" id="planNewRoute">Plan New Route</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emotion Radar Panel -->
+    <div class="radar-panel" id="radarPanel">
+        <div class="radar-content">
+            <button class="close-btn" id="closeRadar">&times;</button>
+            <h2>📊 My Emotion Radar</h2>
+            <p class="radar-subtitle">Your travel mood distribution based on visited places</p>
+            <div class="radar-chart-container">
+                <canvas id="emotionRadarChart"></canvas>
+            </div>
+            <div class="radar-stats" id="radarStats"></div>
         </div>
     </div>
 
