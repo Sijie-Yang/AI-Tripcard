@@ -1052,6 +1052,32 @@ function initClearHighlightButton() {
     document.getElementById('clearHighlightBtn').addEventListener('click', clearHighlights);
 }
 
+// Clear Route button
+function initClearRouteButton() {
+    document.getElementById('clearRouteBtn').addEventListener('click', clearRoute);
+}
+
+function clearRoute() {
+    const clearBtn = document.getElementById('clearRouteBtn');
+    
+    // Clear route polyline
+    if (routePolyline) {
+        map.removeLayer(routePolyline);
+        routePolyline = null;
+    }
+    
+    // Clear all route markers
+    routeMarkers.forEach(marker => {
+        map.removeLayer(marker);
+    });
+    routeMarkers = [];
+    
+    // Hide clear button
+    if (clearBtn) {
+        clearBtn.classList.remove('active');
+    }
+}
+
 // Hide loading screen
 function hideLoadingScreen() {
     setTimeout(() => {
@@ -1162,6 +1188,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAIAssistant();
     initRecenterButton();
     initClearHighlightButton();
+    initClearRouteButton();
     initColorBarToggle();
     initCategoryCards();
     initEmotionCards();
@@ -1315,6 +1342,12 @@ function initAIPlanner() {
             map.removeLayer(marker);
         });
         routeMarkers = [];
+        
+        // Hide clear route button
+        const clearBtn = document.getElementById('clearRouteBtn');
+        if (clearBtn) {
+            clearBtn.classList.remove('active');
+        }
     });
 }
 
@@ -1493,6 +1526,12 @@ function drawRouteOnMap(route) {
     
     // Fit map to route
     map.fitBounds(routePolyline.getBounds().pad(0.1));
+    
+    // Show clear route button
+    const clearBtn = document.getElementById('clearRouteBtn');
+    if (clearBtn) {
+        clearBtn.classList.add('active');
+    }
 }
 
 // ==================== Emotion Radar Chart ====================
