@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SG60 TripCard - Redirecting...</title>
-    <meta http-equiv="refresh" content="0; url=map.html">
-    <script>
-        // Redirect immediately
-        window.location.href = 'map.html';
-    </script>
+    <title>SG TripCard - Explore Singapore</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -29,46 +24,113 @@
             text-align: center;
         }
 
-        .redirect-message {
-            animation: fadeIn 0.6s ease;
+        .container {
+            animation: fadeIn 0.8s ease;
         }
 
         .logo {
-            width: 100px;
+            width: 150px;
             height: auto;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.2));
-            animation: pulse 1.5s ease-in-out infinite;
+            animation: float 3s ease-in-out infinite;
         }
 
         h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.02em;
         }
 
-        p {
-            font-size: 1.1rem;
+        .subtitle {
+            font-size: 1.3rem;
             opacity: 0.9;
+            margin-bottom: 50px;
+            font-weight: 500;
+        }
+
+        .enter-btn {
+            display: inline-block;
+            padding: 20px 60px;
+            background: white;
+            color: #667eea;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .enter-btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .footer {
+            margin-top: 60px;
+            font-size: 0.95rem;
+            opacity: 0.8;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                width: 120px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 40px;
+            }
+
+            .enter-btn {
+                padding: 18px 50px;
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="redirect-message">
+    <div class="container">
         <img src="SG60.png" alt="SG60" class="logo">
         <h1>🇸🇬 SG TripCard</h1>
-        <p>Redirecting to map...</p>
+        <p class="subtitle">Explore Singapore's 60 Iconic Locations</p>
+        <a href="map.html" class="enter-btn">🗺️ Enter Map</a>
+        <div class="footer">
+            <p>🎉 Celebrating 60 Years of Singapore</p>
+        </div>
     </div>
 </body>
 </html>
