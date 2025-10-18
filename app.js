@@ -258,8 +258,8 @@ function displayMarkers(data) {
                     <span class="mini-popup-emotion">${emotionIcons[poi.emotion_tag]} ${emotionTranslations[poi.emotion_tag]}</span>
                 </div>
                 <div class="mini-popup-status" data-poi-id="${poi.id}">
-                    <button class="mini-status-btn" data-status="visited" title="Mark as Visited">✓</button>
-                    <button class="mini-status-btn" data-status="planned" title="Mark as To Visit">⭐</button>
+                    <button class="mini-status-btn" data-status="visited" title="Mark as Visited">✕</button>
+                    <button class="mini-status-btn" data-status="planned" title="Mark as To Visit">+</button>
                     <button class="mini-status-btn" data-status="unvisited" title="Mark as Unvisited">○</button>
                 </div>
                 <button class="mini-popup-btn" data-poi-id="${poi.id}">View Details →</button>
