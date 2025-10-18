@@ -389,12 +389,117 @@ function initEventListeners() {
     updateStyleMenuUI();
 }
 
+// Update statistics
+function updateStats() {
+    const total = poiData.length;
+    let visitedCount = 0;
+    let plannedCount = 0;
+    
+    Object.values(visitStatus).forEach(status => {
+        if (status === 'visited') visitedCount++;
+        if (status === 'planned') plannedCount++;
+    });
+    
+    const progress = total > 0 ? Math.round((visitedCount / total) * 100) : 0;
+    
+    document.getElementById('visitedCount').textContent = visitedCount;
+    document.getElementById('plannedCount').textContent = plannedCount;
+    document.getElementById('progressPercent').textContent = progress + '%';
+    
+    // Update progress bars
+    document.getElementById('visitedBar').style.width = (visitedCount / total * 100) + '%';
+    document.getElementById('plannedBar').style.width = (plannedCount / total * 100) + '%';
+}
+
+// Search functionality
+function initSearch() {
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (query.length === 0) {
+            searchResults.classList.remove('active');
+            return;
+        }
+        
+        const results = poiData.filter(poi => 
+            poi.name.toLowerCase().includes(query) ||
+            poi.description.toLowerCase().includes(query)
+        ).slice(0, 5);
+        
+        if (results.length > 0) {
+            searchResults.innerHTML = results.map(poi => `
+                <div class="search-result-item" data-poi-id="${poi.id}">
+                    <div class="search-result-name">${poi.name}</div>
+                    <div class="search-result-category">${categoryTranslations[poi.category] || poi.category}</div>
+                </div>
+            `).join('');
+            searchResults.classList.add('active');
+            
+            // Add click handlers
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const poiId = item.dataset.poiId;
+                    const poi = poiData.find(p => p.id === poiId);
+                    if (poi) {
+                        map.setView([poi.lat, poi.lng], 16);
+                        showDetail(poiId);
+                        searchInput.value = '';
+                        searchResults.classList.remove('active');
+                    }
+                });
+            });
+        } else {
+            searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+            searchResults.classList.add('active');
+        }
+    });
+    
+    // Close search results when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.classList.remove('active');
+        }
+    });
+}
+
+// Recenter button
+function initRecenterButton() {
+    document.getElementById('recenterBtn').addEventListener('click', () => {
+        map.setView([1.3521, 103.8198], 14, {
+            animate: true,
+            duration: 1
+        });
+    });
+}
+
+// Hide loading screen
+function hideLoadingScreen() {
+    setTimeout(() => {
+        document.getElementById('loadingScreen').classList.add('hidden');
+    }, 1500);
+}
+
+// Override setVisitStatus to update stats
+const originalSetVisitStatus = setVisitStatus;
+function setVisitStatus(poiId, status) {
+    originalSetVisitStatus(poiId, status);
+    updateStats();
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
     loadVisitStatus();
     initMap();
-    loadPOIData();
+    loadPOIData().then(() => {
+        updateStats();
+        hideLoadingScreen();
+    });
     initEventListeners();
+    initSearch();
+    initRecenterButton();
 });
 
 // 将showDetail函数暴露到全局作用域，以便popup可以调用

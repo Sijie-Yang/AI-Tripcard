@@ -93,6 +93,53 @@
         </div>
     </div>
 
+    <!-- Progress Stats Card -->
+    <div class="stats-card">
+        <div class="stats-header">
+            <span class="stats-icon">📊</span>
+            <span class="stats-title">My Journey</span>
+        </div>
+        <div class="stats-body">
+            <div class="stat-item">
+                <div class="stat-value" id="visitedCount">0</div>
+                <div class="stat-label">Visited</div>
+                <div class="stat-bar">
+                    <div class="stat-fill visited-fill" id="visitedBar"></div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="plannedCount">0</div>
+                <div class="stat-label">To Visit</div>
+                <div class="stat-bar">
+                    <div class="stat-fill planned-fill" id="plannedBar"></div>
+                </div>
+            </div>
+        </div>
+        <div class="stats-footer">
+            <span id="progressPercent">0%</span> Complete
+        </div>
+    </div>
+
+    <!-- Search Box -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search places..." autocomplete="off">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <!-- Recenter Button -->
+    <button class="recenter-btn" id="recenterBtn" title="Recenter Map">
+        <span class="recenter-icon">⊕</span>
+    </button>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo">🇸🇬</div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Discovering Singapore...</div>
+        </div>
+    </div>
+
     <!-- Filter Buttons -->
     <div class="filter-container">
         <button class="filter-btn active" data-category="all">All</button>
