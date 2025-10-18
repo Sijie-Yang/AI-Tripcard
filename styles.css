@@ -2546,7 +2546,7 @@ body {
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.85);
+    background: transparent;
     border-radius: 32px;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -2557,8 +2557,7 @@ body {
     flex-direction: column;
     cursor: grab;
     transition: transform 0.1s ease;
-    border: 3px solid rgba(102, 126, 234, 0.3);
-    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 .card.dragging {
@@ -2581,8 +2580,9 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .card-title {
