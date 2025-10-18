@@ -1308,6 +1308,9 @@ function initAIPlanner() {
             return;
         }
         
+        // Reset travel times when starting new route generation
+        resetTravelTimes();
+        
         generateRouteBtn.disabled = true;
         generateRouteBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">Generating...</span>';
         
@@ -1337,6 +1340,9 @@ function initAIPlanner() {
     planNewRouteBtn.addEventListener('click', () => {
         document.getElementById('routeResult').style.display = 'none';
         document.getElementById('poiSelectionSection').style.display = 'block';
+        
+        // Reset travel times
+        resetTravelTimes();
         
         // Clear routing control
         if (routingControl) {
@@ -1501,8 +1507,27 @@ function displayRouteResult(route) {
     `).join('');
 }
 
+// Reset travel time displays
+function resetTravelTimes() {
+    document.getElementById('carTime').textContent = '--';
+    document.getElementById('busTime').textContent = '--';
+    document.getElementById('bikeTime').textContent = '--';
+    document.getElementById('walkTime').textContent = '--';
+}
+
+// Set travel times to calculating state
+function setTravelTimesCalculating() {
+    document.getElementById('carTime').textContent = '⏳';
+    document.getElementById('busTime').textContent = '⏳';
+    document.getElementById('bikeTime').textContent = '⏳';
+    document.getElementById('walkTime').textContent = '⏳';
+}
+
 // Draw route on map with real roads
 async function drawRouteOnMap(route) {
+    // Reset travel times before calculating new route
+    setTravelTimesCalculating();
+    
     // Clear existing route and markers
     if (routingControl) {
         map.removeControl(routingControl);
