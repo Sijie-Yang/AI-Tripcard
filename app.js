@@ -91,19 +91,27 @@ async function loadPOIData() {
 // 创建自定义图标
 function createCustomIcon(color, status) {
     let markerClass = 'custom-marker';
+    let html = '';
     
     if (status === 'visited') {
         markerClass += ' visited';
+        html = `<div class="${markerClass}" style="background-color: ${color}"></div>`;
     } else if (status === 'planned') {
         markerClass += ' planned';
+        html = `<div class="${markerClass}">
+                    <div class="plus-h" style="background-color: ${color}"></div>
+                    <div class="plus-v" style="background-color: ${color}"></div>
+                </div>`;
+    } else {
+        html = `<div class="${markerClass}" style="background-color: ${color}"></div>`;
     }
     
     return L.divIcon({
         className: 'custom-div-icon',
-        html: `<div class="${markerClass}" style="background-color: ${color}"></div>`,
+        html: html,
         iconSize: [35, 35],
-        iconAnchor: [17, 35],
-        popupAnchor: [0, -35]
+        iconAnchor: [17, 17],
+        popupAnchor: [0, -17]
     });
 }
 
