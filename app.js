@@ -477,13 +477,19 @@ function initAIAssistant() {
         // Add user message
         addChatMessage('user', message);
         
+        // First, check if user message mentions any POIs and highlight them
+        const userMentionedPOIs = extractPOIsFromText(message);
+        if (userMentionedPOIs.length > 0) {
+            highlightPOIs(userMentionedPOIs);
+        }
+        
         // Create assistant message bubble for typing effect
         const assistantBubble = createTypingBubble();
         
         try {
             const apiKey = localStorage.getItem('openai_api_key');
             if (!apiKey) {
-                typeMessage(assistantBubble, 'Please set your OpenAI API key in the Route Planner tool first. Click the 🛠️ button → Route Planner to set it up.');
+                await typeMessage(assistantBubble, 'Please set your OpenAI API key in the Route Planner tool first. Click the 🛠️ button → Route Planner to set it up.');
                 return;
             }
             
@@ -497,7 +503,7 @@ function initAIAssistant() {
 Here are all 60 places:
 ${poiContext}
 
-Help users plan their trip, answer questions about Singapore, and provide personalized travel recommendations based on these places. Keep responses concise and friendly.`;
+Help users plan their trip, answer questions about Singapore, and provide personalized travel recommendations based on these places. Keep responses concise and friendly. When mentioning place names, use their exact names as provided.`;
             
             chatHistory.push({ role: 'user', content: message });
             
@@ -518,7 +524,11 @@ Help users plan their trip, answer questions about Singapore, and provide person
                 })
             });
             
-            if (!response.ok) throw new Error('Failed to get AI response');
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('API Error:', errorData);
+                throw new Error(`API Error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+            }
             
             const data = await response.json();
             const reply = data.choices[0].message.content;
@@ -528,8 +538,25 @@ Help users plan their trip, answer questions about Singapore, and provide person
             // Type out the message character by character
             await typeMessage(assistantBubble, reply);
         } catch (error) {
-            typeMessage(assistantBubble, 'Sorry, I encountered an error. Please try again or check your API key.');
-            console.error(error);
+            console.error('Chat error details:', error);
+            
+            // If API fails, try to provide a helpful response based on what POIs were mentioned
+            if (userMentionedPOIs.length > 0) {
+                const mentionedNames = userMentionedPOIs.map(id => {
+                    const poi = poiData.find(p => p.id === id);
+                    return poi ? poi.name : '';
+                }).filter(Boolean).join(', ');
+                
+                const fallbackMsg = `I highlighted ${mentionedNames} on the map for you! 
+
+(Note: AI features require an API key. Click the 🛠️ button → Route Planner to set it up, or continue exploring the highlighted places on the map.)`;
+                await typeMessage(assistantBubble, fallbackMsg);
+            } else {
+                const errorMsg = error.message.includes('API Error') 
+                    ? `API Error: ${error.message.split('API Error: ')[1] || 'Please check your API key in the Route Planner tool.'}`
+                    : 'Sorry, I encountered an error. Please check your API key in the Route Planner tool (🛠️ → Route Planner).';
+                await typeMessage(assistantBubble, errorMsg);
+            }
         }
     }
     
@@ -540,11 +567,27 @@ Help users plan their trip, answer questions about Singapore, and provide person
         
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${role}`;
-        messageDiv.innerHTML = `<div class="message-bubble">${content}</div>`;
+        
+        // Make user messages interactive too
+        const interactiveContent = makeTextInteractive(content);
+        messageDiv.innerHTML = `<div class="message-bubble">${interactiveContent}</div>`;
         
         // Insert before the chat input box
         const chatInputBox = document.getElementById('chatInputBox');
         chatSection.insertBefore(messageDiv, chatInputBox);
+        
+        // Add click handlers to POI links in user message
+        messageDiv.querySelectorAll('.poi-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const poiId = link.dataset.poiId;
+                const poi = poiData.find(p => p.id === poiId);
+                if (poi) {
+                    map.setView([poi.lat, poi.lng], 16);
+                    showDetail(poiId);
+                }
+            });
+        });
+        
         chatSection.scrollTop = chatSection.scrollHeight;
         
         // Update chat history button indicator
