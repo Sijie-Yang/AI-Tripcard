@@ -1320,6 +1320,10 @@ function initAIPlanner() {
             displayRouteResult(route);
             document.getElementById('poiSelectionSection').style.display = 'none';
             document.getElementById('routeResult').style.display = 'block';
+            
+            // Calculate travel times immediately after displaying the route
+            setTravelTimesCalculating();
+            await calculateTravelTimes(route);
         } catch (error) {
             alert('Failed to generate route: ' + error.message);
         } finally {
@@ -1524,10 +1528,7 @@ function setTravelTimesCalculating() {
 }
 
 // Draw route on map with real roads
-async function drawRouteOnMap(route) {
-    // Reset travel times before calculating new route
-    setTravelTimesCalculating();
-    
+function drawRouteOnMap(route) {
     // Clear existing route and markers
     if (routingControl) {
         map.removeControl(routingControl);
@@ -1588,13 +1589,6 @@ async function drawRouteOnMap(route) {
     const routingContainer = document.querySelector('.leaflet-routing-container');
     if (routingContainer) {
         routingContainer.style.display = 'none';
-    }
-    
-    // Calculate travel times for different modes
-    try {
-        await calculateTravelTimes(route);
-    } catch (error) {
-        console.error('Error calculating travel times:', error);
     }
     
     // Show clear route button
