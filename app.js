@@ -96,7 +96,10 @@ function createCustomIcon(color, status) {
     
     if (status === 'visited') {
         markerClass += ' visited';
-        html = `<div class="${markerClass}" style="background-color: ${color}"></div>`;
+        html = `<div class="${markerClass}">
+                    <div class="x-line1" style="background-color: ${color}"></div>
+                    <div class="x-line2" style="background-color: ${color}"></div>
+                </div>`;
     } else if (status === 'planned') {
         markerClass += ' planned';
         html = `<div class="${markerClass}">

@@ -122,32 +122,49 @@ body {
     font-size: 10px;
 }
 
-/* 去过 - X形（旋转45度的正方形） */
+/* 去过 - X形（两条斜线交叉） */
 .custom-marker.visited {
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
-    transform: rotate(45deg);
-    border: 3px solid white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    width: 32px;
+    height: 32px;
+    border-radius: 0;
+    transform: rotate(0deg);
+    border: none;
+    background: transparent !important;
+    box-shadow: none;
+    position: relative;
 }
 
 .custom-marker.visited:hover {
-    transform: rotate(45deg) scale(1.15);
+    transform: scale(1.15);
 }
 
-.custom-marker.visited::after {
-    content: '';
-    transform: rotate(-45deg);
-}
-
-.custom-marker.visited::before {
-    content: '✕';
+.custom-marker.visited .x-line1 {
     position: absolute;
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    transform: rotate(-45deg);
+    top: 50%;
+    left: 50%;
+    width: 32px;
+    height: 8px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border: 2px solid white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.custom-marker.visited .x-line2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32px;
+    height: 8px;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    border: 2px solid white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.custom-marker.visited::before,
+.custom-marker.visited::after {
+    content: none;
 }
 
 /* 打算去 - 加号形（十字形） */
