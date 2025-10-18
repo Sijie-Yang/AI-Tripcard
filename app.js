@@ -1325,6 +1325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAIRecommendations();
     console.log('📊 Calling initJourneyAnalytics...');
     initJourneyAnalytics();
+    initCardModeStatus();
     initCardSwipe();
     console.log('✅ All initialization complete');
 });
@@ -2288,16 +2289,23 @@ let currentCardIndex = 0;
 let cardSwipeData = [];
 let isCardModeComplete = false;
 
-// Check if card mode was already completed or skipped
-if (localStorage.getItem('cardModeComplete') === 'true') {
-    isCardModeComplete = true;
-    // Hide mode selector, show map immediately
-    document.getElementById('cardModeSelector').style.display = 'none';
-    document.getElementById('collectionBtn').style.display = 'flex';
-} else if (localStorage.getItem('cardModeSkipped') === 'true') {
-    // User skipped card mode, hide mode selector, show restart button
-    document.getElementById('cardModeSelector').style.display = 'none';
-    document.getElementById('restartCardBtn').style.display = 'flex';
+// Initialize card mode status (will be called after DOM loads)
+function initCardModeStatus() {
+    // Check if card mode was already completed or skipped
+    if (localStorage.getItem('cardModeComplete') === 'true') {
+        isCardModeComplete = true;
+        // Hide mode selector, show map immediately
+        const modeSelector = document.getElementById('cardModeSelector');
+        const collectionBtn = document.getElementById('collectionBtn');
+        if (modeSelector) modeSelector.style.display = 'none';
+        if (collectionBtn) collectionBtn.style.display = 'flex';
+    } else if (localStorage.getItem('cardModeSkipped') === 'true') {
+        // User skipped card mode, hide mode selector, show restart button
+        const modeSelector = document.getElementById('cardModeSelector');
+        const restartBtn = document.getElementById('restartCardBtn');
+        if (modeSelector) modeSelector.style.display = 'none';
+        if (restartBtn) restartBtn.style.display = 'flex';
+    }
 }
 
 // Start card mode
