@@ -2455,11 +2455,11 @@ function showNextCard() {
             card.style.visibility = 'visible';
             card.style.pointerEvents = 'auto';
             
-            // Reset hints to initial state
+            // Reset hints to initial state - remove inline styles to let CSS take over
             const leftHint = document.getElementById('leftHint');
             const rightHint = document.getElementById('rightHint');
-            if (leftHint) leftHint.style.opacity = '0';
-            if (rightHint) rightHint.style.opacity = '0';
+            if (leftHint) leftHint.style.removeProperty('opacity');
+            if (rightHint) rightHint.style.removeProperty('opacity');
             
             console.log('✅ Card reset and forced visible');
             
@@ -2487,14 +2487,14 @@ function handleSwipe(direction) {
     // Reset both hints first
     const leftHint = document.getElementById('leftHint');
     const rightHint = document.getElementById('rightHint');
-    leftHint.style.opacity = '0';
-    rightHint.style.opacity = '0';
+    leftHint.style.removeProperty('opacity');
+    rightHint.style.removeProperty('opacity');
     
     // Show hint for swipe direction
     const hint = direction === 'right' ? rightHint : leftHint;
     hint.style.opacity = '1';
     setTimeout(() => {
-        hint.style.opacity = '0';
+        hint.style.removeProperty('opacity'); // Remove instead of setting to 0
     }, 300);
     
     // Update POI status based on mode and swipe direction
