@@ -257,13 +257,26 @@ function displayMarkers(data) {
                     <span class="mini-popup-category" style="background-color: ${poi.category_color};">${categoryTranslations[poi.category_tag]}</span>
                     <span class="mini-popup-emotion">${emotionIcons[poi.emotion_tag]} ${emotionTranslations[poi.emotion_tag]}</span>
                 </div>
-                <button class="mini-popup-btn" onclick="showDetail(${poi.id})">View Details →</button>
+                <button class="mini-popup-btn" data-poi-id="${poi.id}">View Details →</button>
             </div>
         `;
         
         marker.bindPopup(popupContent, {
             maxWidth: 250,
             className: 'custom-mini-popup'
+        });
+        
+        // Add event listener when popup opens
+        marker.on('popupopen', () => {
+            setTimeout(() => {
+                const btn = document.querySelector('.mini-popup-btn[data-poi-id="' + poi.id + '"]');
+                if (btn) {
+                    btn.onclick = () => {
+                        map.closePopup();
+                        showDetail(poi.id);
+                    };
+                }
+            }, 10);
         });
 
         markers.push({ marker, poi });
