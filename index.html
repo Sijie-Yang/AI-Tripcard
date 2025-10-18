@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singapore TripCard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FFE5EC 0%, #FFF4E6 50%, #E8F4FA 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+
+        /* 模式选择页面 */
+        .mode-selector {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #FFE5EC 0%, #FFF4E6 50%, #E8F4FA 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            z-index: 100;
+        }
+
+        .mode-selector h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2C3E50;
+            margin-bottom: 0.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+
+        .mode-selector .subtitle {
+            font-size: 1.1rem;
+            color: #7F8C8D;
+            margin-bottom: 4rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .mode-cards {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+        }
+
+        .mode-card {
+            background: white;
+            border-radius: 32px;
+            padding: 2rem 1.5rem;
+            width: 260px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #FF6B9D, #FFA07A);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .mode-card.local::before {
+            background: linear-gradient(90deg, #4FC3F7, #29B6F6);
+        }
+
+        .mode-card.tourist::before {
+            background: linear-gradient(90deg, #FF6B9D, #FFA07A);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .mode-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .mode-card:active {
+            transform: translateY(-4px) scale(0.98);
+        }
+
+        .mode-icon {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 1.5rem;
+            display: block;
+            border-radius: 20px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+            padding: 0.5rem;
+        }
+
+        .mode-card h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2C3E50;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .mode-card p {
+            font-size: 0.95rem;
+            color: #7F8C8D;
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .mode-card.local .mode-badge {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            color: #1976D2;
+        }
+
+        .mode-card.tourist .mode-badge {
+            background: linear-gradient(135deg, #FCE4EC, #F8BBD0);
+            color: #C2185B;
+        }
+
+
+        /* 卡片容器 */
+        .card-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            max-width: 420px;
+            height: 640px;
+        }
+
+        .card-container.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            cursor: grab;
+            transition: transform 0.1s ease;
+        }
+
+        .card.dragging {
+            cursor: grabbing;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 65%;
+            object-fit: cover;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+        }
+
+        .card-content {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            color: #2C3E50;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .info-button {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .swipe-hint {
+            position: absolute;
+            bottom: 25%;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-radius: 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .swipe-hint.left {
+            left: 1.5rem;
+            color: #EF5350;
+        }
+
+        .swipe-hint.right {
+            right: 1.5rem;
+            color: #66BB6A;
+        }
+
+        .card:hover .swipe-hint {
+            opacity: 1;
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border-radius: 24px;
+            font-size: 1.1rem;
+            color: #2C3E50;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(44, 62, 80, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #F8F9FA;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7F8C8D;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-button:hover {
+            background: #E9ECEF;
+            transform: rotate(90deg);
+        }
+
+        /* 结果页面 */
+        .result-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #FFE5EC 0%, #FFF4E6 50%, #E8F4FA 100%);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .result-screen.show {
+            display: flex;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            color: #2C3E50;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .result-stats {
+            font-size: 3rem;
+            color: #2C3E50;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 2rem;
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .restart-button {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .restart-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .restart-button:active {
+            transform: translateY(-1px);
+        }
+
+        .restart-button.secondary {
+            background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 100%);
+            box-shadow: 0 8px 20px rgba(255, 107, 157, 0.3);
+        }
+
+        .restart-button.secondary:hover {
+            box-shadow: 0 12px 30px rgba(255, 107, 157, 0.4);
+        }
+
+        .restart-button.explore {
+            background: linear-gradient(135deg, #48BB78 0%, #38A169 100%);
+            box-shadow: 0 8px 20px rgba(72, 187, 120, 0.3);
+            font-size: 1.15rem;
+            padding: 1.1rem 2.8rem;
+        }
+
+        .restart-button.explore:hover {
+            box-shadow: 0 12px 30px rgba(72, 187, 120, 0.4);
+        }
+
+        /* 感兴趣的景点展示 */
+        .interested-places {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            padding: 2rem;
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            margin: 2rem 0;
+        }
+
+        .places-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .interested-places h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2C3E50;
+            margin: 0;
+        }
+
+        .toggle-button {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .toggle-button:active {
+            transform: translateY(0);
+        }
+
+        .places-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .place-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            background: #F8F9FA;
+        }
+
+        .place-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .place-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .place-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 1rem 0.8rem 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .no-places {
+            text-align: center;
+            color: #7F8C8D;
+            padding: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* 历史列表 */
+        .history-list {
+            margin-top: 1.5rem;
+        }
+
+        .history-item {
+            background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .history-item.local {
+            border-left-color: #29B6F6;
+        }
+
+        .history-item.tourist {
+            border-left-color: #FF6B9D;
+        }
+
+        .history-date {
+            font-size: 0.9rem;
+            color: #7F8C8D;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .history-stats {
+            font-size: 1.2rem;
+            color: #2C3E50;
+            font-weight: 700;
+        }
+
+        /* 会话信息 */
+        .session-info {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #7F8C8D;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            font-weight: 500;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .mode-selector h1 {
+                font-size: 2rem;
+                margin-top: 2rem;
+            }
+            
+            .mode-cards {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .mode-card {
+                width: 100%;
+                max-width: 300px;
+                padding: 1.8rem 1.2rem;
+            }
+            
+            .mode-icon {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .result-stats {
+                font-size: 2.5rem;
+            }
+
+            .places-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .places-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .toggle-button {
+                width: 100%;
+                text-align: center;
+            }
+
+            .interested-places {
+                padding: 1.5rem;
+            }
+
+            .place-item img {
+                height: 150px;
+            }
+
+            .place-name {
+                font-size: 0.8rem;
+                padding: 0.8rem 0.6rem 0.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .places-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .restart-button.explore {
+                font-size: 1rem;
+                padding: 1rem 2rem;
+            }
+        }
+
+        /* 加载动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mode-card {
+            animation: fadeIn 0.6s ease both;
+        }
+
+        .mode-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .mode-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="mode-selector" id="modeSelector">
+        <h1>🌏 Singapore TripCard</h1>
+        <p class="subtitle">Discover your favorite places in Singapore</p>
+        <div class="mode-cards">
+            <div class="mode-card local" onclick="startMode('local')">
+                <img src="avatar/local_icon.png" alt="Local" class="mode-icon">
+                <h2>Local Mode</h2>
+                <p>Share your Singapore experiences</p>
+                <span class="mode-badge">🏠 Resident</span>
+            </div>
+            <div class="mode-card tourist" onclick="startMode('tourist')">
+                <img src="avatar/tourist icon.png" alt="Tourist" class="mode-icon">
+                <h2>Tourist Mode</h2>
+                <p>Explore places you'd like to visit</p>
+                <span class="mode-badge">✈️ Explorer</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress" id="progress" style="display: none;">0 / 60</div>
+
+    <div class="card-container" id="cardContainer">
+        <div class="card" id="card">
+            <button class="info-button" onclick="showModal()">ℹ️</button>
+            <img id="cardImage" class="card-image" alt="">
+            <div class="card-content">
+                <h2 class="card-title" id="cardTitle"></h2>
+            </div>
+            <div class="swipe-hint left" id="leftHint">← Not interested</div>
+            <div class="swipe-hint right" id="rightHint">Interested →</div>
+        </div>
+    </div>
+
+    <div class="modal" id="infoModal" onclick="hideModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-button" onclick="hideModal()">×</button>
+            <h2 class="card-title" id="modalTitle"></h2>
+            <p id="modalPrompt" style="margin-top: 1.5rem; line-height: 1.8; color: #555;"></p>
+        </div>
+    </div>
+
+    <div class="modal" id="historyModal" onclick="hideHistory()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-button" onclick="hideHistory()">×</button>
+            <h2 class="card-title">Your Visit History</h2>
+            <div class="history-list" id="historyList"></div>
+        </div>
+    </div>
+
+    <div class="result-screen" id="resultScreen">
+        <h2 class="result-title" id="resultTitle"></h2>
+        <div class="result-stats" id="resultStats"></div>
+        <div class="chart-container">
+            <canvas id="resultChart"></canvas>
+        </div>
+        
+        <!-- 感兴趣的景点展示 -->
+        <div class="interested-places" id="interestedPlaces">
+            <div class="places-header">
+                <h3 id="placesTitle"></h3>
+                <button class="toggle-button" id="toggleButton" onclick="togglePlacesView()">
+                    Show Opposite
+                </button>
+            </div>
+            <div class="places-grid" id="placesGrid"></div>
+        </div>
+
+        <button class="restart-button explore" onclick="exploreMap()">🗺️ Explore the Map</button>
+        <button class="restart-button" onclick="restart()">🔄 Start Over</button>
+    </div>
+
+    <div class="session-info" id="sessionInfo"></div>
+
+    <script>
+        let currentMode = null;
+        let currentIndex = 0;
+        let swipeResults = [];
+        let cards = [];
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let sessionId = null;
+        let sessionStartTime = null;
+        let showingInterested = true; // 默认显示感兴趣的景点
+
+        // 记忆系统 - LocalStorage管理
+        const MemorySystem = {
+            // 初始化会话
+            initSession() {
+                sessionId = this.getOrCreateSessionId();
+                sessionStartTime = new Date().toISOString();
+                this.updateSessionInfo();
+                
+            },
+
+            // 获取或创建会话ID
+            getOrCreateSessionId() {
+                let id = localStorage.getItem('tripcard_session_id');
+                if (!id) {
+                    id = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('tripcard_session_id', id);
+                }
+                return id;
+            },
+
+            // 保存当前会话结果
+            async saveSession(mode, results) {
+                const history = this.getHistory();
+                const interestedCount = results.filter(r => r.isInterested).length;
+                const notInterestedCount = results.filter(r => !r.isInterested).length;
+                
+                const session = {
+                    sessionId: sessionId,
+                    mode: mode,
+                    timestamp: new Date().toISOString(),
+                    startTime: sessionStartTime,
+                    results: results,
+                    summary: {
+                        total: results.length,
+                        interested: interestedCount,
+                        notInterested: notInterestedCount
+                    }
+                };
+
+                // 保存到本地 LocalStorage
+                history.push(session);
+                localStorage.setItem('tripcard_history', JSON.stringify(history));
+                console.log('✅ Session saved locally');
+            },
+
+            // 获取历史记录
+            getHistory() {
+                const history = localStorage.getItem('tripcard_history');
+                return history ? JSON.parse(history) : [];
+            },
+
+            // 清除历史记录
+            clearHistory() {
+                if (confirm('Are you sure you want to clear all history?')) {
+                    localStorage.removeItem('tripcard_history');
+                    alert('History cleared!');
+                }
+            },
+
+            // 更新会话信息显示
+            updateSessionInfo() {
+                const info = document.getElementById('sessionInfo');
+                info.textContent = `Session: ${sessionId.substr(0, 20)}...`;
+            },
+
+            // 导出数据为JSON
+            exportData() {
+                const history = this.getHistory();
+                const dataStr = JSON.stringify(history, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `tripcard_history_${Date.now()}.json`;
+                link.click();
+            }
+        };
+
+        // 加载所有卡片数据
+        async function loadCards() {
+            try {
+                const [data1, data2, data3] = await Promise.all([
+                    fetch('poi_sg_01_20.json').then(r => r.json()),
+                    fetch('poi_sg_21_40.json').then(r => r.json()),
+                    fetch('poi_sg_41_60.json').then(r => r.json())
+                ]);
+                cards = [...data1, ...data2, ...data3];
+                console.log('Loaded', cards.length, 'cards');
+            } catch (error) {
+                console.error('Error loading cards:', error);
+            }
+        }
+
+        function startMode(mode) {
+            currentMode = mode;
+            sessionStartTime = new Date().toISOString();
+            document.getElementById('modeSelector').style.display = 'none';
+            document.getElementById('progress').style.display = 'block';
+            document.getElementById('cardContainer').classList.add('active');
+            document.getElementById('sessionInfo').style.display = 'block';
+            
+            // 更新提示文字
+            const leftHint = document.getElementById('leftHint');
+            const rightHint = document.getElementById('rightHint');
+            if (mode === 'local') {
+                leftHint.textContent = "← Haven't been";
+                rightHint.textContent = "Been there →";
+            } else {
+                leftHint.textContent = "← Not interested";
+                rightHint.textContent = "Interested →";
+            }
+            
+            showCard(0);
+        }
+
+        function showCard(index) {
+            if (index >= cards.length) {
+                showResults();
+                return;
+            }
+            
+            const card = cards[index];
+            document.getElementById('cardImage').src = `60 images/${card.id}.png`;
+            document.getElementById('cardTitle').textContent = card.name;
+            document.getElementById('progress').textContent = `${index} / ${cards.length}`;
+            currentIndex = index;
+        }
+
+        function showModal() {
+            const card = cards[currentIndex];
+            document.getElementById('modalTitle').textContent = card.name;
+            document.getElementById('modalPrompt').textContent = card.prompt;
+            document.getElementById('infoModal').classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('infoModal').classList.remove('show');
+        }
+
+        function swipeCard(direction) {
+            const isInterested = direction === 'right';
+            swipeResults.push({
+                cardId: cards[currentIndex].id,
+                cardName: cards[currentIndex].name,
+                isInterested: isInterested,
+                mode: currentMode,
+                timestamp: new Date().toISOString()
+            });
+            
+            // 动画效果
+            const cardEl = document.getElementById('card');
+            cardEl.style.transform = `translateX(${direction === 'right' ? '150%' : '-150%'}) rotate(${direction === 'right' ? '20deg' : '-20deg'})`;
+            cardEl.style.opacity = '0';
+            
+            setTimeout(() => {
+                cardEl.style.transform = '';
+                cardEl.style.opacity = '1';
+                showCard(currentIndex + 1);
+            }, 300);
+        }
+
+        function showResults() {
+            // 保存会话到记忆系统
+            MemorySystem.saveSession(currentMode, swipeResults);
+            
+            document.getElementById('cardContainer').classList.remove('active');
+            document.getElementById('progress').style.display = 'none';
+            document.getElementById('sessionInfo').style.display = 'none';
+            
+            const interestedCount = swipeResults.filter(r => r.isInterested).length;
+            const notInterestedCount = swipeResults.filter(r => !r.isInterested).length;
+            
+            const resultTitle = currentMode === 'local' ? "Places You've Been" : "Places You Want to Visit";
+            const resultText = `${interestedCount} / ${cards.length}`;
+            
+            document.getElementById('resultTitle').textContent = resultTitle;
+            document.getElementById('resultStats').textContent = resultText;
+            document.getElementById('resultScreen').classList.add('show');
+            
+            // 绘制图表
+            drawChart(interestedCount, notInterestedCount);
+            
+            // 显示感兴趣的景点
+            displayInterestedPlaces();
+        }
+
+        function displayInterestedPlaces() {
+            const resultsToShow = showingInterested 
+                ? swipeResults.filter(r => r.isInterested)
+                : swipeResults.filter(r => !r.isInterested);
+            
+            const placesGrid = document.getElementById('placesGrid');
+            const placesTitle = document.getElementById('placesTitle');
+            const toggleButton = document.getElementById('toggleButton');
+            
+            // 设置标题和按钮文字
+            if (showingInterested) {
+                if (currentMode === 'local') {
+                    placesTitle.textContent = '📍 Places You\'ve Been';
+                    toggleButton.textContent = '👁️ Show Haven\'t Been';
+                } else {
+                    placesTitle.textContent = '✨ Places You\'re Interested In';
+                    toggleButton.textContent = '👁️ Show Not Interested';
+                }
+            } else {
+                if (currentMode === 'local') {
+                    placesTitle.textContent = '❌ Places You Haven\'t Been';
+                    toggleButton.textContent = '👁️ Show Been There';
+                } else {
+                    placesTitle.textContent = '💔 Places You\'re Not Interested In';
+                    toggleButton.textContent = '👁️ Show Interested';
+                }
+            }
+            
+            // 如果没有景点
+            if (resultsToShow.length === 0) {
+                placesGrid.innerHTML = '<div class="no-places">No places in this category!</div>';
+                return;
+            }
+            
+            // 清空并添加景点
+            placesGrid.innerHTML = '';
+            resultsToShow.forEach(result => {
+                const card = cards.find(c => c.id === result.cardId);
+                if (!card) return;
+                
+                const placeItem = document.createElement('div');
+                placeItem.className = 'place-item';
+                placeItem.innerHTML = `
+                    <img src="60 images/${card.id}.png" alt="${card.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2220%22%3E${card.name}%3C/text%3E%3C/svg%3E'">
+                    <div class="place-name">${card.name}</div>
+                `;
+                placesGrid.appendChild(placeItem);
+            });
+        }
+
+        function togglePlacesView() {
+            showingInterested = !showingInterested;
+            displayInterestedPlaces();
+        }
+
+        function exploreMap() {
+            // 获取感兴趣的景点
+            const interestedResults = swipeResults.filter(r => r.isInterested);
+            const interestedIds = interestedResults.map(r => r.cardId).join(',');
+            
+            // 保存到 localStorage 以便地图页面读取
+            localStorage.setItem('interested_places', interestedIds);
+            localStorage.setItem('trip_mode', currentMode);
+            
+            // 跳转到地图页面（您可以替换为实际的地图页面 URL）
+            alert('地图功能即将推出！\n\n已保存 ' + interestedResults.length + ' 个感兴趣的景点。\n\n您可以创建一个 map.html 页面来展示这些景点。');
+            
+            // 如果有地图页面，取消注释下面这行：
+            // window.location.href = 'map.html?places=' + interestedIds;
+        }
+
+        function drawChart(interested, notInterested) {
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            
+            // 如果已存在图表，先销毁
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+            
+            const labels = currentMode === 'local' 
+                ? ['Been there', "Haven't been"]
+                : ['Interested', 'Not interested'];
+            
+            const colors = currentMode === 'local'
+                ? ['#66BB6A', '#EF5350']
+                : ['#29B6F6', '#BDBDBD'];
+            
+            window.myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: [interested, notInterested],
+                        backgroundColor: colors,
+                        borderWidth: 0,
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 14,
+                                    weight: 600,
+                                    family: 'Inter'
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Your Choices Summary',
+                            font: {
+                                size: 18,
+                                weight: 700,
+                                family: 'Inter'
+                            },
+                            padding: 20
+                        }
+                    }
+                }
+            });
+        }
+
+        function showHistory() {
+            const history = MemorySystem.getHistory();
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 2rem;">No history yet. Start exploring!</p>';
+            } else {
+                historyList.innerHTML = history.reverse().map((session, index) => {
+                    const date = new Date(session.timestamp).toLocaleString();
+                    const modeText = session.mode === 'local' ? 'Local Mode' : 'Tourist Mode';
+                    return `
+                        <div class="history-item ${session.mode}">
+                            <div class="history-date">${date} - ${modeText}</div>
+                            <div class="history-stats">
+                                ${session.summary.interested} / ${session.summary.total} 
+                                ${session.mode === 'local' ? 'places visited' : 'interested'}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            document.getElementById('historyModal').classList.add('show');
+        }
+
+        function hideHistory() {
+            document.getElementById('historyModal').classList.remove('show');
+        }
+
+        function restart() {
+            currentMode = null;
+            currentIndex = 0;
+            swipeResults = [];
+            sessionStartTime = null;
+            showingInterested = true; // 重置为默认显示感兴趣的景点
+            document.getElementById('resultScreen').classList.remove('show');
+            document.getElementById('modeSelector').style.display = 'flex';
+            document.getElementById('sessionInfo').style.display = 'none';
+        }
+
+        // 触摸和鼠标事件处理
+        const card = document.getElementById('card');
+        
+        card.addEventListener('mousedown', startDrag);
+        card.addEventListener('touchstart', startDrag);
+        
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag);
+        
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            card.classList.add('dragging');
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const diff = currentX - startX;
+            card.style.transform = `translateX(${diff}px) rotate(${diff * 0.1}deg)`;
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            card.classList.remove('dragging');
+            
+            const diff = currentX - startX;
+            if (Math.abs(diff) > 100) {
+                swipeCard(diff > 0 ? 'right' : 'left');
+            } else {
+                card.style.transform = '';
+            }
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            if (currentMode && currentIndex < cards.length) {
+                if (e.key === 'ArrowLeft') {
+                    swipeCard('left');
+                } else if (e.key === 'ArrowRight') {
+                    swipeCard('right');
+                } else if (e.key === 'e') {
+                    // 按E键导出数据
+                    MemorySystem.exportData();
+                }
+            }
+        });
+
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            loadCards();
+            MemorySystem.initSession();
+        });
+    </script>
+</body>
+</html>

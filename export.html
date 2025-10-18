@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据导出工具 - TripCard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2C3E50;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-box {
+            background: #F8F9FA;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #7F8C8D;
+            margin-top: 0.25rem;
+        }
+
+        .button {
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .button.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .button.success {
+            background: linear-gradient(135deg, #48BB78 0%, #38A169 100%);
+            color: white;
+        }
+
+        .button.success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+
+        .button.info {
+            background: linear-gradient(135deg, #4299E1 0%, #3182CE 100%);
+            color: white;
+        }
+
+        .button.info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
+        }
+
+        .description {
+            font-size: 0.9rem;
+            color: #7F8C8D;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .tag.json {
+            background: #EBF8FF;
+            color: #2C5282;
+        }
+
+        .tag.csv {
+            background: #F0FFF4;
+            color: #22543D;
+        }
+
+        .tag.geojson {
+            background: #FEEBC8;
+            color: #7C2D12;
+        }
+
+        .result-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .result-box.success {
+            background: #F0FFF4;
+            border: 2px solid #48BB78;
+            color: #22543D;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 1rem;
+            opacity: 0.9;
+        }
+
+        .link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .preview {
+            background: #2D3748;
+            color: #68D391;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 数据导出工具</h1>
+            <p>导出用户划卡数据用于地图可视化和数据分析</p>
+        </div>
+
+        <!-- 统计概览 -->
+        <div class="card" style="grid-column: 1 / -1; margin-bottom: 2rem;">
+            <h2>📈 数据概览</h2>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="totalRecords">0</div>
+                    <div class="stat-label">总记录数</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">用户数</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalLikes">0</div>
+                    <div class="stat-label">总喜欢数</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="storageSize">0 B</div>
+                    <div class="stat-label">存储大小</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- 基础数据导出 -->
+            <div class="card">
+                <h2>📋 基础数据导出</h2>
+                <span class="tag json">JSON</span>
+                <p class="description">导出完整的原始数据，包含所有用户的划卡记录。适合后续数据处理。</p>
+                <button class="button primary" onclick="exportBasicData()">
+                    <span>📥</span> 导出基础数据
+                </button>
+                <div class="result-box" id="basicResult"></div>
+            </div>
+
+            <!-- 地图可视化数据 -->
+            <div class="card">
+                <h2>🗺️ 地图可视化数据</h2>
+                <span class="tag json">JSON</span>
+                <p class="description">导出按景点聚合的统计数据，包含喜欢率、总滑动数等，适合地图展示。</p>
+                <button class="button success" onclick="exportMapData()">
+                    <span>🗺️</span> 导出地图数据
+                </button>
+                <div class="result-box" id="mapResult"></div>
+            </div>
+
+            <!-- GeoJSON 格式 -->
+            <div class="card">
+                <h2>📍 GeoJSON 格式</h2>
+                <span class="tag geojson">GeoJSON</span>
+                <p class="description">导出包含地理坐标的 GeoJSON 格式，可直接用于 Mapbox、Leaflet 等地图工具。</p>
+                <button class="button info" onclick="exportGeoJSON()">
+                    <span>🌍</span> 导出 GeoJSON
+                </button>
+                <div class="result-box" id="geojsonResult"></div>
+            </div>
+
+            <!-- CSV 格式 -->
+            <div class="card">
+                <h2>📊 CSV 格式</h2>
+                <span class="tag csv">CSV</span>
+                <p class="description">导出 CSV 表格格式，可用于 Excel、Tableau、Power BI 等数据分析工具。</p>
+                <button class="button success" onclick="exportCSV()">
+                    <span>📊</span> 导出 CSV
+                </button>
+                <div class="result-box" id="csvResult"></div>
+            </div>
+
+            <!-- 热力图数据 -->
+            <div class="card">
+                <h2>🔥 热力图数据</h2>
+                <span class="tag json">JSON</span>
+                <p class="description">导出专门用于热力图的数据格式，包含坐标和权重信息。</p>
+                <button class="button primary" onclick="exportHeatmapData()">
+                    <span>🔥</span> 导出热力图数据
+                </button>
+                <div class="result-box" id="heatmapResult"></div>
+            </div>
+
+            <!-- 统计汇总 -->
+            <div class="card">
+                <h2>📈 统计汇总</h2>
+                <span class="tag json">JSON</span>
+                <p class="description">导出详细的统计分析数据，包括用户统计、景点排名等汇总信息。</p>
+                <button class="button info" onclick="exportStatistics()">
+                    <span>📈</span> 导出统计汇总
+                </button>
+                <div class="result-box" id="statsResult"></div>
+            </div>
+        </div>
+
+        <!-- 数据预览 -->
+        <div class="card" id="previewCard" style="display: none;">
+            <h2>👁️ 数据预览</h2>
+            <div class="preview" id="preview"></div>
+        </div>
+
+        <!-- 链接 -->
+        <div class="links">
+            <a href="index.html" class="link">← 返回主应用</a>
+            <a href="import.html" class="link">导入工具</a>
+            <a href="EXPORT_FOR_VISUALIZATION.md" class="link" target="_blank">📖 导出指南</a>
+        </div>
+    </div>
+
+    <script src="lib/localdb.js"></script>
+    <script>
+        // 更新统计数据
+        function updateStats() {
+            const records = LocalDB.getAllSwipes();
+            const users = new Set(records.map(r => r.user_id));
+            const likes = records.filter(r => r.liked).length;
+            
+            document.getElementById('totalRecords').textContent = records.length;
+            document.getElementById('totalUsers').textContent = users.size;
+            document.getElementById('totalLikes').textContent = likes;
+            document.getElementById('storageSize').textContent = LocalDB.getStorageSizeFormatted();
+        }
+
+        // 显示结果
+        function showResult(elementId, message, preview) {
+            const resultBox = document.getElementById(elementId);
+            resultBox.textContent = message;
+            resultBox.className = 'result-box show success';
+            
+            if (preview) {
+                const previewCard = document.getElementById('previewCard');
+                const previewEl = document.getElementById('preview');
+                previewCard.style.display = 'block';
+                previewEl.textContent = preview;
+                previewCard.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            setTimeout(() => {
+                resultBox.classList.remove('show');
+            }, 5000);
+        }
+
+        // 1. 导出基础数据
+        function exportBasicData() {
+            const data = LocalDB.exportData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], 
+                { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tripcard_all_data_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            const preview = JSON.stringify(data, null, 2).slice(0, 500) + '\n...';
+            showResult('basicResult', 
+                `✅ 已导出 ${data.recordCount} 条记录`, 
+                preview);
+        }
+
+        // 2. 导出地图数据
+        function exportMapData() {
+            const records = LocalDB.getAllSwipes();
+            const locationStats = {};
+            
+            records.forEach(record => {
+                if (!locationStats[record.image_id]) {
+                    locationStats[record.image_id] = {
+                        id: record.image_id,
+                        totalSwipes: 0,
+                        likes: 0,
+                        dislikes: 0,
+                        users: new Set()
+                    };
+                }
+                locationStats[record.image_id].totalSwipes++;
+                locationStats[record.image_id].users.add(record.user_id);
+                if (record.liked) {
+                    locationStats[record.image_id].likes++;
+                } else {
+                    locationStats[record.image_id].dislikes++;
+                }
+            });
+            
+            const mapData = Object.values(locationStats).map(stat => ({
+                locationId: stat.id,
+                totalSwipes: stat.totalSwipes,
+                likes: stat.likes,
+                dislikes: stat.dislikes,
+                likeRate: (stat.likes / stat.totalSwipes * 100).toFixed(2),
+                uniqueUsers: stat.users.size
+            })).sort((a, b) => parseFloat(b.likeRate) - parseFloat(a.likeRate));
+            
+            const blob = new Blob([JSON.stringify(mapData, null, 2)], 
+                { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `map_visualization_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            const preview = JSON.stringify(mapData.slice(0, 3), null, 2) + '\n...';
+            showResult('mapResult', 
+                `✅ 已导出 ${mapData.length} 个景点的数据`, 
+                preview);
+        }
+
+        // 3. 导出 GeoJSON
+        async function exportGeoJSON() {
+            try {
+                const pois = await fetch('poi_sg_60.json').then(r => r.json());
+                const records = LocalDB.getAllSwipes();
+                
+                const coordMap = {};
+                pois.forEach(poi => {
+                    if (poi.coordinates) {
+                        coordMap[poi.id] = poi.coordinates;
+                    }
+                });
+                
+                const locationStats = {};
+                records.forEach(record => {
+                    if (!locationStats[record.image_id]) {
+                        locationStats[record.image_id] = {
+                            likes: 0,
+                            dislikes: 0,
+                            total: 0
+                        };
+                    }
+                    locationStats[record.image_id].total++;
+                    if (record.liked) {
+                        locationStats[record.image_id].likes++;
+                    } else {
+                        locationStats[record.image_id].dislikes++;
+                    }
+                });
+                
+                const geojson = {
+                    type: "FeatureCollection",
+                    features: Object.entries(locationStats).map(([id, stats]) => {
+                        const coords = coordMap[id];
+                        if (!coords) return null;
+                        
+                        return {
+                            type: "Feature",
+                            geometry: {
+                                type: "Point",
+                                coordinates: [coords.lng, coords.lat]
+                            },
+                            properties: {
+                                id: id,
+                                name: pois.find(p => p.id === id)?.name || id,
+                                totalSwipes: stats.total,
+                                likes: stats.likes,
+                                dislikes: stats.dislikes,
+                                likeRate: (stats.likes / stats.total * 100).toFixed(2),
+                                popularity: stats.total
+                            }
+                        };
+                    }).filter(f => f !== null)
+                };
+                
+                const blob = new Blob([JSON.stringify(geojson, null, 2)], 
+                    { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `tripcard_geojson_${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                const preview = JSON.stringify(geojson, null, 2).slice(0, 500) + '\n...';
+                showResult('geojsonResult', 
+                    `✅ 已导出 ${geojson.features.length} 个地理要素`, 
+                    preview);
+            } catch (error) {
+                showResult('geojsonResult', '❌ 导出失败: ' + error.message);
+            }
+        }
+
+        // 4. 导出 CSV
+        function exportCSV() {
+            const records = LocalDB.getAllSwipes();
+            const csv = [
+                ['User ID', 'Location ID', 'Liked', 'Timestamp', 'Date', 'Time'].join(','),
+                ...records.map(r => {
+                    const date = new Date(r.timestamp);
+                    return [
+                        r.user_id,
+                        r.image_id,
+                        r.liked ? 'Yes' : 'No',
+                        r.timestamp,
+                        date.toLocaleDateString(),
+                        date.toLocaleTimeString()
+                    ].join(',');
+                })
+            ].join('\n');
+            
+            const blob = new Blob(['\ufeff' + csv], 
+                { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tripcard_data_${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            const preview = csv.split('\n').slice(0, 10).join('\n') + '\n...';
+            showResult('csvResult', 
+                `✅ 已导出 ${records.length} 行数据`, 
+                preview);
+        }
+
+        // 5. 导出热力图数据
+        async function exportHeatmapData() {
+            try {
+                const pois = await fetch('poi_sg_60.json').then(r => r.json());
+                const records = LocalDB.getAllSwipes();
+                
+                const heatmapData = [];
+                pois.forEach(poi => {
+                    if (!poi.coordinates) return;
+                    
+                    const swipes = records.filter(r => r.image_id === poi.id);
+                    const likes = swipes.filter(r => r.liked).length;
+                    
+                    heatmapData.push({
+                        lat: poi.coordinates.lat,
+                        lng: poi.coordinates.lng,
+                        weight: likes,
+                        name: poi.name,
+                        totalSwipes: swipes.length,
+                        likes: likes
+                    });
+                });
+                
+                const blob = new Blob([JSON.stringify(heatmapData, null, 2)], 
+                    { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `heatmap_data_${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                const preview = JSON.stringify(heatmapData.slice(0, 3), null, 2) + '\n...';
+                showResult('heatmapResult', 
+                    `✅ 已导出 ${heatmapData.length} 个热力点`, 
+                    preview);
+            } catch (error) {
+                showResult('heatmapResult', '❌ 导出失败: ' + error.message);
+            }
+        }
+
+        // 6. 导出统计汇总
+        function exportStatistics() {
+            const records = LocalDB.getAllSwipes();
+            const users = [...new Set(records.map(r => r.user_id))];
+            
+            const summary = {
+                overview: {
+                    totalUsers: users.length,
+                    totalSwipes: records.length,
+                    totalLikes: records.filter(r => r.liked).length,
+                    totalDislikes: records.filter(r => !r.liked).length,
+                    averageSwipesPerUser: (records.length / users.length).toFixed(2)
+                },
+                byUser: users.map(userId => ({
+                    userId,
+                    ...LocalDB.getStats(userId)
+                })),
+                byLocation: (() => {
+                    const locationStats = {};
+                    records.forEach(r => {
+                        if (!locationStats[r.image_id]) {
+                            locationStats[r.image_id] = { likes: 0, dislikes: 0 };
+                        }
+                        if (r.liked) {
+                            locationStats[r.image_id].likes++;
+                        } else {
+                            locationStats[r.image_id].dislikes++;
+                        }
+                    });
+                    return Object.entries(locationStats)
+                        .map(([id, stats]) => ({
+                            locationId: id,
+                            likes: stats.likes,
+                            dislikes: stats.dislikes,
+                            total: stats.likes + stats.dislikes,
+                            likeRate: ((stats.likes / (stats.likes + stats.dislikes)) * 100).toFixed(2)
+                        }))
+                        .sort((a, b) => parseFloat(b.likeRate) - parseFloat(a.likeRate));
+                })(),
+                topLocations: (() => {
+                    const locationStats = {};
+                    records.forEach(r => {
+                        if (!locationStats[r.image_id]) {
+                            locationStats[r.image_id] = 0;
+                        }
+                        if (r.liked) locationStats[r.image_id]++;
+                    });
+                    return Object.entries(locationStats)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 10)
+                        .map(([id, likes]) => ({ locationId: id, likes }));
+                })()
+            };
+            
+            const blob = new Blob([JSON.stringify(summary, null, 2)], 
+                { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `statistics_summary_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            const preview = JSON.stringify(summary.overview, null, 2);
+            showResult('statsResult', 
+                `✅ 已导出统计汇总数据`, 
+                preview);
+        }
+
+        // 初始化
+        updateStats();
+        console.log('📊 数据导出工具已加载');
+    </script>
+</body>
+</html>
+

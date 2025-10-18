@@ -1,0 +1,102 @@
+[
+  {
+    "id": "poi_001",
+    "name": "Marina Bay Sands",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Marina Bay Sands, Main title text: 'Marina Bay Sands' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. futuristic towers with skypark, neon glow, waterfront reflections, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone vibrant, accent color #F6C667, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_002",
+    "name": "Merlion Park",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Merlion Park, Main title text: 'Merlion Park' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. merlion statue, night lights, spray mist, luminous skyline, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone vibrant, accent color #F6C667, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_003",
+    "name": "Helix Bridge",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Helix Bridge, Main title text: 'Helix Bridge' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. curving steel helix, twilight glow, soft reflections, long exposure, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone romantic, accent color #E57373, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_004",
+    "name": "Singapore Flyer",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Singapore Flyer, Main title text: 'Singapore Flyer' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. giant ferris wheel, dusk gradient sky, cityscape backdrop, gentle haze, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone adventurous, accent color #6CB5F5, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_005",
+    "name": "ArtScience Museum",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point ArtScience Museum, Main title text: 'ArtScience Museum' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. lotus-shaped museum, glossy petals, reflective water, warm highlight, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_006",
+    "name": "Gardens by the Bay",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Gardens by the Bay, Main title text: 'Gardens by the Bay' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. towering supertrees, bioluminescent glow, tropical foliage, starry dusk, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone vibrant, accent color #F6C667, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_007",
+    "name": "Raffles Hotel Singapore",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Raffles Hotel Singapore, Main title text: 'Raffles Hotel Singapore' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. white colonnades, palm-lined courtyard, afternoon sun, vintage elegance, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone nostalgic, accent color #A8875C, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_008",
+    "name": "The Fullerton Hotel",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point The Fullerton Hotel, Main title text: 'The Fullerton Hotel' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. neoclassical facade, golden hour, riverfront glow, soft highlights, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone romantic, accent color #E57373, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_009",
+    "name": "Pinnacle@Duxton Skybridge",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Pinnacle@Duxton Skybridge, Main title text: 'Pinnacle@Duxton Skybridge' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. elevated skybridge, city panorama, breezy evening light, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone adventurous, accent color #6CB5F5, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_010",
+    "name": "Reflections at Keppel Bay",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Reflections at Keppel Bay, Main title text: 'Reflections at Keppel Bay' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. sleek glass towers, marina boats, shimmering water, sunset tones, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone romantic, accent color #E57373, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_011",
+    "name": "Esplanade - Theatres on the Bay",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Esplanade - Theatres on the Bay, Main title text: 'Esplanade - Theatres on the Bay' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. iconic domes, stage lights, cultural crowd, night sparkle, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_012",
+    "name": "National Gallery Singapore",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point National Gallery Singapore, Main title text: 'National Gallery Singapore' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. stately halls, modern galleries, soft museum lighting, art frames, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_013",
+    "name": "Gillman Barracks",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Gillman Barracks, Main title text: 'Gillman Barracks' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. white cube galleries, tropical shade, contemporary installations, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_014",
+    "name": "STPI Creative Workshop & Gallery",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point STPI Creative Workshop & Gallery, Main title text: 'STPI Creative Workshop & Gallery' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. textured paper artworks, studio tools, diffused daylight, intimate space, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_015",
+    "name": "National Design Centre",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point National Design Centre, Main title text: 'National Design Centre' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. minimal interiors, design objects, clean lines, bright natural light, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_016",
+    "name": "Art Porters Gallery",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Art Porters Gallery, Main title text: 'Art Porters Gallery' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. shophouse facade, curated artworks, warm spotlights, cozy gallery, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_017",
+    "name": "Aliwal Arts Centre",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Aliwal Arts Centre, Main title text: 'Aliwal Arts Centre' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. street murals, indie performance, urban night energy, bold colors, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_018",
+    "name": "Objectifs - Centre for Photography and Film",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Objectifs - Centre for Photography and Film, Main title text: 'Objectifs - Centre for Photography and Film' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. photo prints on walls, soft gallery light, candid viewers, frames, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_019",
+    "name": "Goodman Arts Centre",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point Goodman Arts Centre, Main title text: 'Goodman Arts Centre' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. green campus, studio windows, rehearsal in progress, airy ambience, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  },
+  {
+    "id": "poi_020",
+    "name": "LASALLE College of the Arts",
+    "prompt": "Forget the previous massage, generate a new image. Singapore poi point LASALLE College of the Arts, Main title text: 'LASALLE College of the Arts' prominently displayed at the top in modern font. Subtitle text: 'Singapore' below the main title. angular black facade, open atrium, creative bustle, graphic contrasts, flat vector travel poster style, bold geometric shapes, clean color blocks, minimal shadows, vintage mid-century palette, emotional tone creative, accent color #C26EF1, 3:4 aspect ratio, white background"
+  }
+]

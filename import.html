@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据导入工具 - TripCard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2C3E50;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7F8C8D;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #F8F9FA;
+            border-radius: 16px;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2C3E50;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: white;
+            border: 2px dashed #CBD5E0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #7F8C8D;
+            font-weight: 500;
+        }
+
+        .file-input-label:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: #F7FAFC;
+        }
+
+        .file-input-label.has-file {
+            border-color: #48BB78;
+            color: #48BB78;
+            background: #F0FFF4;
+        }
+
+        .button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .button.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .button.primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button.secondary {
+            background: #E2E8F0;
+            color: #2C3E50;
+        }
+
+        .button.secondary:hover {
+            background: #CBD5E0;
+        }
+
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .result.success {
+            background: #F0FFF4;
+            border: 1px solid #48BB78;
+            color: #22543D;
+            display: block;
+        }
+
+        .result.error {
+            background: #FFF5F5;
+            border: 1px solid #FC8181;
+            color: #742A2A;
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #7F8C8D;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        .info-box {
+            background: #EBF8FF;
+            border-left: 4px solid #3182CE;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .info-box p {
+            color: #2C5282;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .code {
+            background: #2D3748;
+            color: #68D391;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+
+        .links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📥 数据导入工具</h1>
+        <p class="subtitle">导入用户划卡数据到本地存储</p>
+
+        <!-- 当前状态 -->
+        <div class="section">
+            <h2>📊 当前存储状态</h2>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="currentRecords">0</div>
+                    <div class="stat-label">总记录数</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="currentUsers">0</div>
+                    <div class="stat-label">用户数</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="storageSize">0 B</div>
+                    <div class="stat-label">存储大小</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导入数据 -->
+        <div class="section">
+            <h2>📤 导入数据</h2>
+            <div class="info-box">
+                <p>支持导入 <span class="code">LocalDB</span> 导出的 JSON 文件或直接的记录数组</p>
+            </div>
+
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" accept=".json">
+                <label for="fileInput" class="file-input-label" id="fileLabel">
+                    <span>📁</span>
+                    <span id="fileLabelText">选择 JSON 文件</span>
+                </label>
+            </div>
+
+            <label style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; color: #2C3E50;">
+                <input type="checkbox" id="mergeData" checked>
+                <span style="font-size: 0.9rem;">合并数据（保留现有记录）</span>
+            </label>
+
+            <button class="button primary" onclick="importData()" id="importBtn" disabled>
+                导入数据
+            </button>
+
+            <div class="result" id="result"></div>
+        </div>
+
+        <!-- 快速操作 -->
+        <div class="section">
+            <h2>🔧 快速操作</h2>
+            <button class="button secondary" onclick="exportCurrent()">
+                📥 导出当前数据
+            </button>
+            <button class="button secondary" onclick="clearData()">
+                🗑️ 清除所有数据
+            </button>
+            <button class="button secondary" onclick="viewData()">
+                👁️ 查看数据详情
+            </button>
+        </div>
+
+        <!-- 链接 -->
+        <div class="links">
+            <a href="index.html" class="link">← 返回主应用</a>
+            <a href="lib/demo.html" class="link">LocalDB 演示 →</a>
+            <a href="DATA_GUIDE.md" class="link" target="_blank">📖 使用指南</a>
+        </div>
+    </div>
+
+    <script src="lib/localdb.js"></script>
+    <script>
+        // 更新当前状态
+        function updateStatus() {
+            const records = LocalDB.getAllSwipes();
+            const users = new Set(records.map(r => r.user_id));
+            
+            document.getElementById('currentRecords').textContent = records.length;
+            document.getElementById('currentUsers').textContent = users.size;
+            document.getElementById('storageSize').textContent = LocalDB.getStorageSizeFormatted();
+        }
+
+        // 文件选择处理
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const label = document.getElementById('fileLabel');
+            const labelText = document.getElementById('fileLabelText');
+            const importBtn = document.getElementById('importBtn');
+            
+            if (file) {
+                labelText.textContent = file.name;
+                label.classList.add('has-file');
+                importBtn.disabled = false;
+            } else {
+                labelText.textContent = '选择 JSON 文件';
+                label.classList.remove('has-file');
+                importBtn.disabled = true;
+            }
+        });
+
+        // 导入数据
+        function importData() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const merge = document.getElementById('mergeData').checked;
+            const resultDiv = document.getElementById('result');
+            
+            if (!file) {
+                showResult('请选择文件', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (data.records && Array.isArray(data.records)) {
+                        // LocalDB 导出格式
+                        LocalDB.importData(data, merge);
+                        showResult(`✅ 成功导入 ${data.recordCount} 条记录！`, 'success');
+                    } else if (Array.isArray(data)) {
+                        // 直接的记录数组
+                        const importData = {
+                            version: "1.0.0",
+                            exportedAt: Date.now(),
+                            recordCount: data.length,
+                            records: data
+                        };
+                        LocalDB.importData(importData, merge);
+                        showResult(`✅ 成功导入 ${data.length} 条记录！`, 'success');
+                    } else {
+                        showResult('❌ 无法识别的数据格式', 'error');
+                        return;
+                    }
+                    
+                    // 更新状态
+                    updateStatus();
+                    
+                    // 重置文件输入
+                    fileInput.value = '';
+                    document.getElementById('fileLabel').classList.remove('has-file');
+                    document.getElementById('fileLabelText').textContent = '选择 JSON 文件';
+                    document.getElementById('importBtn').disabled = true;
+                    
+                } catch (error) {
+                    showResult('❌ 导入失败: ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 显示结果
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = 'result ' + type;
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                resultDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // 导出当前数据
+        function exportCurrent() {
+            LocalDB.exportToFile(`tripcard_export_${Date.now()}.json`);
+            showResult('✅ 数据已导出！', 'success');
+        }
+
+        // 清除数据
+        function clearData() {
+            if (confirm('确定要清除所有数据吗？此操作不可撤销！')) {
+                LocalDB.clearRecords();
+                updateStatus();
+                showResult('✅ 所有数据已清除', 'success');
+            }
+        }
+
+        // 查看数据
+        function viewData() {
+            LocalDB.printSummary();
+            alert('数据详情已打印到浏览器控制台（按 F12 查看）');
+        }
+
+        // 初始化
+        updateStatus();
+        
+        // 监听键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + E 导出
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                exportCurrent();
+            }
+            // Ctrl/Cmd + I 打开文件选择
+            if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+                e.preventDefault();
+                document.getElementById('fileInput').click();
+            }
+        });
+
+        console.log('📥 数据导入工具已加载');
+        console.log('快捷键: Ctrl/Cmd + E (导出), Ctrl/Cmd + I (选择文件)');
+    </script>
+</body>
+</html>
+
