@@ -2302,10 +2302,24 @@ if (localStorage.getItem('cardModeComplete') === 'true') {
 
 // Start card mode
 function startCardMode(mode) {
+    console.log(`🎴 Starting card mode: ${mode}`);
     cardMode = mode;
-    document.getElementById('cardModeSelector').style.display = 'none';
-    document.getElementById('cardContainer').classList.add('active');
-    document.getElementById('progress').style.display = 'block';
+    
+    const modeSelector = document.getElementById('cardModeSelector');
+    const cardContainer = document.getElementById('cardContainer');
+    const progress = document.getElementById('progress');
+    
+    console.log('Elements:', { 
+        modeSelector: !!modeSelector, 
+        cardContainer: !!cardContainer, 
+        progress: !!progress 
+    });
+    
+    modeSelector.style.display = 'none';
+    cardContainer.classList.add('active');
+    progress.style.display = 'block';
+    
+    console.log('✅ Card container activated');
     
     // Update hint text based on mode
     const leftHint = document.getElementById('leftHint');
@@ -2364,6 +2378,7 @@ function showNextCard() {
     }
     
     const poi = poiData[currentCardIndex];
+    console.log(`📍 Showing card ${currentCardIndex + 1}/${poiData.length}: ${poi.name}`);
     
     // Update progress
     document.getElementById('progress').textContent = `${currentCardIndex + 1} / ${poiData.length}`;
@@ -2379,20 +2394,36 @@ function showNextCard() {
         const cardImage = document.getElementById('cardImage');
         const cardTitle = document.getElementById('cardTitle');
         
+        if (!cardImage || !cardTitle) {
+            console.error('Card elements not found!');
+            return;
+        }
+        
         // Use POI images
         const imageId = String(poi.id).padStart(3, '0');
-        cardImage.src = `60 images/poi_${imageId}.png`;
+        const imagePath = `60 images/poi_${imageId}.png`;
+        console.log(`🖼️  Loading image: ${imagePath}`);
+        
+        cardImage.src = imagePath;
         cardImage.onerror = () => {
-            // Fallback if image not found
+            console.error(`❌ Failed to load image: ${imagePath}`);
             cardImage.style.display = 'none';
+        };
+        cardImage.onload = () => {
+            console.log(`✅ Image loaded successfully`);
         };
         cardImage.style.display = 'block'; // Reset display
         cardTitle.textContent = poi.name;
         
         // Reset card position
         const card = document.getElementById('card');
-        card.style.transform = 'translate(0, 0) rotate(0deg)';
-        card.style.opacity = '1';
+        if (card) {
+            card.style.transform = 'translate(0, 0) rotate(0deg)';
+            card.style.opacity = '1';
+            console.log('✅ Card reset and ready');
+        } else {
+            console.error('❌ Card element not found!');
+        }
     }, 800);
 }
 
