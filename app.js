@@ -53,6 +53,16 @@ const categoryTranslations = {
     'hidden_gems': 'Hidden Gems'
 };
 
+// Emotion icons
+const emotionIcons = {
+    'vibrant': '✨',
+    'romantic': '💕',
+    'adventurous': '🌊',
+    'creative': '🎨',
+    'nostalgic': '🏛️',
+    'calm': '🌿'
+};
+
 // Emotion tag translations
 const emotionTranslations = {
     'vibrant': 'Vibrant',
@@ -317,6 +327,9 @@ function showDetail(poiId) {
     // 显示详情面板
     document.getElementById('poiDetail').classList.add('active');
 }
+
+// 将showDetail函数暴露到全局作用域，以便popup可以调用
+window.showDetail = showDetail;
 
 // 更新状态按钮样式
 function updateStatusButtons(status) {
@@ -1221,9 +1234,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initJourneyAnalytics();
     console.log('✅ All initialization complete');
 });
-
-// 将showDetail函数暴露到全局作用域，以便popup可以调用
-window.showDetail = showDetail;
 
 // ==================== AI Trip Planner ====================
 
