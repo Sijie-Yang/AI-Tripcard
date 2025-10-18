@@ -2515,17 +2515,20 @@ function startSwipingCards() {
     
     const cardContainer = document.getElementById('cardContainer');
     const progress = document.getElementById('progress');
+    const skipCardBtn = document.getElementById('skipCardBtn');
     const card = document.getElementById('card');
     
     console.log('Elements found:', { 
         cardContainer: !!cardContainer, 
         progress: !!progress,
+        skipCardBtn: !!skipCardBtn,
         card: !!card
     });
     
     // Show card interface
     cardContainer.classList.add('active');
     progress.style.display = 'block';
+    skipCardBtn.style.display = 'block';
     
     console.log('Card container classes:', cardContainer.className);
     console.log('Card container computed display:', window.getComputedStyle(cardContainer).display);
@@ -2837,11 +2840,58 @@ function handleSwipe(direction) {
     }, 600);
 }
 
+// Skip current card mode (for both normal and review mode)
+function skipCurrentCardMode() {
+    console.log('⏭️ Skipping current card mode');
+    
+    // Hide card interface
+    document.getElementById('cardContainer').classList.remove('active');
+    document.getElementById('progress').style.display = 'none';
+    document.getElementById('skipCardBtn').style.display = 'none';
+    
+    // Restore all marker colors
+    if (window.poiMarkersById) {
+        Object.values(window.poiMarkersById).forEach(marker => {
+            if (marker._icon) {
+                marker._icon.classList.remove('highlighted');
+                marker._icon.classList.remove('grayed-out');
+            }
+        });
+    }
+    currentHighlightedMarker = null;
+    
+    // Reset state
+    isCardModeActive = false;
+    
+    // Show all UI elements
+    showMapUI();
+    
+    // Zoom out to show all of Singapore
+    map.setView([1.3521, 103.8198], 11);
+    
+    // If it was review mode, just exit
+    if (cardMode === 'review') {
+        cardMode = null;
+        console.log('Exited review mode');
+        return;
+    }
+    
+    // If it was normal card mode, reset to appropriate state
+    if (!isCardModeComplete) {
+        // Was in progress but skipped
+        console.log('Card mode skipped mid-way');
+        // Show restart button if they want to try again
+        const restartBtn = document.getElementById('restartCardBtn');
+        if (restartBtn) restartBtn.style.display = 'flex';
+    }
+}
+
 // Complete card mode
 function completeCardMode() {
     isCardModeActive = false; // Deactivate card mode
     document.getElementById('cardContainer').classList.remove('active');
     document.getElementById('progress').style.display = 'none';
+    document.getElementById('skipCardBtn').style.display = 'none';
     
     // Remove final highlight and restore all marker colors
     if (window.poiMarkersById) {
@@ -3088,10 +3138,12 @@ function startReviewMode() {
     
     const cardContainer = document.getElementById('cardContainer');
     const progress = document.getElementById('progress');
+    const skipCardBtn = document.getElementById('skipCardBtn');
     
     // Show card interface
     cardContainer.classList.add('active');
     progress.style.display = 'block';
+    skipCardBtn.style.display = 'block';
     
     // Update hints for review mode
     const leftHint = document.getElementById('leftHint');
@@ -3166,3 +3218,4 @@ window.resetAndRestart = resetAndRestart;
 window.startReviewMode = startReviewMode;
 window.showAllCardsModal = showAllCardsModal;
 window.closeAllCardsModal = closeAllCardsModal;
+window.skipCurrentCardMode = skipCurrentCardMode;
