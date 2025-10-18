@@ -313,13 +313,20 @@ body {
 /* Emotion Color Bar */
 .emotion-bar {
     position: fixed;
-    bottom: 80px;
+    bottom: 0;
     left: 0;
     right: 0;
     display: flex;
     gap: 0;
     z-index: 1001;
+    transition: opacity 0.3s, transform 0.3s;
     animation: slideInBottom 0.5s ease-out 0.3s backwards;
+}
+
+.emotion-bar.hidden {
+    opacity: 0;
+    transform: translateY(100%);
+    pointer-events: none;
 }
 
 @keyframes slideInBottom {
@@ -362,6 +369,101 @@ body {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     text-align: center;
     letter-spacing: 0.3px;
+}
+
+/* Category Color Bar */
+.category-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: 0;
+    z-index: 1001;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.category-bar.hidden {
+    opacity: 0;
+    transform: translateY(100%);
+    pointer-events: none;
+}
+
+.category-card {
+    flex: 1;
+    padding: 12px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s;
+    cursor: pointer;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    opacity: 0.7;
+}
+
+.category-card:last-child {
+    border-right: none;
+}
+
+.category-card:hover {
+    opacity: 1;
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+.category-card.active {
+    opacity: 1;
+    box-shadow: inset 0 -3px 0 rgba(255, 255, 255, 0.8);
+}
+
+.category-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+
+/* Color Bar Toggle Button */
+.color-bar-toggle {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 1002;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s;
+    animation: slideInBottom 0.5s ease-out 0.4s backwards;
+}
+
+.color-bar-toggle:hover {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+.color-bar-toggle:active {
+    transform: translateX(-50%) scale(0.95);
+}
+
+.toggle-icon {
+    font-size: 16px;
+}
+
+.toggle-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #667eea;
 }
 
 /* 地图样式选择器 */
@@ -475,74 +577,11 @@ body {
     top: 180px;
     left: 0;
     right: 0;
-    bottom: 115px;
+    bottom: 35px;
     z-index: 1;
 }
 
-/* 底部筛选器 */
-.filter-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    padding: 10px;
-    z-index: 1000;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
-    gap: 8px;
-    -webkit-overflow-scrolling: touch;
-    /* 优化触摸滚动 */
-    scroll-behavior: smooth;
-    overscroll-behavior-x: contain;
-}
-
-.filter-container::-webkit-scrollbar {
-    display: none;
-}
-
-/* 防止过度滚动 */
-.filter-container {
-    touch-action: pan-x;
-}
-
-.filter-btn {
-    flex-shrink: 0;
-    padding: 8px 16px;
-    border: 2px solid #ddd;
-    background: white;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: #666;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    /* 增大触摸区域 */
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    /* 优化触摸反馈 */
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-    user-select: none;
-}
-
-.filter-btn:active {
-    transform: scale(0.95);
-    background: #f0f0f0;
-}
-
-.filter-btn.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-color: transparent;
-}
-
-.filter-btn.active:active {
-    background: linear-gradient(135deg, #5569d8 0%, #653a90 100%);
-}
+/* Old filter styles removed - now using category-bar and emotion-bar */
 
 /* 自定义Marker样式 - 未去过（圆形） */
 .custom-marker {
@@ -866,11 +905,6 @@ body {
         padding: 4px 10px;
     }
     
-    .filter-btn {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
-    
     .progress-bar-container {
         padding: 10px 15px;
     }
@@ -914,7 +948,7 @@ body {
     }
     
     .emotion-bar {
-        bottom: 80px;
+        bottom: 0;
     }
     
     .emotion-card {
@@ -924,6 +958,28 @@ body {
     .emotion-label {
         font-size: 9px;
         letter-spacing: 0;
+    }
+    
+    .category-card {
+        padding: 10px 2px;
+    }
+    
+    .category-label {
+        font-size: 9px;
+        letter-spacing: 0;
+    }
+    
+    .color-bar-toggle {
+        bottom: 38px;
+        padding: 6px 12px;
+    }
+    
+    .toggle-icon {
+        font-size: 14px;
+    }
+    
+    .toggle-text {
+        font-size: 11px;
     }
 }
 
@@ -937,8 +993,8 @@ body {
         top: calc(60px + env(safe-area-inset-top));
     }
     
-    .filter-container {
-        padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    .category-bar, .emotion-bar {
+        padding-bottom: env(safe-area-inset-bottom);
     }
 }
 

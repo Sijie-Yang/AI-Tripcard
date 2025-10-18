@@ -306,26 +306,7 @@ function closeDetail() {
 }
 
 // 筛选POI
-function filterPOIs(category) {
-    currentFilter = category;
-    
-    // 更新按钮状态
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.category === category) {
-            btn.classList.add('active');
-        }
-    });
-
-    // 筛选数据
-    let filteredData = poiData;
-    if (category !== 'all') {
-        filteredData = poiData.filter(poi => poi.category === category);
-    }
-
-    // 更新显示
-    displayMarkers(filteredData);
-}
+// Removed old filterPOIs function - now handled by initCategoryCards
 
 // 更新样式菜单UI
 function updateStyleMenuUI() {
@@ -340,13 +321,6 @@ function updateStyleMenuUI() {
 
 // 初始化事件监听
 function initEventListeners() {
-    // 筛选按钮
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterPOIs(btn.dataset.category);
-        });
-    });
-
     // 关闭详情按钮
     document.getElementById('closeDetail').addEventListener('click', closeDetail);
 
@@ -489,6 +463,68 @@ function setVisitStatus(poiId, status) {
     updateStats();
 }
 
+// Color bar toggle functionality
+let currentColorBar = 'emotion'; // 'emotion' or 'category'
+
+function initColorBarToggle() {
+    const toggleBtn = document.getElementById('colorBarToggle');
+    const emotionBar = document.querySelector('.emotion-bar');
+    const categoryBar = document.querySelector('.category-bar');
+    
+    toggleBtn.addEventListener('click', () => {
+        if (currentColorBar === 'emotion') {
+            // Switch to category
+            currentColorBar = 'category';
+            emotionBar.classList.add('hidden');
+            categoryBar.classList.remove('hidden');
+            toggleBtn.querySelector('.toggle-text').textContent = 'Categories';
+            toggleBtn.querySelector('.toggle-icon').textContent = '🏷️';
+        } else {
+            // Switch to emotion
+            currentColorBar = 'emotion';
+            categoryBar.classList.add('hidden');
+            emotionBar.classList.remove('hidden');
+            toggleBtn.querySelector('.toggle-text').textContent = 'Emotions';
+            toggleBtn.querySelector('.toggle-icon').textContent = '🎨';
+        }
+    });
+    
+    // Initialize with category bar hidden
+    categoryBar.classList.add('hidden');
+}
+
+// Category card click handlers
+function initCategoryCards() {
+    const categoryCards = document.querySelectorAll('.category-card');
+    
+    categoryCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const category = card.dataset.category;
+            
+            // Remove active class from all cards
+            categoryCards.forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked card
+            card.classList.add('active');
+            
+            // Filter POIs
+            filterPOIs(category);
+        });
+    });
+}
+
+// Update filter function to work with new cards
+function filterPOIs(category) {
+    currentFilter = category;
+    
+    if (category === 'all') {
+        displayMarkers(poiData);
+    } else {
+        const filtered = poiData.filter(poi => poi.category === category);
+        displayMarkers(filtered);
+    }
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
     loadVisitStatus();
@@ -500,6 +536,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initEventListeners();
     initSearch();
     initRecenterButton();
+    initColorBarToggle();
+    initCategoryCards();
 });
 
 // 将showDetail函数暴露到全局作用域，以便popup可以调用
