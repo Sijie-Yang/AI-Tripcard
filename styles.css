@@ -238,7 +238,8 @@ body {
 }
 
 /* Search Bar Container */
-.search-bar-container {
+/* AI Assistant Bar */
+.ai-assistant-bar {
     position: fixed;
     top: 125px;
     left: 20px;
@@ -252,20 +253,58 @@ body {
     color: #667eea;
 }
 
-#searchInput {
-    width: 100%;
-    padding: 12px 16px;
-    border: none;
-    border-radius: 12px;
+.assistant-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     background: white;
+    border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-    font-size: 14px;
-    outline: none;
-    transition: all 0.3s;
+    padding: 8px;
+    transition: box-shadow 0.3s ease;
 }
 
-#searchInput:focus {
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+.assistant-input-group:focus-within {
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.assistant-mode-btn,
+.tools-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.assistant-mode-btn:hover,
+.tools-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.assistant-mode-btn.active {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+#assistantInput {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+}
+
+#assistantInput:focus {
+    outline: none;
 }
 
 .search-results {
@@ -307,6 +346,194 @@ body {
 .search-result-category {
     font-size: 11px;
     color: #666;
+}
+
+/* AI Chat Panel */
+.ai-chat-panel {
+    margin-top: 8px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    display: none;
+    flex-direction: column;
+    max-height: 500px;
+}
+
+.ai-chat-panel.active {
+    display: flex;
+}
+
+.chat-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px 12px 0 0;
+}
+
+.chat-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+}
+
+.clear-chat-btn {
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.clear-chat-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    max-height: 350px;
+    min-height: 200px;
+}
+
+.chat-message {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-message.user {
+    align-items: flex-end;
+}
+
+.chat-message.assistant {
+    align-items: flex-start;
+}
+
+.message-bubble {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.chat-message.user .message-bubble {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.chat-message.assistant .message-bubble {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.chat-input-area {
+    padding: 12px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    gap: 8px;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+#chatInput:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.send-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.send-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Tools Menu */
+.tools-menu {
+    margin-top: 8px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    display: none;
+}
+
+.tools-menu.active {
+    display: block;
+}
+
+.tool-item {
+    padding: 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 8px;
+    border: 2px solid transparent;
+}
+
+.tool-item:last-child {
+    margin-bottom: 0;
+}
+
+.tool-item:hover {
+    background: #f9f9f9;
+    border-color: #667eea;
+    transform: translateX(4px);
+}
+
+.tool-icon {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.tool-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.tool-desc {
+    font-size: 12px;
+    color: #999;
+    display: block;
 }
 
 /* Recenter Button */
@@ -947,15 +1174,27 @@ body {
         font-size: 12px;
     }
     
-    .search-bar-container {
+    .ai-assistant-bar {
         top: 120px;
         left: 10px;
         right: 10px;
     }
     
-    #searchInput {
-        padding: 10px 14px;
+    #assistantInput {
+        padding: 8px 10px;
         font-size: 13px;
+    }
+    
+    .assistant-mode-btn,
+    .tools-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    .chat-messages {
+        max-height: 250px;
+        min-height: 150px;
     }
     
     .map-style-selector {
@@ -1047,45 +1286,6 @@ body {
 }
 
 /* ==================== AI Trip Planner Button ==================== */
-.ai-planner-btn {
-    position: fixed;
-    bottom: 220px;
-    right: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 12px 20px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    cursor: pointer;
-    z-index: 1500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    animation: pulseGlow 2s ease-in-out infinite;
-}
-
-.ai-planner-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-}
-
-.planner-icon {
-    font-size: 20px;
-}
-
-@keyframes pulseGlow {
-    0%, 100% {
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-    50% {
-        box-shadow: 0 4px 25px rgba(102, 126, 234, 0.8);
-    }
-}
-
 /* ==================== Journey Analytics Panel ==================== */
 .journey-analytics-panel {
     position: fixed;
@@ -1640,21 +1840,6 @@ body {
 
 /* Mobile Responsiveness */
 @media (max-width: 480px) {
-    .ai-planner-btn {
-        bottom: 190px;
-        right: 15px;
-        padding: 10px 16px;
-        font-size: 12px;
-    }
-    
-    .planner-text {
-        display: none;
-    }
-    
-    .planner-icon {
-        font-size: 24px;
-    }
-    
     .planner-content {
         padding: 20px;
         width: 95%;

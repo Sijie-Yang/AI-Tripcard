@@ -102,10 +102,54 @@
         </div>
     </div>
 
-    <!-- Search Bar -->
-    <div class="search-bar-container">
-        <input type="text" id="searchInput" placeholder="🔍 Search places in Singapore..." autocomplete="off">
+    <!-- AI Assistant Bar -->
+    <div class="ai-assistant-bar">
+        <div class="assistant-input-group">
+            <button class="assistant-mode-btn" id="assistantModeBtn" title="AI Chat">
+                <span class="mode-icon">💬</span>
+            </button>
+            <input type="text" id="assistantInput" placeholder="🔍 Search places, or ask me anything..." autocomplete="off">
+            <button class="tools-btn" id="toolsBtn" title="AI Tools">
+                <span class="tools-icon">🛠️</span>
+            </button>
+        </div>
+        
+        <!-- Search Results -->
         <div class="search-results" id="searchResults"></div>
+        
+        <!-- AI Chat Panel -->
+        <div class="ai-chat-panel" id="aiChatPanel">
+            <div class="chat-header">
+                <span class="chat-title">💬 AI Travel Assistant</span>
+                <button class="clear-chat-btn" id="clearChatBtn" title="Clear Chat">🗑️</button>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Ask about Singapore travel..." />
+                <button class="send-btn" id="sendBtn">
+                    <span class="send-icon">➤</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Tools Menu -->
+        <div class="tools-menu" id="toolsMenu">
+            <div class="tool-item" data-tool="planner">
+                <span class="tool-icon">🤖</span>
+                <span class="tool-name">Route Planner</span>
+                <span class="tool-desc">Generate optimal travel routes</span>
+            </div>
+            <div class="tool-item" data-tool="recommend">
+                <span class="tool-icon">✨</span>
+                <span class="tool-name">Recommendations</span>
+                <span class="tool-desc">Get personalized suggestions</span>
+            </div>
+            <div class="tool-item" data-tool="insights">
+                <span class="tool-icon">📊</span>
+                <span class="tool-name">Travel Insights</span>
+                <span class="tool-desc">Analyze your journey data</span>
+            </div>
+        </div>
     </div>
 
     <!-- 地图样式选择器 -->
@@ -163,12 +207,6 @@
     <!-- Recenter Button -->
     <button class="recenter-btn" id="recenterBtn" title="Recenter Map">
         <span class="recenter-icon">⊕</span>
-    </button>
-
-    <!-- AI Trip Planner Button -->
-    <button class="ai-planner-btn" id="aiPlannerBtn" title="AI Trip Planner">
-        <span class="planner-icon">🤖</span>
-        <span class="planner-text">AI Planner</span>
     </button>
 
     <!-- Loading Screen -->
