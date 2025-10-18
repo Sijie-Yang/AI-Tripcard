@@ -481,7 +481,10 @@ function initAIAssistant() {
         // Add user message
         addChatMessage('user', message);
         
-        // First, check if user message mentions any POIs and highlight them
+        // Clear old highlights for new conversation
+        clearHighlights();
+        
+        // Check if user message mentions any POIs and highlight them
         const userMentionedPOIs = extractPOIsFromText(message);
         if (userMentionedPOIs.length > 0) {
             highlightPOIs(userMentionedPOIs);
@@ -1605,12 +1608,8 @@ function generateRecommendations(currentPOI) {
         </div>
     `).join('');
     
-    // Highlight recommended POIs on map
-    const recommendedIds = recommendations.map(poi => poi.id);
-    if (recommendedIds.length > 0) {
-        // Clear previous highlights first
-        clearHighlights();
-        // Highlight new recommendations
-        highlightPOIs(recommendedIds);
-    }
+    // Note: We don't automatically highlight recommendations anymore
+    // Highlights should only change when:
+    // 1. User clicks "Clear Highlights" button
+    // 2. New AI conversation generates new highlights
 }
