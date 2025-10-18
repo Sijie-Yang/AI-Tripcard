@@ -50,8 +50,6 @@ Vibrant | Romantic | Adventurous | Creative | Nostalgic | Calm
 - **+ (To Visit)** - Your wishlist destinations  
 - **○ (No Visit)** - Not on your radar yet
 
-
-
 <table>
 <tr>
 <td width="50%"><img src="screenshots/Swipe%20Card%20Guidance.png" alt="Swipe Card Guidance"/></td>
@@ -63,7 +61,7 @@ Vibrant | Romantic | Adventurous | Creative | Nostalgic | Calm
 </tr>
 </table>
 
-*Track your journey with intuitive status markers*
+*Track your journey by swriping place cards.*
 
 ---
 
@@ -95,7 +93,7 @@ Toggle between two intelligent filtering modes:
 </tr>
 </table>
 
-*Filter locations by category to find exactly what you're looking for*
+*Filter locations by category to find exactly what you're looking for, by emotions to find right atomosphere for you.*
 
 ### 3️⃣ **AI-Powered Chat Assistant**
 Smart LLM chatbot that helps you:
@@ -106,8 +104,8 @@ Smart LLM chatbot that helps you:
 
 <table>
 <tr>
+<td width="50%"><img src="screenshots/AI Route Planner-Place Choice.png" alt="AI Route Planner Place Choice"/></td>
 <td width="50%"><img src="screenshots/AI%20Route%20Planner-Route.png" alt="AI Route Planning"/></td>
-<td width="50%"><img src="screenshots/AI%20Route%20Planner-Travel%20Time-List.png" alt="Travel Time Analysis"/></td>
 </tr>
 </table>
 
@@ -115,8 +113,8 @@ Smart LLM chatbot that helps you:
 
 <table>
 <tr>
+<td width="50%"><img src="screenshots/AI%20Route%20Planner-Travel%20Time-List.png" alt="Travel Time Analysis"/></td>
 <td width="50%"><img src="screenshots/POI%20Chat%20Recommendation.png" alt="AI Chat Recommendations"/></td>
-<td width="50%"><img src="screenshots/Change%20Map%20Style-Darkmode.png" alt="Control Buttons and Map Styles"/></td>
 </tr>
 </table>
 
@@ -131,6 +129,8 @@ Quickly browse all 60 locations:
 <table>
 <tr>
 <td width="50%"><img src="screenshots/Review%20Card-Merlion%20Park.png" alt="Review Mode"/></td>
+<td width="50%"><img src="screenshots/Review%20card-Chinatown.png" alt="Card Swiping Interface - Chinatown"/></td>
+<td width="50%"><img src="screenshots/Change%20Map%20Style-Darkmode.png" alt="Control Buttons and Map Styles"/></td>
 <td width="50%"><img src="screenshots/Card%20collection.png" alt="Card Collection Gallery"/></td>
 </tr>
 </table>
@@ -191,7 +191,7 @@ open http://localhost:8000
 
 <table>
 <tr>
-<td width="50%"><img src="screenshots/Review%20card-Chinatown.png" alt="Card Swiping Interface - Chinatown"/></td>
+<td width="50%"><img src="screenshots/Card collection.png" alt="Card Collection"/></td>
 <td width="50%"><img src="screenshots/My%20Journey%20Summary.png" alt="Journey Progress and Statistics"/></td>
 </tr>
 </table>
