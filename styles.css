@@ -581,6 +581,151 @@ body {
     color: #667eea;
 }
 
+/* Map Control Buttons */
+.map-control-btn {
+    position: fixed;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #ddd;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002;
+}
+
+.map-control-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+}
+
+.map-control-btn:active {
+    transform: scale(0.95);
+}
+
+#resetBtn {
+    top: 245px;
+}
+
+#reviewBtn {
+    top: 305px;
+}
+
+#viewAllBtn {
+    top: 365px;
+}
+
+/* All Cards Modal */
+.all-cards-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10003;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.all-cards-modal.show {
+    display: flex;
+}
+
+.all-cards-content {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.all-cards-content h2 {
+    font-size: 2rem;
+    color: #2C3E50;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.close-modal-btn:hover {
+    background: #e0e0e0;
+    transform: scale(1.1);
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.card-item {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.card-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.card-item-content {
+    padding: 1rem;
+}
+
+.card-item-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2C3E50;
+    margin-bottom: 0.5rem;
+}
+
+.card-item-category {
+    font-size: 0.85rem;
+    color: #7F8C8D;
+}
+
 /* Hide Leaflet Routing Machine control panel */
 .leaflet-routing-container {
     display: none !important;
@@ -1477,6 +1622,41 @@ body {
     
     .recenter-icon {
         font-size: 20px;
+    }
+    
+    .map-control-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+    
+    #resetBtn {
+        top: 234px;
+    }
+    
+    #reviewBtn {
+        top: 288px;
+    }
+    
+    #viewAllBtn {
+        top: 342px;
+    }
+    
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .card-item img {
+        height: 120px;
+    }
+    
+    .all-cards-content {
+        padding: 1.5rem;
+    }
+    
+    .all-cards-content h2 {
+        font-size: 1.5rem;
     }
     
     .clear-highlight-btn {

@@ -2744,6 +2744,39 @@ function handleSwipe(direction) {
     const poi = poiData[currentCardIndex];
     const card = document.getElementById('card');
     
+    // Review mode: allow browsing back and forth
+    if (cardMode === 'review') {
+        // Animate card out
+        const distance = direction === 'right' ? 1000 : -1000;
+        card.style.transform = `translate(${distance}px, 0) rotate(0deg)`;
+        card.style.opacity = '0';
+        
+        // Navigate cards
+        if (direction === 'right') {
+            currentCardIndex++;
+            if (currentCardIndex >= poiData.length) {
+                // End review
+                currentCardIndex = poiData.length;
+                setTimeout(() => {
+                    completeCardMode();
+                }, 600);
+                return;
+            }
+        } else {
+            // Go back
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+            }
+        }
+        
+        // Show next/previous card
+        setTimeout(() => {
+            showNextCard();
+        }, 300);
+        return;
+    }
+    
+    // Normal mode: swipe with status update
     // Animate card out
     const distance = direction === 'right' ? 1000 : -1000;
     const rotation = direction === 'right' ? 30 : -30;
@@ -2796,9 +2829,6 @@ function completeCardMode() {
     isCardModeActive = false; // Deactivate card mode
     document.getElementById('cardContainer').classList.remove('active');
     document.getElementById('progress').style.display = 'none';
-    isCardModeComplete = true;
-    localStorage.setItem('cardModeComplete', 'true');
-    localStorage.setItem('cardModeData', JSON.stringify(cardSwipeData));
     
     // Remove final highlight and restore all marker colors
     if (window.poiMarkersById) {
@@ -2813,6 +2843,20 @@ function completeCardMode() {
     
     // Show all UI elements
     showMapUI();
+    
+    // Review mode: just finish, no save or message
+    if (cardMode === 'review') {
+        console.log('Review mode completed');
+        cardMode = null;
+        // Zoom out to show all of Singapore
+        map.setView([1.3521, 103.8198], 11);
+        return;
+    }
+    
+    // Normal mode: save and show completion
+    isCardModeComplete = true;
+    localStorage.setItem('cardModeComplete', 'true');
+    localStorage.setItem('cardModeData', JSON.stringify(cardSwipeData));
     
     // Show collection button
     document.getElementById('collectionBtn').style.display = 'flex';
@@ -2987,8 +3031,112 @@ function resetAllPOIs() {
     alert('✅ All places have been reset to "Not Visit"!\n\nYou can now start the card experience again.');
 }
 
+// Reset and restart from scratch
+function resetAndRestart() {
+    if (!confirm('🔄 This will reset all your progress and restart from the beginning. Continue?')) {
+        return;
+    }
+    
+    // Reset all POI data
+    resetAllPOIs();
+    
+    // Clear all card mode data
+    localStorage.removeItem('cardModeComplete');
+    localStorage.removeItem('cardModeSkipped');
+    localStorage.removeItem('cardSwipeData');
+    localStorage.removeItem('cardModeData');
+    
+    // Reset global variables
+    isCardModeComplete = false;
+    currentCardIndex = 0;
+    cardSwipeData = [];
+    
+    // Hide all buttons
+    const collectionBtn = document.getElementById('collectionBtn');
+    const restartCardBtn = document.getElementById('restartCardBtn');
+    if (collectionBtn) collectionBtn.style.display = 'none';
+    if (restartCardBtn) restartCardBtn.style.display = 'none';
+    
+    // Start from introduction
+    restartCardMode();
+}
+
+// Start review mode (browse cards without choosing)
+function startReviewMode() {
+    console.log('🔍 Starting review mode');
+    isCardModeActive = true;
+    cardMode = 'review'; // Special review mode
+    
+    // Hide UI elements
+    hideMapUI();
+    
+    const cardContainer = document.getElementById('cardContainer');
+    const progress = document.getElementById('progress');
+    
+    // Show card interface
+    cardContainer.classList.add('active');
+    progress.style.display = 'block';
+    
+    // Update hints for review mode
+    const leftHint = document.getElementById('leftHint');
+    const rightHint = document.getElementById('rightHint');
+    leftHint.textContent = "← Previous";
+    rightHint.textContent = "Next →";
+    
+    // Initialize first card
+    currentCardIndex = 0;
+    showNextCard();
+}
+
+// Show all cards modal
+function showAllCardsModal() {
+    const modal = document.getElementById('allCardsModal');
+    const grid = document.getElementById('cardsGrid');
+    
+    // Clear existing content
+    grid.innerHTML = '';
+    
+    // Create card items
+    poiData.forEach((poi, index) => {
+        const cardItem = document.createElement('div');
+        cardItem.className = 'card-item';
+        cardItem.onclick = () => {
+            // Close modal and focus on this POI
+            closeAllCardsModal();
+            map.setView([poi.lat, poi.lng], 15);
+            if (window.poiMarkersById && window.poiMarkersById[poi.id]) {
+                const marker = window.poiMarkersById[poi.id];
+                marker.openPopup();
+            }
+        };
+        
+        cardItem.innerHTML = `
+            <img src="60 images/${poi.image_prompt}" alt="${poi.name}" onerror="this.src='60 images/poi_001.png'">
+            <div class="card-item-content">
+                <div class="card-item-title">${poi.name}</div>
+                <div class="card-item-category" style="color: ${poi.category_color}">${poi.category_tag}</div>
+            </div>
+        `;
+        
+        grid.appendChild(cardItem);
+    });
+    
+    // Show modal
+    modal.classList.add('show');
+}
+
+// Close all cards modal
+function closeAllCardsModal() {
+    const modal = document.getElementById('allCardsModal');
+    modal.classList.remove('show');
+}
+
 // Make functions global
 window.startCardMode = startCardMode;
 window.skipCardMode = skipCardMode;
 window.restartCardMode = restartCardMode;
 window.resetAllPOIs = resetAllPOIs;
+window.resetAndRestart = resetAndRestart;
+window.startReviewMode = startReviewMode;
+window.showAllCardsModal = showAllCardsModal;
+window.closeAllCardsModal = closeAllCardsModal;

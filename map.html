@@ -147,6 +147,28 @@
         <span>🎴</span>
         <span>Start Cards</span>
     </button>
+    
+    <!-- Map Control Buttons (Right Side) -->
+    <button class="map-control-btn" id="resetBtn" onclick="resetAndRestart()" title="Restart">
+        🔄
+    </button>
+    
+    <button class="map-control-btn" id="reviewBtn" onclick="startReviewMode()" title="Review Cards">
+        👁️
+    </button>
+    
+    <button class="map-control-btn" id="viewAllBtn" onclick="showAllCardsModal()" title="View All Cards">
+        🗂️
+    </button>
+
+    <!-- All Cards Modal -->
+    <div class="all-cards-modal" id="allCardsModal">
+        <div class="all-cards-content">
+            <button class="close-modal-btn" onclick="closeAllCardsModal()">✕</button>
+            <h2>All 60 Places</h2>
+            <div class="cards-grid" id="cardsGrid"></div>
+        </div>
+    </div>
 
     <!-- Progress Bar -->
     <div class="progress-bar-container" id="progressBarContainer">
