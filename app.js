@@ -569,9 +569,9 @@ function initAIAssistant() {
         const assistantBubble = createTypingBubble();
         
         try {
-            const apiKey = localStorage.getItem('openai_api_key');
+            const apiKey = localStorage.getItem('ai_api_key');
             if (!apiKey) {
-                await typeMessage(assistantBubble, 'Please set your OpenAI API key in the Route Planner tool first. Click the 🛠️ button → Route Planner to set it up.');
+                await typeMessage(assistantBubble, 'Please set your API key in the Route Planner tool first. Click the 🛠️ button → Route Planner to set it up.');
                 return;
             }
             
@@ -590,7 +590,7 @@ function initAIAssistant() {
             if (isRecommendationRequest || isFollowingRecommendPrompt) {
                 // Handle as recommendation request
                 try {
-                    const recommendations = await getAIRecommendations(message, apiKey);
+                    const recommendations = await getAIRecommendations(message);
                     const recommendHtml = displayChatRecommendations(recommendations);
                     const introText = '✨ Based on your preferences, here are 5 perfect recommendations for you:';
                     await typeMessage(assistantBubble, introText + '<br><br>' + recommendHtml);
@@ -653,14 +653,22 @@ Only include places that are the main focus of your recommendation or discussion
             
             chatHistory.push({ role: 'user', content: message });
             
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            const provider = localStorage.getItem('ai_provider') || 'openai';
+            const apiUrl = provider === 'groq' 
+                ? 'https://api.groq.com/openai/v1/chat/completions'
+                : 'https://api.openai.com/v1/chat/completions';
+            const model = provider === 'groq' 
+                ? 'llama-3.3-70b-versatile'
+                : 'gpt-4o-mini';
+            
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: 'gpt-4o-mini',
+                    model: model,
                     messages: [
                         { role: 'system', content: systemContext },
                         ...chatHistory.slice(-10) // Keep last 10 messages
@@ -1349,6 +1357,7 @@ function initAIPlanner() {
     const closePlanner = document.getElementById('closePlanner');
     const saveKeyBtn = document.getElementById('saveKeyBtn');
     const apiKeyInput = document.getElementById('apiKeyInput');
+    const apiProviderSelect = document.getElementById('apiProviderSelect');
     const generateRouteBtn = document.getElementById('generateRouteBtn');
     const showRouteOnMapBtn = document.getElementById('showRouteOnMap');
     const planNewRouteBtn = document.getElementById('planNewRoute');
@@ -1360,9 +1369,11 @@ function initAIPlanner() {
     }
     
     // Check if API key exists
-    const savedApiKey = localStorage.getItem('openai_api_key');
+    const savedApiKey = localStorage.getItem('ai_api_key');
+    const savedProvider = localStorage.getItem('ai_provider') || 'openai';
     if (savedApiKey && apiKeyInput) {
         apiKeyInput.value = savedApiKey;
+        apiProviderSelect.value = savedProvider;
         const apiKeySection = document.getElementById('apiKeySection');
         const poiSection = document.getElementById('poiSelectionSection');
         if (apiKeySection) apiKeySection.style.display = 'none';
@@ -1396,11 +1407,23 @@ function initAIPlanner() {
         }
     });
     
-    // Save API key
+    // Update placeholder when provider changes
+    apiProviderSelect.addEventListener('change', () => {
+        const provider = apiProviderSelect.value;
+        if (provider === 'groq') {
+            apiKeyInput.placeholder = 'gsk_...';
+        } else {
+            apiKeyInput.placeholder = 'sk-...';
+        }
+    });
+    
+    // Save API key and provider
     saveKeyBtn.addEventListener('click', () => {
         const apiKey = apiKeyInput.value.trim();
+        const provider = apiProviderSelect.value;
         if (apiKey) {
-            localStorage.setItem('openai_api_key', apiKey);
+            localStorage.setItem('ai_api_key', apiKey);
+            localStorage.setItem('ai_provider', provider);
             document.getElementById('apiKeySection').style.display = 'none';
             document.getElementById('poiSelectionSection').style.display = 'block';
             
@@ -1603,9 +1626,10 @@ function getSelectedPOIs() {
     }).filter(Boolean); // Remove any null values
 }
 
-// Generate optimal route using OpenAI
+// Generate optimal route using AI (OpenAI or Groq)
 async function generateOptimalRoute(pois) {
-    const apiKey = localStorage.getItem('openai_api_key');
+    const apiKey = localStorage.getItem('ai_api_key');
+    const provider = localStorage.getItem('ai_provider') || 'openai';
     
     const prompt = `You are a Singapore travel expert. Given these tourist attractions, create an optimal visiting route considering:
 - Geographic proximity (minimize travel distance)
@@ -1620,14 +1644,22 @@ Return ONLY a JSON array with the optimal order (use the same names), each with 
   {"name": "Attraction Name", "reason": "Best to start here because...", "time_suggestion": "Morning/Afternoon/Evening"}
 ]`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const apiUrl = provider === 'groq' 
+        ? 'https://api.groq.com/openai/v1/chat/completions'
+        : 'https://api.openai.com/v1/chat/completions';
+    
+    const model = provider === 'groq' 
+        ? 'llama-3.3-70b-versatile'
+        : 'gpt-4o-mini';
+
+    const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-            model: 'gpt-4o-mini',
+            model: model,
             messages: [
                 {
                     role: 'system',
@@ -1908,7 +1940,10 @@ function initAIRecommendations() {
     // Recommendations are now handled in chat
 }
 
-async function getAIRecommendations(prompt, apiKey) {
+async function getAIRecommendations(prompt) {
+    const apiKey = localStorage.getItem('ai_api_key');
+    const provider = localStorage.getItem('ai_provider') || 'openai';
+    
     // Prepare POI data context
     const poiContext = poiData.map(poi => ({
         id: poi.id,
@@ -1937,14 +1972,22 @@ Rules:
 - Provide specific, personalized reasons
 - Return ONLY valid JSON, no extra text`;
     
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const apiUrl = provider === 'groq' 
+        ? 'https://api.groq.com/openai/v1/chat/completions'
+        : 'https://api.openai.com/v1/chat/completions';
+    
+    const model = provider === 'groq' 
+        ? 'llama-3.3-70b-versatile'
+        : 'gpt-4o-mini';
+    
+    const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-            model: 'gpt-4o-mini',
+            model: model,
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: prompt }

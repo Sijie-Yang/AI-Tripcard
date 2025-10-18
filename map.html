@@ -459,7 +459,13 @@
             
             <!-- API Key Input -->
             <div class="api-key-section" id="apiKeySection">
-                <label for="apiKeyInput">OpenAI API Key:</label>
+                <label for="apiProviderSelect">AI Provider:</label>
+                <select id="apiProviderSelect" class="api-provider-select">
+                    <option value="openai">OpenAI (GPT-4)</option>
+                    <option value="groq">Groq (Llama/Mixtral - Ultra Fast)</option>
+                </select>
+                
+                <label for="apiKeyInput" id="apiKeyLabel">API Key:</label>
                 <div class="api-key-input-group">
                     <input type="password" id="apiKeyInput" placeholder="sk-..." />
                     <button class="save-key-btn" id="saveKeyBtn">Save</button>

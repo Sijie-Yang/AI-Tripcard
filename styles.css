@@ -2036,6 +2036,29 @@ body {
     color: #333;
 }
 
+.api-provider-select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.api-provider-select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.api-provider-select:hover {
+    border-color: #b8c5f2;
+}
+
 .api-key-input-group {
     display: flex;
     gap: 10px;
