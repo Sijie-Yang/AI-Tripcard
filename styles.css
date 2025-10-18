@@ -2304,13 +2304,15 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #FFE5EC 0%, #FFF4E6 50%, #E8F4FA 100%);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(12px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 2rem;
     z-index: 10000;
+    animation: fadeIn 0.5s ease;
 }
 
 .mode-logo {
@@ -2323,7 +2325,7 @@ body {
 .card-mode-selector h1 {
     font-size: 2.5rem;
     font-weight: 800;
-    color: #2C3E50;
+    color: white;
     margin-bottom: 0.5rem;
     margin-top: 3rem;
     text-align: center;
@@ -2332,7 +2334,7 @@ body {
 
 .card-mode-selector .mode-subtitle {
     font-size: 1.1rem;
-    color: #7F8C8D;
+    color: rgba(255, 255, 255, 0.9);
     margin-bottom: 4rem;
     text-align: center;
     font-weight: 500;
