@@ -53,7 +53,69 @@ body {
     backdrop-filter: blur(10px);
 }
 
-/* Loading Screen - removed, using smooth transition from home page instead */
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-sg60 {
+    width: 120px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: fadeInScale 0.8s ease-out;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.5) rotate(-10deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
@@ -590,6 +652,14 @@ body {
 }
 
 /* Highlighted POI marker styles */
+/* Gray out markers during card mode (except the focused one) */
+.custom-div-icon.grayed-out {
+    opacity: 0.3;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+    z-index: 100 !important;
+}
+
 .custom-div-icon.highlighted {
     z-index: 999 !important;
 }
@@ -1332,6 +1402,10 @@ body {
 
 /* 移动端优化 */
 @media (max-width: 480px) {
+    .loading-sg60 {
+        width: 100px;
+    }
+    
     .header h1 {
         font-size: 18px;
     }

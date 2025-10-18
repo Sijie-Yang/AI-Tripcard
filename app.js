@@ -2475,6 +2475,16 @@ function skipCardMode() {
     // Mark as skipped in local storage
     localStorage.setItem('cardModeSkipped', 'true');
     
+    // Restore all marker colors (in case any were grayed out)
+    if (window.poiMarkersById) {
+        Object.values(window.poiMarkersById).forEach(marker => {
+            if (marker._icon) {
+                marker._icon.classList.remove('highlighted');
+                marker._icon.classList.remove('grayed-out');
+            }
+        });
+    }
+    
     // Show all UI elements
     showMapUI();
     
@@ -2518,14 +2528,20 @@ function showNextCard() {
     const poi = poiData[currentCardIndex];
     console.log(`📍 Showing card ${currentCardIndex + 1}/${poiData.length}: ${poi.name}`);
     
-    // Remove previous highlight
-    if (currentHighlightedMarker && currentHighlightedMarker._icon) {
-        currentHighlightedMarker._icon.classList.remove('highlighted');
+    // Gray out all markers first
+    if (window.poiMarkersById) {
+        Object.values(window.poiMarkersById).forEach(marker => {
+            if (marker._icon) {
+                marker._icon.classList.remove('highlighted');
+                marker._icon.classList.add('grayed-out');
+            }
+        });
     }
     
-    // Highlight current POI marker using same effect as chat highlights
+    // Highlight current POI marker and remove gray
     const currentMarker = window.poiMarkersById ? window.poiMarkersById[poi.id] : null;
     if (currentMarker && currentMarker._icon) {
+        currentMarker._icon.classList.remove('grayed-out');
         currentMarker._icon.classList.add('highlighted');
         currentHighlightedMarker = currentMarker;
         console.log(`✨ Highlighted marker for: ${poi.name}`);
@@ -2692,9 +2708,14 @@ function completeCardMode() {
     localStorage.setItem('cardModeComplete', 'true');
     localStorage.setItem('cardModeData', JSON.stringify(cardSwipeData));
     
-    // Remove final highlight
-    if (currentHighlightedMarker && currentHighlightedMarker._icon) {
-        currentHighlightedMarker._icon.classList.remove('highlighted');
+    // Remove final highlight and restore all marker colors
+    if (window.poiMarkersById) {
+        Object.values(window.poiMarkersById).forEach(marker => {
+            if (marker._icon) {
+                marker._icon.classList.remove('highlighted');
+                marker._icon.classList.remove('grayed-out');
+            }
+        });
     }
     currentHighlightedMarker = null;
     
