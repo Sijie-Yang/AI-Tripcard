@@ -1327,16 +1327,26 @@ function populatePOIChecklist(filter) {
     }
     
     let pois = poiData;
+    let emptyMessage = '';
     
     if (filter === 'planned') {
         pois = poiData.filter(poi => visitStatus[poi.id] === 'planned');
+        emptyMessage = 'No places marked "To Visit" yet. Use AI chat or click places on the map to add them to your plan!';
         console.log(`Filtering for 'planned' POIs: found ${pois.length} out of ${poiData.length}`);
+    } else if (filter === 'unvisited') {
+        pois = poiData.filter(poi => !visitStatus[poi.id] || visitStatus[poi.id] === 'unvisited');
+        emptyMessage = 'All places have been visited or planned!';
+        console.log(`Filtering for 'unvisited' POIs: found ${pois.length} out of ${poiData.length}`);
+    } else if (filter === 'visited') {
+        pois = poiData.filter(poi => visitStatus[poi.id] === 'visited');
+        emptyMessage = 'No places visited yet. Mark places as visited in AI chat or detail panel!';
+        console.log(`Filtering for 'visited' POIs: found ${pois.length} out of ${poiData.length}`);
     } else {
         console.log(`Showing all POIs: ${poiData.length}`);
     }
     
-    if (pois.length === 0 && filter === 'planned') {
-        checklist.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">No places marked "To Visit" yet. Use AI chat or click places on the map to add them to your plan!</div>';
+    if (pois.length === 0) {
+        checklist.innerHTML = `<div style="padding: 20px; text-align: center; color: #999;">${emptyMessage}</div>`;
         return;
     }
     
