@@ -2424,9 +2424,8 @@ function showNextCard() {
         console.log('Container display:', window.getComputedStyle(cardContainer).display);
         console.log('Container pointer-events:', window.getComputedStyle(cardContainer).pointerEvents);
         
-        // Use POI images
-        const imageId = String(poi.id).padStart(3, '0');
-        const imagePath = `60 images/poi_${imageId}.png`;
+        // Use POI images - poi.id is already "poi_001" format
+        const imagePath = `60 images/${poi.id}.png`;
         console.log(`🖼️  Loading image: ${imagePath}`);
         
         // Force display image
