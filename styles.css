@@ -97,29 +97,18 @@ body {
 
 /* 自定义Marker样式 - 未去过（圆形） */
 .custom-marker {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     transform: rotate(0deg);
-    border: 3px solid white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
+    border: none;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: all 0.3s;
-    position: relative;
 }
 
 .custom-marker:hover {
-    transform: scale(1.15);
-}
-
-.custom-marker::after {
-    content: '●';
-    color: white;
-    font-size: 10px;
+    transform: scale(1.2);
 }
 
 /* SVG标记样式 */
