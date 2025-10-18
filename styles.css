@@ -1090,6 +1090,49 @@ body {
     color: #666;
 }
 
+.mini-popup-status {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.mini-status-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mini-status-btn:hover {
+    transform: scale(1.1);
+    border-color: #667eea;
+}
+
+.mini-status-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.mini-status-btn[data-status="visited"].active {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    border-color: #84fab0;
+}
+
+.mini-status-btn[data-status="planned"].active {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-color: #fcb69f;
+}
+
 .mini-popup-btn {
     width: 100%;
     padding: 8px 12px;

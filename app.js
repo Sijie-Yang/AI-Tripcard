@@ -257,6 +257,11 @@ function displayMarkers(data) {
                     <span class="mini-popup-category" style="background-color: ${poi.category_color};">${categoryTranslations[poi.category_tag]}</span>
                     <span class="mini-popup-emotion">${emotionIcons[poi.emotion_tag]} ${emotionTranslations[poi.emotion_tag]}</span>
                 </div>
+                <div class="mini-popup-status" data-poi-id="${poi.id}">
+                    <button class="mini-status-btn" data-status="visited" title="Mark as Visited">✓</button>
+                    <button class="mini-status-btn" data-status="planned" title="Mark as To Visit">⭐</button>
+                    <button class="mini-status-btn" data-status="unvisited" title="Mark as Unvisited">○</button>
+                </div>
                 <button class="mini-popup-btn" data-poi-id="${poi.id}">View Details →</button>
             </div>
         `;
@@ -269,12 +274,43 @@ function displayMarkers(data) {
         // Add event listener when popup opens
         marker.on('popupopen', () => {
             setTimeout(() => {
+                // Bind view details button
                 const btn = document.querySelector('.mini-popup-btn[data-poi-id="' + poi.id + '"]');
                 if (btn) {
                     btn.onclick = () => {
                         map.closePopup();
                         showDetail(poi.id);
                     };
+                }
+                
+                // Bind status buttons
+                const statusContainer = document.querySelector('.mini-popup-status[data-poi-id="' + poi.id + '"]');
+                if (statusContainer) {
+                    const currentStatus = getVisitStatus(poi.id);
+                    const statusBtns = statusContainer.querySelectorAll('.mini-status-btn');
+                    
+                    // Highlight current status
+                    statusBtns.forEach(btn => {
+                        if (btn.dataset.status === currentStatus) {
+                            btn.classList.add('active');
+                        }
+                        
+                        // Add click handler
+                        btn.onclick = (e) => {
+                            e.stopPropagation();
+                            const newStatus = btn.dataset.status;
+                            setVisitStatus(poi.id, newStatus);
+                            
+                            // Update button states
+                            statusBtns.forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                            
+                            // Update marker icon
+                            const newColor = colorMode === 'emotion' ? poi.emotion_color : poi.category_color;
+                            const newIcon = createCustomIcon(newColor, newStatus);
+                            marker.setIcon(newIcon);
+                        };
+                    });
                 }
             }, 10);
         });
