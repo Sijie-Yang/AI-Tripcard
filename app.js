@@ -2341,13 +2341,14 @@ function showNextCard() {
         const cardImage = document.getElementById('swipeCardImage');
         const cardTitle = document.getElementById('swipeCardTitle');
         
-        // Use POI images if available
+        // Use POI images
         const imageId = String(poi.id).padStart(3, '0');
         cardImage.src = `60 images/poi_${imageId}.png`;
         cardImage.onerror = () => {
             // Fallback if image not found
             cardImage.style.display = 'none';
         };
+        cardImage.style.display = 'block'; // Reset display
         cardTitle.textContent = poi.name;
         
         // Reset card position
