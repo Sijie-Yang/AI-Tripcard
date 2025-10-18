@@ -1264,8 +1264,7 @@ body {
 
 /* 地图控件调整 */
 .leaflet-control-zoom {
-    border: none !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+    display: none !important;
 }
 
 .leaflet-control-zoom a {
