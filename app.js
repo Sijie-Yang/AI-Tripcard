@@ -64,10 +64,11 @@ function initMap() {
         attributionControl: true
     });
 
-    // 添加OpenStreetMap图层
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
+    // 添加CartoDB Voyager图层（简洁高级风格）
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap contributors © CARTO',
+        maxZoom: 19,
+        subdomains: 'abcd'
     }).addTo(map);
 }
 
