@@ -78,14 +78,30 @@ function saveVisitStatus() {
     localStorage.setItem('poi_visit_status', JSON.stringify(visitStatus));
 }
 
+// Get filtered data based on current filter
+function getFilteredData() {
+    if (currentFilterType === 'all') {
+        return poiData;
+    } else if (currentFilterType === 'emotion') {
+        return poiData.filter(poi => poi.emotion_tag === currentFilter);
+    } else if (currentFilterType === 'category') {
+        return poiData.filter(poi => poi.category_tag === currentFilter);
+    }
+    return poiData;
+}
+
 // 设置POI访问状态
 function setVisitStatus(poiId, status) {
     visitStatus[poiId] = status;
     saveVisitStatus();
+    
+    // 更新统计数据
+    if (typeof updateStats === 'function') {
+        updateStats();
+    }
+    
     // 重新渲染地图
-    const filteredData = currentFilter === 'all' 
-        ? poiData 
-        : poiData.filter(poi => poi.category_tag === currentFilter);
+    const filteredData = getFilteredData();
     displayMarkers(filteredData);
 }
 
@@ -371,6 +387,8 @@ function initEventListeners() {
 
 // Update statistics
 function updateStats() {
+    if (!poiData || poiData.length === 0) return;
+    
     const total = poiData.length;
     let visitedCount = 0;
     let plannedCount = 0;
@@ -382,13 +400,17 @@ function updateStats() {
     
     const progress = total > 0 ? Math.round((visitedCount / total) * 100) : 0;
     
-    document.getElementById('visitedCount').textContent = visitedCount;
-    document.getElementById('plannedCount').textContent = plannedCount;
-    document.getElementById('progressPercent').textContent = progress + '%';
+    const visitedCountEl = document.getElementById('visitedCount');
+    const plannedCountEl = document.getElementById('plannedCount');
+    const progressPercentEl = document.getElementById('progressPercent');
+    const visitedBarEl = document.getElementById('visitedBar');
+    const plannedBarEl = document.getElementById('plannedBar');
     
-    // Update progress bars
-    document.getElementById('visitedBar').style.width = (visitedCount / total * 100) + '%';
-    document.getElementById('plannedBar').style.width = (plannedCount / total * 100) + '%';
+    if (visitedCountEl) visitedCountEl.textContent = visitedCount;
+    if (plannedCountEl) plannedCountEl.textContent = plannedCount;
+    if (progressPercentEl) progressPercentEl.textContent = progress + '%';
+    if (visitedBarEl) visitedBarEl.style.width = (visitedCount / total * 100) + '%';
+    if (plannedBarEl) plannedBarEl.style.width = (plannedCount / total * 100) + '%';
 }
 
 // Search functionality
@@ -462,24 +484,7 @@ function hideLoadingScreen() {
     }, 1500);
 }
 
-// Override setVisitStatus to update stats
-const originalSetVisitStatus = setVisitStatus;
-function setVisitStatus(poiId, status) {
-    originalSetVisitStatus(poiId, status);
-    updateStats();
-}
-
-// Get filtered data based on current filter
-function getFilteredData() {
-    if (currentFilterType === 'all') {
-        return poiData;
-    } else if (currentFilterType === 'emotion') {
-        return poiData.filter(poi => poi.emotion_tag === currentFilter);
-    } else if (currentFilterType === 'category') {
-        return poiData.filter(poi => poi.category_tag === currentFilter);
-    }
-    return poiData;
-}
+// setVisitStatus and getFilteredData are defined earlier in the file
 
 // Color mode slider functionality
 function initColorBarToggle() {
