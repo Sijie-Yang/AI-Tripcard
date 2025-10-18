@@ -1,148 +1,325 @@
-# 🌏 Singapore TripCard
+# 🎴 Tripcard - Singapore Tourism Interactive Card App
 
-一个交互式的新加坡景点探索应用，支持卡片滑动选择。
+An interactive web-based card swiping application for exploring Singapore's 60 iconic locations. Perfect for both locals and tourists!
 
-## ✨ 功能特性
+---
 
-### 🎴 双模式体验
-- **🏠 Local Mode（本地模式）**：分享您去过的新加坡景点
-- **✈️ Tourist Mode（游客模式）**：探索您想去的景点
+## 🌟 Features
 
-### 🎯 交互方式
-- 👆 **滑动**：左滑 = 不感兴趣，右滑 = 感兴趣
-- ⌨️ **键盘**：左箭头 / 右箭头
-- 🖱️ **鼠标**：拖拽卡片
+### 🎯 Dual Mode System
+- **Local Mode** 🏠: Track places you've been to
+  - Left swipe ← : Haven't been there
+  - Right swipe → : Been there
+  
+- **Tourist Mode** ✈️: Discover places you want to explore
+  - Left swipe ← : Not interested
+  - Right swipe → : Interested
 
-### 📊 数据管理
-- 💾 自动保存到浏览器 LocalStorage
-- 📈 完成后显示统计图表
-- 📚 查看历史记录
-- 📤 按 **E** 键导出数据为 JSON
+### 🎨 Modern UI Design
+- Beautiful flat vector design
+- Rounded cards with pastel backgrounds
+- Smooth animations and transitions
+- Fully responsive (mobile & desktop)
+- Custom icons for mode selection
 
-### 🎨 设计亮点
-- 现代扁平化 UI 设计
-- 圆角卡片和友好的粉彩背景
-- 流畅的动画效果
-- 响应式设计（支持手机和网页）
+### 📊 Interactive Summary Page
+- Visual statistics with charts (Chart.js)
+- **Toggle View Feature** 🔄
+  - Switch between liked/disliked results
+  - View been/haven't been places
+  - Dynamic button and title updates
+- Image gallery (3 per row)
+- Export data functionality
 
-## 🚀 快速开始
+### 💾 Local Storage System
+- All swipe data saved in browser
+- Session tracking
+- Export to JSON/GeoJSON/CSV
+- No server required for basic usage
 
-### 启动应用
+---
 
+## 🚀 Quick Start
+
+### 1. Clone the Repository
 ```bash
-# 在项目目录下运行
+git clone https://github.com/Sijie-Yang/AI-Tripcard.git
+cd AI-Tripcard
+git checkout lujia
+```
+
+### 2. Start Local Server
+```bash
 python3 -m http.server 8000
 ```
 
-然后访问：**http://localhost:8000**
+### 3. Open in Browser
+```
+http://localhost:8000/index.html
+```
 
-### 使用步骤
+---
 
-1. **选择模式**：Local 或 Tourist
-2. **滑动卡片**：左右滑动或使用键盘方向键
-3. **查看统计**：完成所有 60 张卡片后自动显示
-4. **查看历史**：点击右上角 📊 History 按钮
-
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 Tripcard/
-├── index.html              # 主应用
-├── 60 images/              # 60张景点图片 (poi_001.png ~ poi_060.png)
-├── avatar/                 # 模式图标
+├── index.html              # Main application (standalone)
+├── export.html             # Data export page
+├── import.html             # Data import page
+├── 60 images/              # 60 Singapore POI images
+│   ├── poi_001.png
+│   ├── poi_002.png
+│   └── ...
+├── avatar/                 # Mode selection icons
 │   ├── local_icon.png
-│   └── tourist icon.png
-├── poi_sg_01_20.json      # 景点数据 (1-20)
-├── poi_sg_21_40.json      # 景点数据 (21-40)
-└── poi_sg_41_60.json      # 景点数据 (41-60)
+│   └── tourist_icon.png
+├── poi_sg_01_20.json      # POI data (1-20)
+├── poi_sg_21_40.json      # POI data (21-40)
+├── poi_sg_41_60.json      # POI data (41-60)
+├── lib/
+│   ├── localdb.js         # Local storage helper functions
+│   └── demo.html          # Storage demo page
+└── *.md                   # Documentation files
 ```
 
-## 🎮 快捷键
+---
 
-- **←** / **→** : 左右滑动卡片
-- **E** : 导出历史数据
-- **F12** : 打开开发者工具
+## 🎮 How to Use
 
-## 💾 数据存储
+### Step 1: Choose Your Mode
+<img src="docs/mode-selection.png" width="600" alt="Mode Selection">
 
-所有数据保存在浏览器的 LocalStorage 中：
-- `tripcard_session_id` : 会话ID
-- `tripcard_history` : 历史记录
+Click on **Local** or **Tourist** icon to start.
 
-## 🎨 UI 设计风格
+### Step 2: Swipe Through Cards
+<img src="docs/card-swiping.png" width="600" alt="Card Swiping">
 
-- **字体**：Inter（现代无衬线字体）
-- **颜色方案**：
-  - Local Mode: 蓝色系 (#29B6F6)
-  - Tourist Mode: 粉红色系 (#FF6B9D)
-  - 背景: 渐变粉彩
-- **圆角**：32px（超大圆角）
-- **动画**：流畅的 CSS 过渡效果
+- **Drag** or **Click arrows** to swipe
+- **Hover** to see swipe hints
+- Progress bar shows your position
 
-## 📊 统计功能
+### Step 3: View Results
+<img src="docs/summary.png" width="600" alt="Summary Page">
 
-完成所有卡片后，您将看到：
-- 📈 圆环图显示选择分布
-- 🔢 感兴趣 / 不感兴趣的数量
-- 📝 详细的统计摘要
+- See your statistics
+- **Toggle** between liked/disliked places
+- Click **Explore the Map** for future features
+- **Start Over** to try again
 
-## 🌐 浏览器兼容性
+---
 
-- ✅ Chrome / Edge (推荐)
-- ✅ Safari
-- ✅ Firefox
-- ✅ 移动浏览器
+## 🔄 Toggle View Feature (NEW!)
 
-## 📱 移动端优化
+### Summary Page Toggle Button
 
-- 触摸滑动支持
-- 响应式布局
-- 优化的卡片大小
-- 流畅的动画效果
+After completing all 60 cards, the summary page now includes a **toggle button** that lets you switch between viewing:
 
-## 🛠️ 技术栈
+#### Local Mode
+- **Default**: 📍 Places You've Been (right swipes)
+- **Toggle**: ❌ Places You Haven't Been (left swipes)
 
-- **HTML5** - 结构
-- **CSS3** - 样式和动画
-- **JavaScript (Vanilla)** - 交互逻辑
-- **Chart.js** - 数据可视化
-- **LocalStorage** - 本地存储
+#### Tourist Mode
+- **Default**: ✨ Places You're Interested In (right swipes)
+- **Toggle**: 💔 Places You're Not Interested In (left swipes)
 
-## 📝 数据格式
+### How It Works
+```
+┌─────────────────────────────────────────┐
+│ 📍 Places You've Been  [Toggle Button]  │
+│  [Image Grid - Been There]              │
+└─────────────────────────────────────────┘
+                    ↓ Click
+┌─────────────────────────────────────────┐
+│ ❌ Places You Haven't Been [Toggle]     │
+│  [Image Grid - Haven't Been]            │
+└─────────────────────────────────────────┘
+```
 
-每个景点包含：
-```json
+**Features:**
+- ✅ Unlimited toggles
+- ✅ Dynamic title and button text
+- ✅ Smooth transitions
+- ✅ Mobile responsive
+- ✅ No data loss when switching
+
+---
+
+## 📊 Data Management
+
+### Export Data
+```javascript
+// Press 'E' on summary page to export
+// Or use export.html for advanced options
+
+Formats available:
+- JSON: Full data export
+- GeoJSON: Map visualization ready
+- CSV: Spreadsheet compatible
+- Heatmap: Coordinate data
+- Stats: Summary statistics
+```
+
+### Import Data
+```javascript
+// Use import.html to load previous sessions
+// Supports JSON format
+```
+
+### Local Storage Structure
+```javascript
 {
-  "id": "poi_001",
-  "name": "Marina Bay Sands",
-  "prompt": "景点描述...",
-  "description": "详细介绍",
-  "emotion_tag": "标签",
-  "emotion_color": "#颜色代码"
+  "tripcard_sessions_v1": [
+    {
+      "sessionId": "session_xxx",
+      "mode": "local",
+      "timestamp": "2024-10-18T12:00:00.000Z",
+      "results": [
+        {
+          "cardId": "poi_001",
+          "cardName": "Marina Bay Sands",
+          "isInterested": true,
+          "mode": "local",
+          "timestamp": "2024-10-18T12:01:00.000Z"
+        }
+      ]
+    }
+  ]
 }
 ```
 
-## 🎯 使用场景
+---
 
-- 📍 旅游规划
-- 🗺️ 本地探索
-- 📊 数据收集
-- 🎓 教育展示
+## 🎨 Customization
 
-## 🔧 自定义
-
-如需修改景点数据，编辑：
+### Update POI Data
+Edit the JSON files:
 - `poi_sg_01_20.json`
 - `poi_sg_21_40.json`
 - `poi_sg_41_60.json`
 
-如需修改图片，替换 `60 images/` 文件夹中的图片。
+Format:
+```json
+{
+  "id": "poi_001",
+  "name": "Marina Bay Sands",
+  "prompt": "Description for image generation..."
+}
+```
 
-## 📄 许可
+### Update Images
+Place images in `60 images/` folder:
+- Format: `poi_XXX.png`
+- Recommended size: 400x300px or 3:4 ratio
+- Supports PNG/JPG
 
-本项目仅供学习和演示使用。
+### Update Icons
+Replace icons in `avatar/` folder:
+- `local_icon.png`: Local mode icon
+- `tourist_icon.png`: Tourist mode icon
+- Recommended size: 200x200px
 
 ---
 
-**享受探索新加坡的乐趣！** 🎉
+## 🛠️ Technology Stack
 
+- **Frontend**: Vanilla JavaScript, HTML5, CSS3
+- **Charts**: Chart.js
+- **Storage**: Browser LocalStorage
+- **Icons**: Custom PNG icons
+- **Animations**: CSS transitions and transforms
+
+---
+
+## 📱 Browser Compatibility
+
+| Browser | Version | Support |
+|---------|---------|---------|
+| Chrome | 90+ | ✅ Full |
+| Safari | 14+ | ✅ Full |
+| Firefox | 88+ | ✅ Full |
+| Edge | 90+ | ✅ Full |
+| Mobile Safari | iOS 14+ | ✅ Full |
+| Chrome Mobile | Android 10+ | ✅ Full |
+
+---
+
+## 🐛 Known Issues
+
+- ⚠️ Port 8000 conflict: Kill existing Python server if "Address already in use"
+  ```bash
+  lsof -ti:8000 | xargs kill -9
+  ```
+
+---
+
+## 📝 Recent Updates
+
+### Latest (October 18, 2024)
+- ✅ Added toggle view feature on summary page
+- ✅ Fixed summary page title bug (been/haven't been)
+- ✅ Improved swipe hint positioning
+- ✅ Enhanced mobile responsiveness
+- ✅ Added comprehensive documentation
+
+### Previous Updates
+- ✅ Removed all backend dependencies (Supabase, Mem0, Flask)
+- ✅ Pure localStorage implementation
+- ✅ Added data export/import functionality
+- ✅ UI redesign with modern flat vector style
+- ✅ Mode selection with custom icons
+- ✅ Summary page with image gallery
+
+---
+
+## 🗺️ Future Features (Planned)
+
+- [ ] Map visualization integration
+- [ ] Share results on social media
+- [ ] Multi-language support
+- [ ] Dark mode
+- [ ] Offline PWA support
+- [ ] Custom POI collections
+- [ ] Friend comparison feature
+
+---
+
+## 📄 License
+
+MIT License - Feel free to use and modify!
+
+---
+
+## 👥 Contributors
+
+- **Sijie Yang** - Project Lead
+- **Lujia** - Development Branch
+
+---
+
+## 📞 Contact
+
+- GitHub: [@Sijie-Yang](https://github.com/Sijie-Yang)
+- Repository: [AI-Tripcard](https://github.com/Sijie-Yang/AI-Tripcard)
+- Branch: [lujia](https://github.com/Sijie-Yang/AI-Tripcard/tree/lujia)
+
+---
+
+## 🙏 Acknowledgments
+
+- Singapore Tourism Board for inspiration
+- Chart.js for visualization library
+- All contributors and testers
+
+---
+
+**Enjoy exploring Singapore! 🇸🇬✨**
+
+---
+
+## Quick Links
+
+- 📖 [EXPORT_FOR_VISUALIZATION.md](./EXPORT_FOR_VISUALIZATION.md) - Data export guide
+- 📦 [CHANGES.md](./CHANGES.md) - Full changelog
+- 💾 [LOCALDB_SUMMARY.md](./LOCALDB_SUMMARY.md) - Storage system docs
+- 🔧 [lib/README.md](./lib/README.md) - LocalDB library docs
