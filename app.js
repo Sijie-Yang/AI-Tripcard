@@ -580,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCategoryCards();
     initEmotionCards();
     initAIPlanner();
-    initEmotionRadar();
+    initJourneyAnalytics();
 });
 
 // 将showDetail函数暴露到全局作用域，以便popup可以调用
@@ -862,124 +862,215 @@ function drawRouteOnMap(route) {
 
 let emotionChart = null;
 
-// Initialize Emotion Radar
-function initEmotionRadar() {
-    const radarBtn = document.getElementById('radarBtn');
-    const radarPanel = document.getElementById('radarPanel');
-    const closeRadar = document.getElementById('closeRadar');
+// Initialize Journey Analytics Panel
+function initJourneyAnalytics() {
+    const progressBar = document.getElementById('progressBarContainer');
+    const analyticsPanel = document.getElementById('journeyAnalyticsPanel');
+    const expandIndicator = document.getElementById('expandIndicator');
     
-    // Open radar
-    radarBtn.addEventListener('click', () => {
-        updateEmotionRadar();
-        radarPanel.classList.add('active');
-    });
+    let isExpanded = false;
     
-    // Close radar
-    closeRadar.addEventListener('click', () => {
-        radarPanel.classList.remove('active');
-    });
-    
-    radarPanel.addEventListener('click', (e) => {
-        if (e.target === radarPanel) {
-            radarPanel.classList.remove('active');
+    // Toggle panel on click
+    progressBar.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        
+        if (isExpanded) {
+            updateJourneyAnalytics();
+            analyticsPanel.classList.add('active');
+            progressBar.classList.add('expanded');
+        } else {
+            analyticsPanel.classList.remove('active');
+            progressBar.classList.remove('expanded');
         }
     });
 }
 
-// Update emotion radar chart
-function updateEmotionRadar() {
+// Update Journey Analytics Panel
+function updateJourneyAnalytics() {
     const visitedPOIs = poiData.filter(poi => visitStatus[poi.id] === 'visited');
+    const plannedPOIs = poiData.filter(poi => visitStatus[poi.id] === 'planned');
+    const totalPOIs = poiData.length;
     
-    if (visitedPOIs.length === 0) {
-        document.querySelector('.radar-chart-container').innerHTML = '<p style="text-align: center; color: #999; padding: 80px 20px;">Visit some places first to see your emotion radar! 🗺️</p>';
-        document.getElementById('radarStats').innerHTML = '';
-        return;
-    }
+    // 1. Update Summary Cards
+    const completionRate = totalPOIs > 0 ? Math.round((visitedPOIs.length / totalPOIs) * 100) : 0;
+    document.getElementById('completionRate').textContent = `${completionRate}%`;
+    document.getElementById('totalPlaces').textContent = totalPOIs;
     
-    // Count emotions
+    // Calculate favorite emotion and top category
     const emotionCounts = {};
-    const emotionColors = {
-        'vibrant': '#F6C667',
-        'romantic': '#E57373',
-        'adventurous': '#6CB5F5',
-        'creative': '#C26EF1',
-        'nostalgic': '#A8875C',
-        'calm': '#4FB0AE'
-    };
+    const categoryCounts = {};
     
     visitedPOIs.forEach(poi => {
-        const emotion = poi.emotion_tag;
-        emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+        emotionCounts[poi.emotion_tag] = (emotionCounts[poi.emotion_tag] || 0) + 1;
+        categoryCounts[poi.category_tag] = (categoryCounts[poi.category_tag] || 0) + 1;
     });
     
-    // Prepare chart data
-    const emotions = Object.keys(emotionColors);
-    const data = emotions.map(emotion => emotionCounts[emotion] || 0);
-    const colors = emotions.map(emotion => emotionColors[emotion]);
+    const topEmotion = Object.keys(emotionCounts).sort((a, b) => emotionCounts[b] - emotionCounts[a])[0];
+    const topCategory = Object.keys(categoryCounts).sort((a, b) => categoryCounts[b] - categoryCounts[a])[0];
     
-    // Create or update chart
-    const ctx = document.getElementById('emotionRadarChart');
+    document.getElementById('favoriteEmotion').textContent = topEmotion ? emotionTranslations[topEmotion] : '-';
+    document.getElementById('topCategory').textContent = topCategory ? categoryTranslations[topCategory] : '-';
     
-    if (emotionChart) {
-        emotionChart.destroy();
-    }
-    
-    emotionChart = new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: emotions.map(e => emotionTranslations[e]),
-            datasets: [{
-                label: 'Visited Places',
-                data: data,
-                backgroundColor: 'rgba(102, 126, 234, 0.2)',
-                borderColor: '#667eea',
-                borderWidth: 2,
-                pointBackgroundColor: colors,
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 6,
-                pointHoverRadius: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
-                    },
-                    pointLabels: {
-                        font: {
-                            size: 12,
-                            weight: '600'
+    // 2. Update Emotion Radar Chart
+    if (visitedPOIs.length === 0) {
+        document.querySelector('.radar-chart-container').innerHTML = '<p style="text-align: center; color: #999; padding: 80px 20px;">Visit some places first to see your emotion distribution! 🗺️</p>';
+        document.getElementById('radarStats').innerHTML = '';
+    } else {
+        const emotionColors = {
+            'vibrant': '#F6C667',
+            'romantic': '#E57373',
+            'adventurous': '#6CB5F5',
+            'creative': '#C26EF1',
+            'nostalgic': '#A8875C',
+            'calm': '#4FB0AE'
+        };
+        
+        const emotions = Object.keys(emotionColors);
+        const data = emotions.map(emotion => emotionCounts[emotion] || 0);
+        const colors = emotions.map(emotion => emotionColors[emotion]);
+        
+        // Create or update chart
+        const ctx = document.getElementById('emotionRadarChart');
+        
+        if (emotionChart) {
+            emotionChart.destroy();
+        }
+        
+        emotionChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: emotions.map(e => emotionTranslations[e]),
+                datasets: [{
+                    label: 'Visited Places',
+                    data: data,
+                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                    borderColor: '#667eea',
+                    borderWidth: 2,
+                    pointBackgroundColor: colors,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            }
                         }
                     }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
                 }
             }
-        }
-    });
+        });
+        
+        // Update emotion stats
+        const statsHTML = emotions.map(emotion => {
+            const count = emotionCounts[emotion] || 0;
+            if (count === 0) return '';
+            return `
+                <div class="radar-stat-item">
+                    <div class="radar-stat-color" style="background: ${emotionColors[emotion]}"></div>
+                    <div class="radar-stat-label">${emotionTranslations[emotion]}</div>
+                    <div class="radar-stat-value">${count}</div>
+                </div>
+            `;
+        }).join('');
+        
+        document.getElementById('radarStats').innerHTML = statsHTML;
+    }
     
-    // Update stats
-    const statsHTML = emotions.map(emotion => {
-        const count = emotionCounts[emotion] || 0;
-        if (count === 0) return '';
-        return `
-            <div class="radar-stat-item">
-                <div class="radar-stat-color" style="background: ${emotionColors[emotion]}"></div>
-                <div class="radar-stat-label">${emotionTranslations[emotion]}</div>
-                <div class="radar-stat-value">${count}</div>
+    // 3. Update Category Breakdown
+    const categoryData = Object.keys(categoryTranslations).map(category => {
+        const visitedCount = visitedPOIs.filter(poi => poi.category_tag === category).length;
+        const totalCount = poiData.filter(poi => poi.category_tag === category).length;
+        const percentage = totalCount > 0 ? (visitedCount / totalCount) * 100 : 0;
+        const categoryColor = poiData.find(poi => poi.category_tag === category)?.category_color || '#999';
+        
+        return { category, visitedCount, totalCount, percentage, categoryColor };
+    }).filter(item => item.totalCount > 0);
+    
+    const categoryHTML = categoryData.map(item => `
+        <div class="category-bar-item">
+            <div class="category-bar-header">
+                <div class="category-bar-name">${categoryTranslations[item.category]}</div>
+                <div class="category-bar-count">${item.visitedCount}/${item.totalCount}</div>
             </div>
-        `;
-    }).join('');
+            <div class="category-bar-fill">
+                <div class="category-bar-progress" style="width: ${item.percentage}%; background: ${item.categoryColor};"></div>
+            </div>
+        </div>
+    `).join('');
     
-    document.getElementById('radarStats').innerHTML = statsHTML;
+    document.getElementById('categoryBreakdown').innerHTML = categoryHTML || '<p style="text-align: center; color: #999;">No data available</p>';
+    
+    // 4. Generate Travel Insights
+    const insights = [];
+    
+    if (visitedPOIs.length > 0) {
+        insights.push({
+            icon: '🎉',
+            text: `You've explored ${visitedPOIs.length} amazing places in Singapore!`
+        });
+        
+        if (topEmotion) {
+            insights.push({
+                icon: '💫',
+                text: `Your journey leans towards ${emotionTranslations[topEmotion].toLowerCase()} experiences!`
+            });
+        }
+        
+        if (topCategory) {
+            insights.push({
+                icon: '🏆',
+                text: `You're particularly drawn to ${categoryTranslations[topCategory].toLowerCase()} attractions.`
+            });
+        }
+    }
+    
+    if (plannedPOIs.length > 0) {
+        insights.push({
+            icon: '📅',
+            text: `You have ${plannedPOIs.length} places on your to-visit list. Keep exploring!`
+        });
+    }
+    
+    if (visitedPOIs.length === 0 && plannedPOIs.length === 0) {
+        insights.push({
+            icon: '🗺️',
+            text: 'Start your Singapore adventure! Mark places as "To Visit" to plan your journey.'
+        });
+    }
+    
+    if (completionRate >= 50) {
+        insights.push({
+            icon: '🌟',
+            text: `Wow! You've completed over ${completionRate}% of the journey. You're a Singapore expert!`
+        });
+    }
+    
+    const insightsHTML = insights.map(insight => `
+        <div class="insight-item">
+            <div class="insight-icon">${insight.icon}</div>
+            <div class="insight-text">${insight.text}</div>
+        </div>
+    `).join('');
+    
+    document.getElementById('insightsList').innerHTML = insightsHTML;
 }
 
 // ==================== Smart Recommendations ====================
