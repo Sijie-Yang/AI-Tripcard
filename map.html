@@ -65,25 +65,16 @@
     </div>
 
     <!-- Card Swipe Interface -->
-    <div class="card-swipe-container" id="cardSwipeContainer" style="display: none;">
-        <div class="card-progress" id="cardProgress">0 / 60</div>
-        <div class="card-stack" id="cardStack">
-            <div class="swipe-card" id="swipeCard">
-                <img id="swipeCardImage" class="swipe-card-image" alt="">
-                <div class="swipe-card-content">
-                    <h2 class="swipe-card-title" id="swipeCardTitle"></h2>
-                </div>
-                <div class="swipe-hint left" id="swipeLeftHint">← Nope</div>
-                <div class="swipe-hint right" id="swipeRightHint">Yes →</div>
+    <div class="progress" id="progress" style="display: none;">0 / 60</div>
+    
+    <div class="card-container" id="cardContainer">
+        <div class="card" id="card">
+            <img id="cardImage" class="card-image" alt="">
+            <div class="card-content">
+                <h2 class="card-title" id="cardTitle"></h2>
             </div>
-        </div>
-        <div class="swipe-buttons">
-            <button class="swipe-btn nope" id="swipeLeftBtn">
-                <span style="font-size: 28px;">✕</span>
-            </button>
-            <button class="swipe-btn like" id="swipeRightBtn">
-                <span style="font-size: 28px;">✓</span>
-            </button>
+            <div class="swipe-hint left" id="leftHint">← Not interested</div>
+            <div class="swipe-hint right" id="rightHint">Interested →</div>
         </div>
     </div>
 

@@ -2303,11 +2303,12 @@ if (localStorage.getItem('cardModeComplete') === 'true') {
 function startCardMode(mode) {
     cardMode = mode;
     document.getElementById('cardModeSelector').style.display = 'none';
-    document.getElementById('cardSwipeContainer').style.display = 'flex';
+    document.getElementById('cardContainer').classList.add('active');
+    document.getElementById('progress').style.display = 'block';
     
     // Update hint text based on mode
-    const leftHint = document.getElementById('swipeLeftHint');
-    const rightHint = document.getElementById('swipeRightHint');
+    const leftHint = document.getElementById('leftHint');
+    const rightHint = document.getElementById('rightHint');
     
     if (mode === 'local') {
         leftHint.textContent = "← Haven't been";
@@ -2364,7 +2365,7 @@ function showNextCard() {
     const poi = poiData[currentCardIndex];
     
     // Update progress
-    document.getElementById('cardProgress').textContent = `${currentCardIndex + 1} / ${poiData.length}`;
+    document.getElementById('progress').textContent = `${currentCardIndex + 1} / ${poiData.length}`;
     
     // Navigate map to POI location
     map.flyTo([poi.lat, poi.lng], 15, {
@@ -2374,8 +2375,8 @@ function showNextCard() {
     
     // Wait for map animation, then show card
     setTimeout(() => {
-        const cardImage = document.getElementById('swipeCardImage');
-        const cardTitle = document.getElementById('swipeCardTitle');
+        const cardImage = document.getElementById('cardImage');
+        const cardTitle = document.getElementById('cardTitle');
         
         // Use POI images
         const imageId = String(poi.id).padStart(3, '0');
@@ -2388,7 +2389,7 @@ function showNextCard() {
         cardTitle.textContent = poi.name;
         
         // Reset card position
-        const card = document.getElementById('swipeCard');
+        const card = document.getElementById('card');
         card.style.transform = 'translate(0, 0) rotate(0deg)';
         card.style.opacity = '1';
     }, 800);
@@ -2397,7 +2398,7 @@ function showNextCard() {
 // Handle swipe decision
 function handleSwipe(direction) {
     const poi = poiData[currentCardIndex];
-    const card = document.getElementById('swipeCard');
+    const card = document.getElementById('card');
     
     // Animate card out
     const distance = direction === 'right' ? 1000 : -1000;
@@ -2407,8 +2408,8 @@ function handleSwipe(direction) {
     
     // Show hint
     const hint = direction === 'right' ? 
-        document.getElementById('swipeRightHint') : 
-        document.getElementById('swipeLeftHint');
+        document.getElementById('rightHint') : 
+        document.getElementById('leftHint');
     hint.style.opacity = '1';
     setTimeout(() => {
         hint.style.opacity = '0';
@@ -2444,7 +2445,8 @@ function handleSwipe(direction) {
 
 // Complete card mode
 function completeCardMode() {
-    document.getElementById('cardSwipeContainer').style.display = 'none';
+    document.getElementById('cardContainer').classList.remove('active');
+    document.getElementById('progress').style.display = 'none';
     isCardModeComplete = true;
     localStorage.setItem('cardModeComplete', 'true');
     localStorage.setItem('cardModeData', JSON.stringify(cardSwipeData));
@@ -2463,30 +2465,18 @@ function completeCardMode() {
     updateStats();
 }
 
-// Initialize card swipe buttons
-document.getElementById('swipeLeftBtn').addEventListener('click', () => {
-    if (currentCardIndex < poiData.length) {
-        handleSwipe('left');
-    }
-});
-
-document.getElementById('swipeRightBtn').addEventListener('click', () => {
-    if (currentCardIndex < poiData.length) {
-        handleSwipe('right');
-    }
-});
-
-// Touch swipe support
+// Touch swipe support (match cards.html exactly)
 let touchStartX = 0;
 let touchStartY = 0;
-const swipeCard = document.getElementById('swipeCard');
+const card = document.getElementById('card');
 
-swipeCard.addEventListener('touchstart', (e) => {
+card.addEventListener('touchstart', (e) => {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
+    card.classList.add('dragging');
 });
 
-swipeCard.addEventListener('touchmove', (e) => {
+card.addEventListener('touchmove', (e) => {
     if (!touchStartX || !touchStartY) return;
     
     const touchX = e.touches[0].clientX;
@@ -2497,11 +2487,11 @@ swipeCard.addEventListener('touchmove', (e) => {
     
     // Apply transform
     const rotation = deltaX / 20;
-    swipeCard.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
+    card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
     
     // Show hints
-    const leftHint = document.getElementById('swipeLeftHint');
-    const rightHint = document.getElementById('swipeRightHint');
+    const leftHint = document.getElementById('leftHint');
+    const rightHint = document.getElementById('rightHint');
     
     if (Math.abs(deltaX) > 50) {
         if (deltaX > 0) {
@@ -2514,20 +2504,22 @@ swipeCard.addEventListener('touchmove', (e) => {
     }
 });
 
-swipeCard.addEventListener('touchend', (e) => {
+card.addEventListener('touchend', (e) => {
     if (!touchStartX || !touchStartY) return;
     
     const touchX = e.changedTouches[0].clientX;
     const deltaX = touchX - touchStartX;
+    
+    card.classList.remove('dragging');
     
     if (Math.abs(deltaX) > 100) {
         // Swipe detected
         handleSwipe(deltaX > 0 ? 'right' : 'left');
     } else {
         // Reset card
-        swipeCard.style.transform = 'translate(0, 0) rotate(0deg)';
-        document.getElementById('swipeLeftHint').style.opacity = 0;
-        document.getElementById('swipeRightHint').style.opacity = 0;
+        card.style.transform = 'translate(0, 0) rotate(0deg)';
+        document.getElementById('leftHint').style.opacity = 0;
+        document.getElementById('rightHint').style.opacity = 0;
     }
     
     touchStartX = 0;
