@@ -91,20 +91,16 @@ async function loadPOIData() {
 // 创建自定义图标
 function createCustomIcon(color, status) {
     let markerClass = 'custom-marker';
-    let extraStyle = '';
-    let badge = '';
     
     if (status === 'visited') {
         markerClass += ' visited';
-        badge = '<span class="status-badge">✓</span>';
     } else if (status === 'planned') {
         markerClass += ' planned';
-        badge = '<span class="status-badge">★</span>';
     }
     
     return L.divIcon({
         className: 'custom-div-icon',
-        html: `<div class="${markerClass}" style="background-color: ${color}">${badge}</div>`,
+        html: `<div class="${markerClass}" style="background-color: ${color}"></div>`,
         iconSize: [35, 35],
         iconAnchor: [17, 35],
         popupAnchor: [0, -35]
