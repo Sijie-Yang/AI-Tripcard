@@ -2287,12 +2287,15 @@ let currentCardIndex = 0;
 let cardSwipeData = [];
 let isCardModeComplete = false;
 
-// Check if card mode was already completed
+// Check if card mode was already completed or skipped
 if (localStorage.getItem('cardModeComplete') === 'true') {
     isCardModeComplete = true;
     // Hide mode selector, show map immediately
     document.getElementById('cardModeSelector').style.display = 'none';
     document.getElementById('collectionBtn').style.display = 'flex';
+} else if (localStorage.getItem('cardModeSkipped') === 'true') {
+    // User skipped card mode, hide mode selector
+    document.getElementById('cardModeSelector').style.display = 'none';
 }
 
 // Start card mode
@@ -2316,6 +2319,21 @@ function startCardMode(mode) {
     // Initialize first card
     currentCardIndex = 0;
     showNextCard();
+}
+
+// Skip card mode and go directly to map
+function skipCardMode() {
+    // Hide mode selector
+    document.getElementById('cardModeSelector').style.display = 'none';
+    
+    // Mark as skipped in local storage
+    localStorage.setItem('cardModeSkipped', 'true');
+    
+    // Show the map with all markers
+    displayMarkers();
+    updateStats();
+    
+    console.log('Card mode skipped, showing map directly');
 }
 
 // Show next card with map animation
@@ -2540,3 +2558,4 @@ document.getElementById('collectionBtn').addEventListener('click', () => {
 
 // Make functions global
 window.startCardMode = startCardMode;
+window.skipCardMode = skipCardMode;
