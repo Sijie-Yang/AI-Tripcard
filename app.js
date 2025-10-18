@@ -1041,7 +1041,7 @@ function makeTextInteractive(text) {
 function initRecenterButton() {
     document.getElementById('recenterBtn').addEventListener('click', () => {
         // Use a smaller zoom level to show the whole Singapore
-        map.setView([1.3521, 103.8198], 11, {
+        map.setView([1.3521, 103.8198], 10, {
             animate: true,
             duration: 1
         });
