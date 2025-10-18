@@ -122,93 +122,14 @@ body {
     font-size: 10px;
 }
 
-/* 去过 - X形（两条斜线交叉） */
-.custom-marker.visited {
-    width: 32px;
-    height: 32px;
-    border-radius: 0;
-    transform: rotate(0deg);
-    border: none;
-    background: transparent !important;
-    box-shadow: none;
-    position: relative;
+/* SVG标记样式 */
+.marker-svg {
+    cursor: pointer;
+    transition: transform 0.3s;
 }
 
-.custom-marker.visited:hover {
+.marker-svg:hover {
     transform: scale(1.15);
-}
-
-.custom-marker.visited .x-line1 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 32px;
-    height: 8px;
-    transform: translate(-50%, -50%) rotate(45deg);
-    border: 2px solid white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-}
-
-.custom-marker.visited .x-line2 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 32px;
-    height: 8px;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    border: 2px solid white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-}
-
-.custom-marker.visited::before,
-.custom-marker.visited::after {
-    content: none;
-}
-
-/* 打算去 - 加号形（十字形） */
-.custom-marker.planned {
-    width: 32px;
-    height: 32px;
-    border-radius: 0;
-    position: relative;
-    border: none;
-    background: transparent !important;
-    box-shadow: none;
-}
-
-.custom-marker.planned:hover {
-    transform: scale(1.15);
-}
-
-.custom-marker.planned .plus-h {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 32px;
-    height: 10px;
-    transform: translate(-50%, -50%);
-    border: 2px solid white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    border-radius: 2px;
-}
-
-.custom-marker.planned .plus-v {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 10px;
-    height: 32px;
-    transform: translate(-50%, -50%);
-    border: 2px solid white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    border-radius: 2px;
-}
-
-.custom-marker.planned::before,
-.custom-marker.planned::after {
-    content: none;
 }
 
 .status-badge {

@@ -91,23 +91,31 @@ async function loadPOIData() {
 
 // 创建自定义图标
 function createCustomIcon(color, status) {
-    let markerClass = 'custom-marker';
     let html = '';
     
     if (status === 'visited') {
-        markerClass += ' visited';
-        html = `<div class="${markerClass}">
-                    <div class="x-line1" style="background-color: ${color}"></div>
-                    <div class="x-line2" style="background-color: ${color}"></div>
-                </div>`;
+        // X形 - 使用SVG绘制完整的X
+        html = `<svg class="marker-svg" viewBox="0 0 32 32" width="32" height="32">
+                    <path d="M 8,8 L 24,24 M 24,8 L 8,24" 
+                          stroke="${color}" 
+                          stroke-width="6" 
+                          stroke-linecap="round"
+                          fill="none"
+                          style="filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3))"/>
+                </svg>`;
     } else if (status === 'planned') {
-        markerClass += ' planned';
-        html = `<div class="${markerClass}">
-                    <div class="plus-h" style="background-color: ${color}"></div>
-                    <div class="plus-v" style="background-color: ${color}"></div>
-                </div>`;
+        // 加号形 - 使用SVG绘制完整的+
+        html = `<svg class="marker-svg" viewBox="0 0 32 32" width="32" height="32">
+                    <path d="M 16,6 L 16,26 M 6,16 L 26,16" 
+                          stroke="${color}" 
+                          stroke-width="6" 
+                          stroke-linecap="round"
+                          fill="none"
+                          style="filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3))"/>
+                </svg>`;
     } else {
-        html = `<div class="${markerClass}" style="background-color: ${color}"></div>`;
+        // 圆形
+        html = `<div class="custom-marker" style="background-color: ${color}"></div>`;
     }
     
     return L.divIcon({
