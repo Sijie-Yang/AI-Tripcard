@@ -2315,19 +2315,11 @@ body {
     animation: fadeIn 0.5s ease;
 }
 
-.mode-logo {
-    width: 100px;
-    height: auto;
-    margin-bottom: 30px;
-    animation: float 3s ease-in-out infinite;
-}
-
 .card-mode-selector h1 {
     font-size: 2.5rem;
     font-weight: 800;
     color: white;
     margin-bottom: 0.5rem;
-    margin-top: 3rem;
     text-align: center;
     letter-spacing: -0.02em;
 }
