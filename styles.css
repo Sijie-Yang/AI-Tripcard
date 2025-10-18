@@ -2441,6 +2441,30 @@ body {
     color: #C2185B;
 }
 
+/* Mode Selector Responsive Design */
+@media (max-width: 768px) {
+    .card-mode-selector h1 {
+        font-size: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .mode-cards {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .mode-card {
+        width: 100%;
+        max-width: 300px;
+        padding: 1.8rem 1.2rem;
+    }
+    
+    .mode-icon {
+        width: 140px;
+        height: 140px;
+    }
+}
+
 /* Card Swipe Container */
 .card-swipe-container {
     position: fixed;
