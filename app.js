@@ -2291,20 +2291,33 @@ let isCardModeComplete = false;
 
 // Initialize card mode status (will be called after DOM loads)
 function initCardModeStatus() {
+    console.log('🎴 initCardModeStatus called');
     // Check if card mode was already completed or skipped
     if (localStorage.getItem('cardModeComplete') === 'true') {
         isCardModeComplete = true;
+        console.log('✅ Card mode already completed, hiding selector');
         // Hide mode selector, show map immediately
         const modeSelector = document.getElementById('cardModeSelector');
         const collectionBtn = document.getElementById('collectionBtn');
-        if (modeSelector) modeSelector.style.display = 'none';
+        if (modeSelector) {
+            modeSelector.style.display = 'none';
+            modeSelector.style.visibility = 'hidden';
+            modeSelector.style.pointerEvents = 'none';
+        }
         if (collectionBtn) collectionBtn.style.display = 'flex';
     } else if (localStorage.getItem('cardModeSkipped') === 'true') {
+        console.log('⏭️ Card mode was skipped, hiding selector');
         // User skipped card mode, hide mode selector, show restart button
         const modeSelector = document.getElementById('cardModeSelector');
         const restartBtn = document.getElementById('restartCardBtn');
-        if (modeSelector) modeSelector.style.display = 'none';
+        if (modeSelector) {
+            modeSelector.style.display = 'none';
+            modeSelector.style.visibility = 'hidden';
+            modeSelector.style.pointerEvents = 'none';
+        }
         if (restartBtn) restartBtn.style.display = 'flex';
+    } else {
+        console.log('📝 First time, showing mode selector');
     }
 }
 
@@ -2359,8 +2372,11 @@ function startCardMode(mode) {
 
 // Skip card mode and go directly to map
 function skipCardMode() {
-    // Hide mode selector
-    document.getElementById('cardModeSelector').style.display = 'none';
+    // Hide mode selector completely
+    const modeSelector = document.getElementById('cardModeSelector');
+    modeSelector.style.display = 'none';
+    modeSelector.style.visibility = 'hidden';
+    modeSelector.style.pointerEvents = 'none';
     
     // Mark as skipped in local storage
     localStorage.setItem('cardModeSkipped', 'true');
@@ -2384,7 +2400,10 @@ function restartCardMode() {
     localStorage.removeItem('cardModeSkipped');
     
     // Show mode selector
-    document.getElementById('cardModeSelector').style.display = 'flex';
+    const modeSelector = document.getElementById('cardModeSelector');
+    modeSelector.style.display = 'flex';
+    modeSelector.style.visibility = 'visible';
+    modeSelector.style.pointerEvents = 'auto';
     
     console.log('Restarting card mode, showing mode selector');
 }
