@@ -7,58 +7,58 @@ let visitStatus = {}; // 存储访问状态 {poi_id: 'visited' | 'planned' | 'un
 let currentTileLayer = null;
 let currentMapStyle = 'voyager';
 
-// 地图样式配置
+// Map style configuration
 const mapStyles = {
     voyager: {
-        name: '简约',
+        name: 'Voyager',
         url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
         attribution: '© OpenStreetMap © CARTO',
         maxZoom: 19
     },
     positron: {
-        name: '极简白',
+        name: 'Light',
         url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
         attribution: '© OpenStreetMap © CARTO',
         maxZoom: 19
     },
     dark: {
-        name: '深色',
+        name: 'Dark',
         url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
         attribution: '© OpenStreetMap © CARTO',
         maxZoom: 19
     },
     osm: {
-        name: '标准',
+        name: 'Standard',
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
     },
     satellite: {
-        name: '卫星',
+        name: 'Satellite',
         url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         attribution: '© Esri',
         maxZoom: 19
     }
 };
 
-// 类别翻译
+// Category translations
 const categoryTranslations = {
-    'urban_iconic': '都市地标',
-    'creative_scene': '艺术创意',
-    'cultural_heritage': '文化遗产',
-    'serene_nature': '自然宁静',
-    'social_vibe': '社交活力',
-    'hidden_gems': '隐藏宝藏'
+    'urban_iconic': 'Urban Iconic',
+    'creative_scene': 'Arts & Culture',
+    'cultural_heritage': 'Heritage',
+    'serene_nature': 'Nature',
+    'social_vibe': 'Social Vibe',
+    'hidden_gems': 'Hidden Gems'
 };
 
-// 情感标签翻译
+// Emotion tag translations
 const emotionTranslations = {
-    'vibrant': '活力',
-    'romantic': '浪漫',
-    'adventurous': '冒险',
-    'creative': '创意',
-    'nostalgic': '怀旧',
-    'calm': '平静'
+    'vibrant': 'Vibrant',
+    'romantic': 'Romantic',
+    'adventurous': 'Adventure',
+    'creative': 'Creative',
+    'nostalgic': 'Nostalgic',
+    'calm': 'Calm'
 };
 
 // 加载访问状态
@@ -217,12 +217,12 @@ function displayMarkers(data) {
         
         const marker = L.marker([poi.lat, poi.lng], { icon: icon });
         
-        // 创建popup内容
+        // Create popup content
         const popupContent = `
             <div class="popup-title">${poi.name}</div>
             <div class="popup-category">${categoryTranslations[poi.category] || poi.category}</div>
             <div class="popup-description">${poi.description}</div>
-            <div class="popup-more" onclick="showDetail('${poi.id}')">查看详情 →</div>
+            <div class="popup-more" onclick="showDetail('${poi.id}')">View Details →</div>
         `;
         
         marker.bindPopup(popupContent, {
