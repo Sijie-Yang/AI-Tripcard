@@ -1213,12 +1213,12 @@ function clearRoute() {
     }
 }
 
-// Hide loading screen
-function hideLoadingScreen() {
-    setTimeout(() => {
-        document.getElementById('loadingScreen').classList.add('hidden');
-    }, 1500);
-}
+// Hide loading screen - removed, no longer using loading screen
+// function hideLoadingScreen() {
+//     setTimeout(() => {
+//         document.getElementById('loadingScreen').classList.add('hidden');
+//     }, 1500);
+// }
 
 // setVisitStatus and getFilteredData are defined earlier in the file
 
@@ -1317,7 +1317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMap();
     loadPOIData().then(() => {
         updateStats();
-        hideLoadingScreen();
+        // hideLoadingScreen(); // No longer needed
     });
     initEventListeners();
     initAIAssistant();
