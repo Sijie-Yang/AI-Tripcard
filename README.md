@@ -2,7 +2,7 @@
 
 > Celebrating 60 years of Singapore with an AI-powered interactive map for discovering 60 iconic locations
 
-![SG TripCard Homepage](screenshots/SG%20TripCard%20for%20SG%2060.png)
+<img src="screenshots/SG%20TripCard%20for%20SG%2060.png" alt="SG TripCard Homepage" width="50%"/>
 
 ---
 
@@ -16,9 +16,10 @@ From Marina Bay Sands to hidden hawker centers - explore the best of Singapore a
 - ⭐ **To Visit** - Your wishlist destinations
 - ○ **No Visit** - Not on your radar yet
 
-![Map Overview with Markers](screenshots/Place%20Overview%20-%20Emotion.png)
+<img src="screenshots/Place%20Overview%20-%20Emotion.png" alt="Map Overview with Markers" width="50%"/>
 
-![Visit Status Markers](screenshots/Place%20Visit%20Status%20Markers.png)
+<img src="screenshots/Place%20Visit%20Status%20Markers.png" alt="Visit Status Markers" width="50%"/>
+
 *Track your journey with intuitive status markers*
 
 ---
@@ -32,7 +33,7 @@ Swipe through 60 beautifully designed cards in two modes:
 
 Swipe right ➡️ for interested/visited, left ⬅️ for not interested/unvisited
 
-![Card Swiping Interface](screenshots/Tourist%20Mode%20-%20Card%20-%20Marina%20Bay%20Sands.png)
+<img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Marina%20Bay%20Sands.png" alt="Card Swiping Interface" width="50%"/>
 
 **More Card Examples:**
 
@@ -49,9 +50,10 @@ Toggle between two intelligent filtering modes:
 - **🎨 Emotion Tags**: Vibrant, Romantic, Adventurous, Creative, Nostalgic, Calm
 - **🗂️ Category Tags**: Urban Iconic, Arts & Culture, Heritage, Nature, Social Vibe, Hidden Gems
 
-![Emotion and Category Classification](screenshots/Place%20Emotion.png)
+<img src="screenshots/Place%20Emotion.png" alt="Emotion and Category Classification" width="50%"/>
 
-![Category Filter - Nature](screenshots/Place%20Category%20-%20Nature.png)
+<img src="screenshots/Place%20Category%20-%20Nature.png" alt="Category Filter - Nature" width="50%"/>
+
 *Filter locations by category to find exactly what you're looking for*
 
 ### 3️⃣ **AI-Powered Chat Assistant**
@@ -61,14 +63,16 @@ Smart LLM chatbot that helps you:
 - 📍 **Update Markers**: Modify visit status directly through conversation
 - 📊 **Trip Summary**: Analyze your journey with visual statistics
 
-![AI Route Planning](screenshots/AI%20Route%20Planner-Route.png)
+<img src="screenshots/AI%20Route%20Planner-Route.png" alt="AI Route Planning" width="50%"/>
 
 **Additional AI Features:**
 
-![AI Chat Recommendations](screenshots/POI%20Chat%20Recommendation.png)
+<img src="screenshots/POI%20Chat%20Recommendation.png" alt="AI Chat Recommendations" width="50%"/>
+
 *AI provides personalized recommendations based on your preferences*
 
-![Travel Time Analysis](screenshots/AI%20Route%20Planner-Travel%20Time-List.png)
+<img src="screenshots/AI%20Route%20Planner-Travel%20Time-List.png" alt="Travel Time Analysis" width="50%"/>
+
 *Detailed travel times for different transportation modes*
 
 ### 4️⃣ **Review Mode**
@@ -77,7 +81,7 @@ Quickly browse all 60 locations:
 - View each location with map highlight
 - No status changes - pure exploration
 
-![Review Mode](screenshots/Review%20Card-Merlion%20Park.png)
+<img src="screenshots/Review%20Card-Merlion%20Park.png" alt="Review Mode" width="50%"/>
 
 ### 5️⃣ **Card Collection Gallery**
 Visual grid of all 60 locations:
@@ -85,7 +89,7 @@ Visual grid of all 60 locations:
 - Click any card to jump to map location
 - Perfect for overview and quick access
 
-![Card Collection Gallery](screenshots/Card%20collection.png)
+<img src="screenshots/Card%20collection.png" alt="Card Collection Gallery" width="50%"/>
 
 ---
 
@@ -98,7 +102,7 @@ Visual grid of all 60 locations:
 - **Charts**: Chart.js for analytics
 - **Storage**: Browser LocalStorage
 
-![Control Buttons and Map Styles](screenshots/Change%20Map%20Style-Darkmode.png)
+<img src="screenshots/Change%20Map%20Style-Darkmode.png" alt="Control Buttons and Map Styles" width="50%"/>
 
 ---
 
@@ -132,9 +136,9 @@ open http://localhost:8000
 5. **Use AI**: Chat for recommendations, plan routes, get insights
 6. **Review & Reset**: Use control buttons to review or start over
 
-![Mode Selection - Local vs Tourist](screenshots/Local%20-%20Tourist%20-%20Mode%20-%20Choice.png)
+<img src="screenshots/Local%20-%20Tourist%20-%20Mode%20-%20Choice.png" alt="Mode Selection - Local vs Tourist" width="50%"/>
 
-![Journey Progress and Statistics](screenshots/My%20Journey%20Summary.png)
+<img src="screenshots/My%20Journey%20Summary.png" alt="Journey Progress and Statistics" width="50%"/>
 
 ---
 
@@ -186,4 +190,4 @@ Built with ❤️ for hackathon
 
 **🎊 Start Your Singapore Adventure Today!**
 
-![Swipe Card Guidance](screenshots/Swipe%20Card%20Guidance.png)
+<img src="screenshots/Swipe%20Card%20Guidance.png" alt="Swipe Card Guidance" width="50%"/>
