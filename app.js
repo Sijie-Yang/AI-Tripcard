@@ -101,7 +101,7 @@ function initMap() {
     // 创建地图实例，中心设在新加坡
     map = L.map('map', {
         center: [1.3521, 103.8198],
-        zoom: 13,  // 放大一级，显示更多细节
+        zoom: 14,  // 街区级别，能清晰看到景点
         zoomControl: true,
         attributionControl: true
     });
