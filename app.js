@@ -2279,3 +2279,263 @@ function generateRecommendations(currentPOI) {
     // 1. User clicks "Clear Highlights" button
     // 2. New AI conversation generates new highlights
 }
+
+// ==================== Card Mode Integration ====================
+
+let cardMode = null; // 'local' or 'tourist'
+let currentCardIndex = 0;
+let cardSwipeData = [];
+let isCardModeComplete = false;
+
+// Check if card mode was already completed
+if (localStorage.getItem('cardModeComplete') === 'true') {
+    isCardModeComplete = true;
+    // Hide mode selector, show map immediately
+    document.getElementById('cardModeSelector').style.display = 'none';
+    document.getElementById('collectionBtn').style.display = 'flex';
+}
+
+// Start card mode
+function startCardMode(mode) {
+    cardMode = mode;
+    document.getElementById('cardModeSelector').style.display = 'none';
+    document.getElementById('cardSwipeContainer').style.display = 'flex';
+    
+    // Update hint text based on mode
+    const leftHint = document.getElementById('swipeLeftHint');
+    const rightHint = document.getElementById('swipeRightHint');
+    
+    if (mode === 'local') {
+        leftHint.textContent = "← Haven't been";
+        rightHint.textContent = "Been there →";
+    } else {
+        leftHint.textContent = "← Not interested";
+        rightHint.textContent = "Interested →";
+    }
+    
+    // Initialize first card
+    currentCardIndex = 0;
+    showNextCard();
+}
+
+// Show next card with map animation
+function showNextCard() {
+    if (currentCardIndex >= poiData.length) {
+        completeCardMode();
+        return;
+    }
+    
+    const poi = poiData[currentCardIndex];
+    
+    // Update progress
+    document.getElementById('cardProgress').textContent = `${currentCardIndex + 1} / ${poiData.length}`;
+    
+    // Navigate map to POI location
+    map.flyTo([poi.lat, poi.lng], 15, {
+        duration: 1.5,
+        easeLinearity: 0.5
+    });
+    
+    // Wait for map animation, then show card
+    setTimeout(() => {
+        const cardImage = document.getElementById('swipeCardImage');
+        const cardTitle = document.getElementById('swipeCardTitle');
+        
+        // Use POI images if available
+        const imageId = String(poi.id).padStart(3, '0');
+        cardImage.src = `60 images/poi_${imageId}.png`;
+        cardImage.onerror = () => {
+            // Fallback if image not found
+            cardImage.style.display = 'none';
+        };
+        cardTitle.textContent = poi.name;
+        
+        // Reset card position
+        const card = document.getElementById('swipeCard');
+        card.style.transform = 'translate(0, 0) rotate(0deg)';
+        card.style.opacity = '1';
+    }, 800);
+}
+
+// Handle swipe decision
+function handleSwipe(direction) {
+    const poi = poiData[currentCardIndex];
+    const card = document.getElementById('swipeCard');
+    
+    // Animate card out
+    const distance = direction === 'right' ? 1000 : -1000;
+    const rotation = direction === 'right' ? 30 : -30;
+    card.style.transform = `translate(${distance}px, -100px) rotate(${rotation}deg)`;
+    card.style.opacity = '0';
+    
+    // Show hint
+    const hint = direction === 'right' ? 
+        document.getElementById('swipeRightHint') : 
+        document.getElementById('swipeLeftHint');
+    hint.style.opacity = '1';
+    setTimeout(() => {
+        hint.style.opacity = '0';
+    }, 300);
+    
+    // Update POI status based on mode and swipe direction
+    let newStatus;
+    if (cardMode === 'local') {
+        // Local mode: right = visited, left = not visited
+        newStatus = direction === 'right' ? 'visited' : 'unvisited';
+    } else {
+        // Tourist mode: right = to visit, left = not interested
+        newStatus = direction === 'right' ? 'planned' : 'unvisited';
+    }
+    
+    setVisitStatus(poi.id, newStatus);
+    
+    // Record swipe
+    cardSwipeData.push({
+        poiId: poi.id,
+        poiName: poi.name,
+        direction: direction,
+        status: newStatus,
+        timestamp: new Date().toISOString()
+    });
+    
+    // Move to next card
+    currentCardIndex++;
+    setTimeout(() => {
+        showNextCard();
+    }, 600);
+}
+
+// Complete card mode
+function completeCardMode() {
+    document.getElementById('cardSwipeContainer').style.display = 'none';
+    isCardModeComplete = true;
+    localStorage.setItem('cardModeComplete', 'true');
+    localStorage.setItem('cardModeData', JSON.stringify(cardSwipeData));
+    
+    // Show collection button
+    document.getElementById('collectionBtn').style.display = 'flex';
+    
+    // Show completion message
+    alert(`🎉 Great job! You've discovered all 60 places!\n\nNow explore them on the map or check your collection anytime.`);
+    
+    // Zoom out to show all of Singapore
+    map.setView([1.3521, 103.8198], 11);
+    
+    // Refresh map markers to show updated statuses
+    displayMarkers(poiData);
+    updateStats();
+}
+
+// Initialize card swipe buttons
+document.getElementById('swipeLeftBtn').addEventListener('click', () => {
+    if (currentCardIndex < poiData.length) {
+        handleSwipe('left');
+    }
+});
+
+document.getElementById('swipeRightBtn').addEventListener('click', () => {
+    if (currentCardIndex < poiData.length) {
+        handleSwipe('right');
+    }
+});
+
+// Touch swipe support
+let touchStartX = 0;
+let touchStartY = 0;
+const swipeCard = document.getElementById('swipeCard');
+
+swipeCard.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+});
+
+swipeCard.addEventListener('touchmove', (e) => {
+    if (!touchStartX || !touchStartY) return;
+    
+    const touchX = e.touches[0].clientX;
+    const touchY = e.touches[0].clientY;
+    
+    const deltaX = touchX - touchStartX;
+    const deltaY = touchY - touchStartY;
+    
+    // Apply transform
+    const rotation = deltaX / 20;
+    swipeCard.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
+    
+    // Show hints
+    const leftHint = document.getElementById('swipeLeftHint');
+    const rightHint = document.getElementById('swipeRightHint');
+    
+    if (Math.abs(deltaX) > 50) {
+        if (deltaX > 0) {
+            rightHint.style.opacity = Math.min(deltaX / 100, 1);
+            leftHint.style.opacity = 0;
+        } else {
+            leftHint.style.opacity = Math.min(Math.abs(deltaX) / 100, 1);
+            rightHint.style.opacity = 0;
+        }
+    }
+});
+
+swipeCard.addEventListener('touchend', (e) => {
+    if (!touchStartX || !touchStartY) return;
+    
+    const touchX = e.changedTouches[0].clientX;
+    const deltaX = touchX - touchStartX;
+    
+    if (Math.abs(deltaX) > 100) {
+        // Swipe detected
+        handleSwipe(deltaX > 0 ? 'right' : 'left');
+    } else {
+        // Reset card
+        swipeCard.style.transform = 'translate(0, 0) rotate(0deg)';
+        document.getElementById('swipeLeftHint').style.opacity = 0;
+        document.getElementById('swipeRightHint').style.opacity = 0;
+    }
+    
+    touchStartX = 0;
+    touchStartY = 0;
+});
+
+// Collection button - show all cards
+document.getElementById('collectionBtn').addEventListener('click', () => {
+    const savedData = JSON.parse(localStorage.getItem('cardModeData') || '[]');
+    
+    let html = '<div style="padding: 20px;"><h2 style="margin-bottom: 20px;">🎴 My Card Collection</h2>';
+    html += '<div style="display: grid; gap: 15px;">';
+    
+    savedData.forEach((card, index) => {
+        const poi = poiData.find(p => p.id === card.poiId);
+        if (!poi) return;
+        
+        const statusEmoji = card.status === 'visited' ? '✓' : 
+                           card.status === 'planned' ? '⭐' : '○';
+        const statusText = card.status === 'visited' ? 'Visited' : 
+                          card.status === 'planned' ? 'To Visit' : 'Not interested';
+        
+        html += `
+            <div style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+                <div style="font-size: 24px;">${statusEmoji}</div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600;">${poi.name}</div>
+                    <div style="font-size: 12px; color: #999;">${statusText}</div>
+                </div>
+                <div style="font-size: 12px; color: #999;">#${index + 1}</div>
+            </div>
+        `;
+    });
+    
+    html += '</div></div>';
+    
+    const panel = document.getElementById('assistantResultsPanel');
+    const searchSection = document.getElementById('searchResultsSection');
+    const chatSection = document.getElementById('chatMessagesSection');
+    
+    searchSection.innerHTML = html;
+    searchSection.classList.add('active');
+    chatSection.classList.remove('active');
+    panel.classList.add('active');
+});
+
+// Make functions global
+window.startCardMode = startCardMode;

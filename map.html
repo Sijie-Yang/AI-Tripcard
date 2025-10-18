@@ -41,6 +41,58 @@
         <div class="poi-count"><span id="poiCount">0</span> Places</div>
     </header>
 
+    <!-- Mode Selector Overlay -->
+    <div class="card-mode-selector" id="cardModeSelector">
+        <div class="card-mode-content">
+            <img src="SG60.png" alt="SG60" class="mode-logo">
+            <h1>🌏 Welcome to Singapore</h1>
+            <p class="mode-subtitle">Before exploring the map, let's discover all 60 places!</p>
+            <div class="mode-cards">
+                <div class="mode-card-choice local" onclick="startCardMode('local')">
+                    <span class="mode-icon">🏠</span>
+                    <h2>Local Mode</h2>
+                    <p>Share your Singapore experiences</p>
+                    <span class="mode-hint">Swipe: Been there / Haven't been</span>
+                </div>
+                <div class="mode-card-choice tourist" onclick="startCardMode('tourist')">
+                    <span class="mode-icon">✈️</span>
+                    <h2>Tourist Mode</h2>
+                    <p>Plan your Singapore adventure</p>
+                    <span class="mode-hint">Swipe: Interested / Not interested</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Swipe Interface -->
+    <div class="card-swipe-container" id="cardSwipeContainer" style="display: none;">
+        <div class="card-progress" id="cardProgress">0 / 60</div>
+        <div class="card-stack" id="cardStack">
+            <div class="swipe-card" id="swipeCard">
+                <img id="swipeCardImage" class="swipe-card-image" alt="">
+                <div class="swipe-card-content">
+                    <h2 class="swipe-card-title" id="swipeCardTitle"></h2>
+                </div>
+                <div class="swipe-hint left" id="swipeLeftHint">← Nope</div>
+                <div class="swipe-hint right" id="swipeRightHint">Yes →</div>
+            </div>
+        </div>
+        <div class="swipe-buttons">
+            <button class="swipe-btn nope" id="swipeLeftBtn">
+                <span style="font-size: 28px;">✕</span>
+            </button>
+            <button class="swipe-btn like" id="swipeRightBtn">
+                <span style="font-size: 28px;">✓</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Collection Button (shown after cards complete) -->
+    <button class="collection-btn" id="collectionBtn" style="display: none;">
+        <span>🎴</span>
+        <span>My Cards</span>
+    </button>
+
     <!-- Progress Bar -->
     <div class="progress-bar-container" id="progressBarContainer">
         <div class="progress-info">
