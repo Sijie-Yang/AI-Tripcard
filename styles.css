@@ -1051,7 +1051,7 @@ body {
     position: fixed;
     top: 125px;
     right: 10px;
-    z-index: 1001;
+    z-index: 1003;
 }
 
 .style-toggle-btn {
@@ -1091,7 +1091,7 @@ body {
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s;
-    z-index: 1003;
+    z-index: 1004;
 }
 
 .style-menu.active {
