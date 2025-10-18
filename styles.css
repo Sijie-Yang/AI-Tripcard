@@ -715,7 +715,7 @@ body {
 /* Emotion Color Bar */
 .emotion-bar {
     position: fixed;
-    bottom: 35px;
+    bottom: 38px;
     left: 0;
     right: 0;
     display: flex;
@@ -1486,7 +1486,7 @@ body {
     }
     
     .emotion-bar {
-        bottom: 35px;
+        bottom: 38px;
     }
     
     .emotion-card {
@@ -1503,7 +1503,7 @@ body {
     }
     
     .category-card {
-        padding: 12px 4px;
+        padding: 10px 4px;
     }
     
     .category-label {
@@ -2342,8 +2342,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
+    background: transparent;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2587,7 +2586,7 @@ body {
     background: transparent;
     border-radius: 32px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
     position: relative;
     width: 100%;
     height: 100%;
@@ -2618,9 +2617,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    background: transparent;
 }
 
 .card-title {

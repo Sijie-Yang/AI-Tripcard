@@ -234,7 +234,12 @@ function createCustomIcon(color, status) {
 }
 
 // 显示markers
-function displayMarkers(data) {
+function displayMarkers(data, skipFitBounds = false) {
+    // Auto skip fitBounds when card mode is active
+    if (isCardModeActive) {
+        skipFitBounds = true;
+    }
+    
     // 清除现有markers
     markers.forEach(item => {
         map.removeLayer(item.marker);
@@ -324,7 +329,8 @@ function displayMarkers(data) {
     });
 
     // 调整地图视野以包含所有markers，但限制最小缩放级别
-    if (data.length > 0) {
+    // Skip in card mode to avoid interfering with card navigation
+    if (!skipFitBounds && data.length > 0) {
         const group = new L.featureGroup(data.map(poi => L.marker([poi.lat, poi.lng])));
         map.fitBounds(group.getBounds().pad(0.1), {
             maxZoom: 13  // 限制最大缩放，不会拉得太远
@@ -2288,6 +2294,8 @@ let cardMode = null; // 'local' or 'tourist'
 let currentCardIndex = 0;
 let cardSwipeData = [];
 let isCardModeComplete = false;
+let currentHighlightedMarker = null; // Track currently highlighted marker
+let isCardModeActive = false; // Track if card mode is currently active
 
 // Initialize card mode status (will be called after DOM loads)
 function initCardModeStatus() {
@@ -2325,6 +2333,7 @@ function initCardModeStatus() {
 function startCardMode(mode) {
     console.log(`🎴 Starting card mode: ${mode}`);
     cardMode = mode;
+    isCardModeActive = true; // Activate card mode to prevent map fitBounds
     
     const modeSelector = document.getElementById('cardModeSelector');
     const cardContainer = document.getElementById('cardContainer');
@@ -2418,14 +2427,45 @@ function showNextCard() {
     const poi = poiData[currentCardIndex];
     console.log(`📍 Showing card ${currentCardIndex + 1}/${poiData.length}: ${poi.name}`);
     
+    // Remove previous highlight
+    if (currentHighlightedMarker && currentHighlightedMarker._icon) {
+        currentHighlightedMarker._icon.classList.remove('highlighted');
+    }
+    
+    // Highlight current POI marker using same effect as chat highlights
+    const currentMarker = window.poiMarkersById ? window.poiMarkersById[poi.id] : null;
+    if (currentMarker && currentMarker._icon) {
+        currentMarker._icon.classList.add('highlighted');
+        currentHighlightedMarker = currentMarker;
+        console.log(`✨ Highlighted marker for: ${poi.name}`);
+    } else {
+        console.warn(`Could not find marker for: ${poi.name}`);
+    }
+    
     // Update progress
     document.getElementById('progress').textContent = `${currentCardIndex + 1} / ${poiData.length}`;
     
-    // Navigate map to POI location
-    map.flyTo([poi.lat, poi.lng], 15, {
-        duration: 1.5,
-        easeLinearity: 0.5
-    });
+    // Navigate map to POI location with offset to show POI in lower half of screen
+    // Add offset to latitude so POI appears in lower half (card is on top)
+    const latOffset = 0.012; // Adjust this value to move POI further down
+    
+    // For first card, set zoom level; for subsequent cards, keep current zoom and just pan
+    let animationDelay;
+    if (currentCardIndex === 0) {
+        // First card: fly to with zoom
+        map.flyTo([poi.lat + latOffset, poi.lng], 15, {
+            duration: 1.5,
+            easeLinearity: 0.5
+        });
+        animationDelay = 800; // Longer delay for first card with zoom
+    } else {
+        // Subsequent cards: pan without changing zoom
+        map.panTo([poi.lat + latOffset, poi.lng], {
+            animate: true,
+            duration: 0.8
+        });
+        animationDelay = 400; // Shorter delay for panning only
+    }
     
     // Wait for map animation, then show card
     setTimeout(() => {
@@ -2497,7 +2537,7 @@ function showNextCard() {
         } else {
             console.error('❌ Card element not found!');
         }
-    }, 800);
+    }, animationDelay);
 }
 
 // Handle swipe decision
@@ -2554,11 +2594,18 @@ function handleSwipe(direction) {
 
 // Complete card mode
 function completeCardMode() {
+    isCardModeActive = false; // Deactivate card mode
     document.getElementById('cardContainer').classList.remove('active');
     document.getElementById('progress').style.display = 'none';
     isCardModeComplete = true;
     localStorage.setItem('cardModeComplete', 'true');
     localStorage.setItem('cardModeData', JSON.stringify(cardSwipeData));
+    
+    // Remove final highlight
+    if (currentHighlightedMarker && currentHighlightedMarker._icon) {
+        currentHighlightedMarker._icon.classList.remove('highlighted');
+    }
+    currentHighlightedMarker = null;
     
     // Show collection button
     document.getElementById('collectionBtn').style.display = 'flex';
@@ -2679,26 +2726,35 @@ document.getElementById('collectionBtn').addEventListener('click', () => {
     panel.classList.add('active');
 });
 
-// Reset all POIs to 'not visit' status
+// Reset all POIs to 'unvisited' status
 function resetAllPOIs() {
     if (!confirm('⚠️ Are you sure you want to reset all places to "Not Visit"?\n\nThis will clear all your visited and to-visit records.')) {
         return;
     }
 
-    // Reset all POIs in visitStatus
+    // Reset all POIs in visitStatus to 'unvisited'
     poiData.forEach(poi => {
-        visitStatus[poi.id] = 'not visit';
+        visitStatus[poi.id] = 'unvisited';
     });
 
-    // Save to localStorage
-    localStorage.setItem('visitStatus', JSON.stringify(visitStatus));
+    // Save to localStorage with correct key
+    saveVisitStatus();  // Use the same function as other parts of the code
 
     // Clear card mode data
     localStorage.removeItem('cardSwipeData');
     localStorage.removeItem('cardModeComplete');
+    localStorage.removeItem('cardModeSkipped');
+    
+    // Clear old incorrect key if it exists
+    localStorage.removeItem('visitStatus');
+    
+    // Reset card mode state
+    isCardModeComplete = false;
+    cardSwipeData = [];
+    currentCardIndex = 0;
 
-    // Update map markers
-    displayMarkers();
+    // Update map markers with correct data parameter
+    displayMarkers(poiData);
 
     // Update analytics
     updateJourneyAnalytics();
@@ -2713,9 +2769,15 @@ function resetAllPOIs() {
         panel.classList.remove('active');
         progressBarContainer.classList.remove('active');
     }
+    
+    // Hide collection button, show restart card button
+    const collectionBtn = document.getElementById('collectionBtn');
+    const restartCardBtn = document.getElementById('restartCardBtn');
+    if (collectionBtn) collectionBtn.style.display = 'none';
+    if (restartCardBtn) restartCardBtn.style.display = 'flex';
 
     // Show success message
-    alert('✅ All places have been reset to "Not Visit"!');
+    alert('✅ All places have been reset to "Not Visit"!\n\nYou can now start the card experience again.');
 }
 
 // Make functions global
