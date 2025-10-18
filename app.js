@@ -475,10 +475,13 @@ function initAIAssistant() {
         // Add user message
         addChatMessage('user', message);
         
+        // Create assistant message bubble for typing effect
+        const assistantBubble = createTypingBubble();
+        
         try {
             const apiKey = localStorage.getItem('openai_api_key');
             if (!apiKey) {
-                addChatMessage('assistant', 'Please set your OpenAI API key in the Route Planner tool first. Click the 🛠️ button → Route Planner to set it up.');
+                typeMessage(assistantBubble, 'Please set your OpenAI API key in the Route Planner tool first. Click the 🛠️ button → Route Planner to set it up.');
                 return;
             }
             
@@ -519,9 +522,11 @@ Help users plan their trip, answer questions about Singapore, and provide person
             const reply = data.choices[0].message.content;
             
             chatHistory.push({ role: 'assistant', content: reply });
-            addChatMessage('assistant', reply);
+            
+            // Type out the message character by character
+            await typeMessage(assistantBubble, reply);
         } catch (error) {
-            addChatMessage('assistant', 'Sorry, I encountered an error. Please try again or check your API key.');
+            typeMessage(assistantBubble, 'Sorry, I encountered an error. Please try again or check your API key.');
             console.error(error);
         }
     }
@@ -534,17 +539,74 @@ Help users plan their trip, answer questions about Singapore, and provide person
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${role}`;
         messageDiv.innerHTML = `<div class="message-bubble">${content}</div>`;
-        chatSection.appendChild(messageDiv);
+        
+        // Insert before the chat input box
+        const chatInputBox = document.getElementById('chatInputBox');
+        chatSection.insertBefore(messageDiv, chatInputBox);
         chatSection.scrollTop = chatSection.scrollHeight;
     }
     
-    // Send button click
+    function createTypingBubble() {
+        searchSection.classList.remove('active');
+        chatSection.classList.add('active');
+        resultsPanel.classList.add('active');
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message assistant';
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'message-bubble';
+        bubbleDiv.textContent = '';
+        messageDiv.appendChild(bubbleDiv);
+        
+        // Insert before the chat input box
+        const chatInputBox = document.getElementById('chatInputBox');
+        chatSection.insertBefore(messageDiv, chatInputBox);
+        
+        return bubbleDiv;
+    }
+    
+    async function typeMessage(bubble, text) {
+        bubble.textContent = '';
+        const chars = text.split('');
+        
+        for (let i = 0; i < chars.length; i++) {
+            bubble.textContent += chars[i];
+            chatSection.scrollTop = chatSection.scrollHeight;
+            
+            // Add small delay between characters (adjust for speed)
+            await new Promise(resolve => setTimeout(resolve, 20));
+        }
+    }
+    
+    // Send button click (main input)
     sendAssistantBtn.addEventListener('click', handleInput);
     
-    // Enter key press
+    // Enter key press (main input)
     assistantInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             handleInput();
+        }
+    });
+    
+    // Chat input box handlers
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+    
+    sendChatBtn.addEventListener('click', () => {
+        const message = chatInput.value.trim();
+        if (message) {
+            handleAIChat(message);
+            chatInput.value = '';
+        }
+    });
+    
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const message = chatInput.value.trim();
+            if (message) {
+                handleAIChat(message);
+                chatInput.value = '';
+            }
         }
     });
     
