@@ -2378,12 +2378,13 @@ function initCardModeStatus() {
     console.log('🎴 initCardModeStatus called');
     const introduction = document.getElementById('cardIntroduction');
     const modeSelector = document.getElementById('cardModeSelector');
+    const markerExplanation = document.getElementById('markerExplanation');
     
     // Check if card mode was already completed or skipped
     if (localStorage.getItem('cardModeComplete') === 'true') {
         isCardModeComplete = true;
         console.log('✅ Card mode already completed, hiding selector');
-        // Hide both introduction and mode selector, show map immediately
+        // Hide all card mode screens, show map immediately
         if (introduction) {
             introduction.style.display = 'none';
             introduction.style.visibility = 'hidden';
@@ -2393,6 +2394,11 @@ function initCardModeStatus() {
             modeSelector.style.display = 'none';
             modeSelector.style.visibility = 'hidden';
             modeSelector.style.pointerEvents = 'none';
+        }
+        if (markerExplanation) {
+            markerExplanation.style.display = 'none';
+            markerExplanation.style.visibility = 'hidden';
+            markerExplanation.style.pointerEvents = 'none';
         }
         const collectionBtn = document.getElementById('collectionBtn');
         if (collectionBtn) collectionBtn.style.display = 'flex';
@@ -2400,7 +2406,7 @@ function initCardModeStatus() {
         showMapUI();
     } else if (localStorage.getItem('cardModeSkipped') === 'true') {
         console.log('⏭️ Card mode was skipped, hiding selector');
-        // User skipped card mode, hide both introduction and mode selector, show restart button
+        // User skipped card mode, hide all card mode screens, show restart button
         if (introduction) {
             introduction.style.display = 'none';
             introduction.style.visibility = 'hidden';
@@ -2410,6 +2416,11 @@ function initCardModeStatus() {
             modeSelector.style.display = 'none';
             modeSelector.style.visibility = 'hidden';
             modeSelector.style.pointerEvents = 'none';
+        }
+        if (markerExplanation) {
+            markerExplanation.style.display = 'none';
+            markerExplanation.style.visibility = 'hidden';
+            markerExplanation.style.pointerEvents = 'none';
         }
         const restartBtn = document.getElementById('restartCardBtn');
         if (restartBtn) restartBtn.style.display = 'flex';
@@ -2453,27 +2464,51 @@ function showModeSelector() {
 function startCardMode(mode) {
     console.log(`🎴 Starting card mode: ${mode}`);
     cardMode = mode;
+    
+    // Hide mode selector
+    const modeSelector = document.getElementById('cardModeSelector');
+    if (modeSelector) {
+        modeSelector.style.display = 'none';
+        modeSelector.style.visibility = 'hidden';
+        modeSelector.style.pointerEvents = 'none';
+    }
+    
+    // Show marker explanation screen
+    const markerExplanation = document.getElementById('markerExplanation');
+    if (markerExplanation) {
+        markerExplanation.style.display = 'flex';
+        markerExplanation.style.visibility = 'visible';
+        markerExplanation.style.pointerEvents = 'auto';
+    }
+    
+    console.log('Showing marker explanation screen');
+}
+
+// Start the actual card swiping after marker explanation
+function startSwipingCards() {
+    console.log('🎴 Starting card swiping');
     isCardModeActive = true; // Activate card mode to prevent map fitBounds
     
     // Hide all UI elements during card mode
     hideMapUI();
     
-    const modeSelector = document.getElementById('cardModeSelector');
+    // Hide marker explanation
+    const markerExplanation = document.getElementById('markerExplanation');
+    if (markerExplanation) {
+        markerExplanation.style.display = 'none';
+        markerExplanation.style.visibility = 'hidden';
+        markerExplanation.style.pointerEvents = 'none';
+    }
+    
     const cardContainer = document.getElementById('cardContainer');
     const progress = document.getElementById('progress');
     const card = document.getElementById('card');
     
     console.log('Elements found:', { 
-        modeSelector: !!modeSelector, 
         cardContainer: !!cardContainer, 
         progress: !!progress,
         card: !!card
     });
-    
-    // Hide mode selector completely
-    modeSelector.style.display = 'none';
-    modeSelector.style.visibility = 'hidden';
-    modeSelector.style.pointerEvents = 'none';
     
     // Show card interface
     cardContainer.classList.add('active');
@@ -2489,7 +2524,7 @@ function startCardMode(mode) {
     const leftHint = document.getElementById('leftHint');
     const rightHint = document.getElementById('rightHint');
     
-    if (mode === 'local') {
+    if (cardMode === 'local') {
         leftHint.textContent = "← Haven't been";
         rightHint.textContent = "Been there →";
     } else {
@@ -2504,9 +2539,10 @@ function startCardMode(mode) {
 
 // Skip card mode and go directly to map
 function skipCardMode() {
-    // Hide both introduction and mode selector completely
+    // Hide all card mode screens
     const introduction = document.getElementById('cardIntroduction');
     const modeSelector = document.getElementById('cardModeSelector');
+    const markerExplanation = document.getElementById('markerExplanation');
     
     if (introduction) {
         introduction.style.display = 'none';
@@ -2518,6 +2554,12 @@ function skipCardMode() {
         modeSelector.style.display = 'none';
         modeSelector.style.visibility = 'hidden';
         modeSelector.style.pointerEvents = 'none';
+    }
+    
+    if (markerExplanation) {
+        markerExplanation.style.display = 'none';
+        markerExplanation.style.visibility = 'hidden';
+        markerExplanation.style.pointerEvents = 'none';
     }
     
     // Mark as skipped in local storage

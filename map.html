@@ -90,6 +90,38 @@
         </div>
     </div>
 
+    <!-- Marker Explanation Screen -->
+    <div class="card-mode-selector" id="markerExplanation" style="display: none;">
+        <div class="mode-dialog">
+            <h1>📍 Status Markers</h1>
+            <p class="mode-subtitle">After swiping, places will be marked on the map</p>
+            <div class="intro-instructions">
+                <div class="intro-item">
+                    <div class="intro-icon marker-visited">✕</div>
+                    <div class="intro-text">
+                        <h3>Visited</h3>
+                        <p>Places you've been to</p>
+                    </div>
+                </div>
+                <div class="intro-item">
+                    <div class="intro-icon marker-no-visit">○</div>
+                    <div class="intro-text">
+                        <h3>No Visit</h3>
+                        <p>Places you haven't been</p>
+                    </div>
+                </div>
+                <div class="intro-item">
+                    <div class="intro-icon marker-to-visit">+</div>
+                    <div class="intro-text">
+                        <h3>To Visit</h3>
+                        <p>Places on your wishlist</p>
+                    </div>
+                </div>
+            </div>
+            <button class="continue-btn" onclick="startSwipingCards()">Start Swiping</button>
+        </div>
+    </div>
+
     <!-- Card Swipe Interface -->
     <div class="progress" id="progress" style="display: none;">0 / 60</div>
     
