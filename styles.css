@@ -547,7 +547,7 @@ body {
 /* Recenter Button */
 .recenter-btn {
     position: fixed;
-    bottom: 125px;
+    bottom: 170px;
     right: 10px;
     width: 44px;
     height: 44px;
@@ -587,7 +587,7 @@ body {
 /* Clear Highlight button */
 .clear-highlight-btn {
     position: fixed;
-    bottom: 180px;
+    bottom: 230px;
     right: 10px;
     padding: 10px 16px;
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -617,7 +617,7 @@ body {
 
 .clear-route-btn {
     position: fixed;
-    bottom: 240px;
+    bottom: 290px;
     right: 10px;
     padding: 10px 16px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1347,7 +1347,7 @@ body {
     .recenter-btn {
         width: 40px;
         height: 40px;
-        bottom: 120px;
+        bottom: 165px;
     }
     
     .recenter-icon {
@@ -1355,13 +1355,13 @@ body {
     }
     
     .clear-highlight-btn {
-        bottom: 170px;
+        bottom: 225px;
         padding: 8px 12px;
         font-size: 12px;
     }
     
     .clear-route-btn {
-        bottom: 220px;
+        bottom: 275px;
         padding: 8px 12px;
         font-size: 12px;
     }
