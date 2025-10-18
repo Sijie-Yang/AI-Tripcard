@@ -1380,6 +1380,9 @@ function initAIPlanner() {
     // Generate route
     generateRouteBtn.addEventListener('click', async () => {
         const selectedPOIs = getSelectedPOIs();
+        console.log('Selected POI IDs:', Array.from(selectedPOIIds));
+        console.log('Selected POIs:', selectedPOIs.map(p => p.name));
+        
         if (selectedPOIs.length < 2) {
             alert('Please select at least 2 places to plan a route');
             return;
@@ -1528,11 +1531,10 @@ function populatePOIChecklist(filter) {
 
 // Get selected POIs
 function getSelectedPOIs() {
-    const checkboxes = document.querySelectorAll('.poi-checklist input[type="checkbox"]:checked');
-    return Array.from(checkboxes).map(cb => {
-        const poiId = cb.value;
-        return poiData.find(p => p.id === poiId);
-    });
+    // Use the selectedPOIIds Set which tracks selections across all filters
+    return Array.from(selectedPOIIds).map(id => {
+        return poiData.find(p => p.id.toString() === id);
+    }).filter(Boolean); // Remove any null values
 }
 
 // Generate optimal route using OpenAI
