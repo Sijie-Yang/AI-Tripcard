@@ -2546,7 +2546,7 @@ body {
 }
 
 .card {
-    background: white;
+    background: rgba(255, 255, 255, 0.85);
     border-radius: 32px;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -2558,6 +2558,7 @@ body {
     cursor: grab;
     transition: transform 0.1s ease;
     border: 3px solid rgba(102, 126, 234, 0.3);
+    backdrop-filter: blur(10px);
 }
 
 .card.dragging {
@@ -2569,6 +2570,9 @@ body {
     height: 65%;
     object-fit: cover;
     background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+    opacity: 1;
+    position: relative;
+    z-index: 1;
 }
 
 .card-content {
@@ -2577,7 +2581,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: white;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
 }
 
 .card-title {
