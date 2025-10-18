@@ -92,38 +92,48 @@ async function loadPOIData() {
 // 创建自定义图标
 function createCustomIcon(color, status) {
     let html = '';
+    let iconSize, iconAnchor, popupAnchor;
     
     if (status === 'visited') {
         // X形 - 使用SVG绘制完整的X
-        html = `<svg class="marker-svg" viewBox="0 0 32 32" width="32" height="32">
-                    <path d="M 8,8 L 24,24 M 24,8 L 8,24" 
+        html = `<svg class="marker-svg" viewBox="0 0 40 40" width="40" height="40">
+                    <path d="M 10,10 L 30,30 M 30,10 L 10,30" 
                           stroke="${color}" 
-                          stroke-width="6" 
+                          stroke-width="7" 
                           stroke-linecap="round"
                           fill="none"
-                          style="filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3))"/>
+                          style="filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4))"/>
                 </svg>`;
+        iconSize = [40, 40];
+        iconAnchor = [20, 20];
+        popupAnchor = [0, -20];
     } else if (status === 'planned') {
         // 加号形 - 使用SVG绘制完整的+
-        html = `<svg class="marker-svg" viewBox="0 0 32 32" width="32" height="32">
-                    <path d="M 16,6 L 16,26 M 6,16 L 26,16" 
+        html = `<svg class="marker-svg" viewBox="0 0 40 40" width="40" height="40">
+                    <path d="M 20,8 L 20,32 M 8,20 L 32,20" 
                           stroke="${color}" 
-                          stroke-width="6" 
+                          stroke-width="7" 
                           stroke-linecap="round"
                           fill="none"
-                          style="filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3))"/>
+                          style="filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4))"/>
                 </svg>`;
+        iconSize = [40, 40];
+        iconAnchor = [20, 20];
+        popupAnchor = [0, -20];
     } else {
-        // 圆形
+        // 圆形 - 小点
         html = `<div class="custom-marker" style="background-color: ${color}"></div>`;
+        iconSize = [16, 16];
+        iconAnchor = [8, 8];
+        popupAnchor = [0, -8];
     }
     
     return L.divIcon({
         className: 'custom-div-icon',
         html: html,
-        iconSize: [35, 35],
-        iconAnchor: [17, 17],
-        popupAnchor: [0, -17]
+        iconSize: iconSize,
+        iconAnchor: iconAnchor,
+        popupAnchor: popupAnchor
     });
 }
 
