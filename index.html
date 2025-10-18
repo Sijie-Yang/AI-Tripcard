@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>新加坡旅游地图</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 顶部标题栏 -->
+    <header class="header">
+        <h1>🇸🇬 新加坡旅游地图</h1>
+        <div class="poi-count">共 <span id="poiCount">0</span> 个景点</div>
+    </header>
+
+    <!-- 地图容器 -->
+    <div id="map"></div>
+
+    <!-- 底部筛选器 -->
+    <div class="filter-container">
+        <button class="filter-btn active" data-category="all">全部</button>
+        <button class="filter-btn" data-category="urban_iconic">都市地标</button>
+        <button class="filter-btn" data-category="creative_scene">艺术创意</button>
+        <button class="filter-btn" data-category="cultural_heritage">文化遗产</button>
+        <button class="filter-btn" data-category="serene_nature">自然宁静</button>
+        <button class="filter-btn" data-category="social_vibe">社交活力</button>
+        <button class="filter-btn" data-category="hidden_gems">隐藏宝藏</button>
+    </div>
+
+    <!-- POI详情弹窗 -->
+    <div class="poi-detail" id="poiDetail">
+        <div class="poi-detail-content">
+            <button class="close-btn" id="closeDetail">&times;</button>
+            <h2 id="poiName"></h2>
+            <div class="poi-category" id="poiCategory"></div>
+            <div class="poi-emotion" id="poiEmotion"></div>
+            <p id="poiDescription"></p>
+            <button class="navigate-btn" id="navigateBtn">
+                📍 导航到这里
+            </button>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    
+    <!-- Leaflet MarkerCluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    
+    <script src="app.js"></script>
+</body>
+</html>
+
