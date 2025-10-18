@@ -105,31 +105,22 @@
     <!-- AI Assistant Bar -->
     <div class="ai-assistant-bar">
         <div class="assistant-input-group">
-            <button class="assistant-mode-btn" id="assistantModeBtn" title="AI Chat">
-                <span class="mode-icon">💬</span>
+            <input type="text" id="assistantInput" placeholder="🔍 Search places or ask me anything about Singapore..." autocomplete="off">
+            <button class="send-assistant-btn" id="sendAssistantBtn">
+                <span class="send-icon">➤</span>
             </button>
-            <input type="text" id="assistantInput" placeholder="🔍 Search places, or ask me anything..." autocomplete="off">
             <button class="tools-btn" id="toolsBtn" title="AI Tools">
                 <span class="tools-icon">🛠️</span>
             </button>
         </div>
         
-        <!-- Search Results -->
-        <div class="search-results" id="searchResults"></div>
-        
-        <!-- AI Chat Panel -->
-        <div class="ai-chat-panel" id="aiChatPanel">
-            <div class="chat-header">
-                <span class="chat-title">💬 AI Travel Assistant</span>
-                <button class="clear-chat-btn" id="clearChatBtn" title="Clear Chat">🗑️</button>
-            </div>
-            <div class="chat-messages" id="chatMessages"></div>
-            <div class="chat-input-area">
-                <input type="text" id="chatInput" placeholder="Ask about Singapore travel..." />
-                <button class="send-btn" id="sendBtn">
-                    <span class="send-icon">➤</span>
-                </button>
-            </div>
+        <!-- Combined Results Panel -->
+        <div class="assistant-results-panel" id="assistantResultsPanel">
+            <!-- Search Results -->
+            <div class="search-results-section" id="searchResultsSection"></div>
+            
+            <!-- Chat Messages -->
+            <div class="chat-messages-section" id="chatMessagesSection"></div>
         </div>
         
         <!-- Tools Menu -->
