@@ -1174,7 +1174,6 @@ let routeMarkers = []; // Store route number markers
 
 // Initialize AI Trip Planner
 function initAIPlanner() {
-    const plannerBtn = document.getElementById('aiPlannerBtn');
     const plannerPanel = document.getElementById('aiPlannerPanel');
     const closePlanner = document.getElementById('closePlanner');
     const saveKeyBtn = document.getElementById('saveKeyBtn');
@@ -1184,24 +1183,30 @@ function initAIPlanner() {
     const planNewRouteBtn = document.getElementById('planNewRoute');
     const filterChips = document.querySelectorAll('.filter-chip');
     
+    if (!plannerPanel) {
+        console.error('AI Planner panel not found');
+        return;
+    }
+    
     // Check if API key exists
     const savedApiKey = localStorage.getItem('openai_api_key');
-    if (savedApiKey) {
+    if (savedApiKey && apiKeyInput) {
         apiKeyInput.value = savedApiKey;
-        document.getElementById('apiKeySection').style.display = 'none';
-        document.getElementById('poiSelectionSection').style.display = 'block';
+        const apiKeySection = document.getElementById('apiKeySection');
+        const poiSection = document.getElementById('poiSelectionSection');
+        if (apiKeySection) apiKeySection.style.display = 'none';
+        if (poiSection) poiSection.style.display = 'block';
         populatePOIChecklist('planned');
     }
     
-    // Open planner
-    plannerBtn.addEventListener('click', () => {
-        plannerPanel.classList.add('active');
-    });
+    // Note: plannerBtn is now opened via tools menu, not a standalone button
     
     // Close planner
-    closePlanner.addEventListener('click', () => {
-        plannerPanel.classList.remove('active');
-    });
+    if (closePlanner) {
+        closePlanner.addEventListener('click', () => {
+            plannerPanel.classList.remove('active');
+        });
+    }
     
     plannerPanel.addEventListener('click', (e) => {
         if (e.target === plannerPanel) {
