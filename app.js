@@ -241,8 +241,13 @@ function displayMarkers(data) {
         marker.addTo(map);
     });
 
-    // 不自动调整视野，保持用户当前的缩放级别
-    // 用户可以手动缩放和平移地图查看所有景点
+    // 调整地图视野以包含所有markers，但限制最小缩放级别
+    if (data.length > 0) {
+        const group = new L.featureGroup(data.map(poi => L.marker([poi.lat, poi.lng])));
+        map.fitBounds(group.getBounds().pad(0.1), {
+            maxZoom: 13  // 限制最大缩放，不会拉得太远
+        });
+    }
 }
 
 // 显示详情页面
