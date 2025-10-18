@@ -536,7 +536,20 @@ Help users plan their trip, answer questions about Singapore, and provide person
             chatHistory.push({ role: 'assistant', content: reply });
             
             // Type out the message character by character
-            await typeMessage(assistantBubble, reply);
+            try {
+                await typeMessage(assistantBubble, reply);
+            } catch (typeError) {
+                console.error('Type message error:', typeError);
+                // If typing fails, just show the text directly
+                const interactiveText = makeTextInteractive(reply);
+                assistantBubble.innerHTML = interactiveText;
+                
+                // Still try to highlight POIs
+                const mentionedPOIs = extractPOIsFromText(reply);
+                if (mentionedPOIs.length > 0) {
+                    highlightPOIs(mentionedPOIs);
+                }
+            }
         } catch (error) {
             console.error('Chat error details:', error);
             
@@ -550,12 +563,16 @@ Help users plan their trip, answer questions about Singapore, and provide person
                 const fallbackMsg = `I highlighted ${mentionedNames} on the map for you! 
 
 (Note: AI features require an API key. Click the 🛠️ button → Route Planner to set it up, or continue exploring the highlighted places on the map.)`;
-                await typeMessage(assistantBubble, fallbackMsg);
+                await typeMessage(assistantBubble, fallbackMsg).catch(e => {
+                    assistantBubble.textContent = fallbackMsg;
+                });
             } else {
                 const errorMsg = error.message.includes('API Error') 
                     ? `API Error: ${error.message.split('API Error: ')[1] || 'Please check your API key in the Route Planner tool.'}`
                     : 'Sorry, I encountered an error. Please check your API key in the Route Planner tool (🛠️ → Route Planner).';
-                await typeMessage(assistantBubble, errorMsg);
+                await typeMessage(assistantBubble, errorMsg).catch(e => {
+                    assistantBubble.textContent = errorMsg;
+                });
             }
         }
     }
@@ -622,6 +639,7 @@ Help users plan their trip, answer questions about Singapore, and provide person
     }
     
     async function typeMessage(bubble, text) {
+        console.log('Starting typeMessage with text:', text.substring(0, 100) + '...');
         bubble.textContent = '';
         const chars = text.split('');
         
@@ -633,12 +651,17 @@ Help users plan their trip, answer questions about Singapore, and provide person
             await new Promise(resolve => setTimeout(resolve, 20));
         }
         
+        console.log('Typing complete, making text interactive...');
+        
         // After typing is complete, make text interactive and highlight POIs
         const interactiveText = makeTextInteractive(text);
         bubble.innerHTML = interactiveText;
         
         // Add click handlers to POI links
-        bubble.querySelectorAll('.poi-link').forEach(link => {
+        const poiLinks = bubble.querySelectorAll('.poi-link');
+        console.log('Found POI links:', poiLinks.length);
+        
+        poiLinks.forEach(link => {
             link.addEventListener('click', () => {
                 const poiId = link.dataset.poiId;
                 const poi = poiData.find(p => p.id === poiId);
@@ -650,9 +673,15 @@ Help users plan their trip, answer questions about Singapore, and provide person
         });
         
         // Extract and highlight POIs mentioned in the response
+        console.log('Extracting POIs from text...');
         const mentionedPOIs = extractPOIsFromText(text);
+        console.log('Found mentioned POIs:', mentionedPOIs);
+        
         if (mentionedPOIs.length > 0) {
+            console.log('Highlighting POIs on map...');
             highlightPOIs(mentionedPOIs);
+        } else {
+            console.log('No POIs found to highlight');
         }
     }
     
@@ -767,18 +796,29 @@ Help users plan their trip, answer questions about Singapore, and provide person
 
 // POI Highlighting Functions
 function highlightPOIs(poiIds) {
+    console.log('highlightPOIs called with IDs:', poiIds);
     const clearBtn = document.getElementById('clearHighlightBtn');
     
+    let successCount = 0;
     poiIds.forEach(id => {
         highlightedPOIs.add(id);
         const marker = poiMarkers[id];
+        console.log(`Marker for ${id}:`, marker ? 'found' : 'NOT FOUND');
+        
         if (marker && marker._icon) {
             marker._icon.classList.add('highlighted');
+            successCount++;
+            console.log(`Added highlight class to marker ${id}`);
+        } else if (marker) {
+            console.log(`Marker ${id} has no _icon yet`);
         }
     });
     
+    console.log(`Successfully highlighted ${successCount} out of ${poiIds.length} POIs`);
+    
     if (highlightedPOIs.size > 0) {
         clearBtn.classList.add('active');
+        console.log('Clear button activated');
         
         // Fit map to show all highlighted POIs
         if (poiIds.length > 0) {
@@ -788,6 +828,7 @@ function highlightPOIs(poiIds) {
                     return poi ? [poi.lat, poi.lng] : null;
                 }).filter(Boolean)
             );
+            console.log('Fitting map to bounds:', bounds);
             map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
         }
     }
@@ -808,18 +849,35 @@ function clearHighlights() {
 }
 
 function extractPOIsFromText(text) {
-    const foundPOIs = [];
+    const foundPOIs = new Set();
+    const textLower = text.toLowerCase();
     
     // Search for POI names in the text
     poiData.forEach(poi => {
-        // Case-insensitive search
-        const regex = new RegExp(`\\b${poi.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-        if (regex.test(text)) {
-            foundPOIs.push(poi.id);
+        const poiNameLower = poi.name.toLowerCase();
+        
+        // Exact match (case-insensitive)
+        const exactRegex = new RegExp(`\\b${poi.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+        if (exactRegex.test(text)) {
+            foundPOIs.add(poi.id);
+            return;
+        }
+        
+        // Try matching significant words (for multi-word names)
+        const words = poiNameLower.split(/\s+/).filter(w => w.length > 3); // Filter out short words like "the", "and"
+        if (words.length > 0 && words.every(word => textLower.includes(word))) {
+            foundPOIs.add(poi.id);
+            return;
+        }
+        
+        // Also check if the text contains the POI name as a substring (for partial matches)
+        if (poiNameLower.length > 5 && textLower.includes(poiNameLower)) {
+            foundPOIs.add(poi.id);
         }
     });
     
-    return foundPOIs;
+    console.log('Extracted POIs from text:', Array.from(foundPOIs));
+    return Array.from(foundPOIs);
 }
 
 function makeTextInteractive(text) {
@@ -828,15 +886,26 @@ function makeTextInteractive(text) {
     
     // Find all POI mentions and prepare replacements
     poiData.forEach(poi => {
+        // Try exact match with word boundaries
         const regex = new RegExp(`\\b(${poi.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
         const matches = [...text.matchAll(regex)];
         
         matches.forEach(match => {
-            replacements.push({
-                original: match[0],
-                replacement: `<span class="poi-link" data-poi-id="${poi.id}">${match[0]}</span>`,
-                index: match.index
-            });
+            // Check if this position hasn't been replaced already
+            const overlap = replacements.some(r => 
+                (match.index >= r.index && match.index < r.index + r.original.length) ||
+                (match.index + match[0].length > r.index && match.index + match[0].length <= r.index + r.original.length)
+            );
+            
+            if (!overlap) {
+                replacements.push({
+                    original: match[0],
+                    replacement: `<span class="poi-link" data-poi-id="${poi.id}">${match[0]}</span>`,
+                    index: match.index,
+                    length: match[0].length,
+                    poiId: poi.id
+                });
+            }
         });
     });
     
@@ -850,6 +919,7 @@ function makeTextInteractive(text) {
                          interactiveText.substring(r.index + r.original.length);
     });
     
+    console.log('Made text interactive with POI links:', replacements.length);
     return interactiveText;
 }
 
