@@ -414,44 +414,81 @@ body {
     letter-spacing: 0.3px;
 }
 
-/* Color Bar Toggle Button */
-.color-bar-toggle {
+/* Color Mode Slider */
+.color-mode-slider {
     position: fixed;
     bottom: 77px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 1002;
+    animation: slideInBottom 0.5s ease-out 0.4s backwards;
+}
+
+.slider-track {
     background: white;
-    border: 2px solid #667eea;
-    border-radius: 20px;
-    padding: 6px 14px;
+    border-radius: 25px;
+    padding: 4px;
+    display: flex;
+    gap: 4px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 2px solid #e0e0e0;
+}
+
+.slider-option {
     display: flex;
     align-items: center;
     gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
     cursor: pointer;
-    z-index: 1002;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 2;
     transition: all 0.3s;
-    animation: slideInBottom 0.5s ease-out 0.4s backwards;
+    user-select: none;
+}
+
+.slider-option:hover {
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.slider-option.active .slider-label {
+    color: white;
+    font-weight: 600;
+}
+
+.slider-option.active .slider-icon {
+    filter: brightness(0) invert(1);
+}
+
+.slider-icon {
+    font-size: 16px;
+    transition: filter 0.3s;
+}
+
+.slider-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s;
     white-space: nowrap;
 }
 
-.color-bar-toggle:hover {
-    transform: translateX(-50%) scale(1.05);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+.slider-indicator {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    width: calc(50% - 6px);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
 }
 
-.color-bar-toggle:active {
-    transform: translateX(-50%) scale(0.95);
-}
-
-.toggle-icon {
-    font-size: 16px;
-}
-
-.toggle-text {
-    font-size: 12px;
-    font-weight: 600;
-    color: #667eea;
+.slider-indicator.category-mode {
+    transform: translateX(calc(100% + 8px));
 }
 
 /* 地图样式选择器 */
@@ -961,17 +998,20 @@ body {
         letter-spacing: 0;
     }
     
-    .color-bar-toggle {
+    .color-mode-slider {
         bottom: 73px;
-        padding: 5px 10px;
     }
     
-    .toggle-icon {
-        font-size: 13px;
+    .slider-option {
+        padding: 6px 12px;
     }
     
-    .toggle-text {
-        font-size: 10px;
+    .slider-icon {
+        font-size: 14px;
+    }
+    
+    .slider-label {
+        font-size: 11px;
     }
 }
 

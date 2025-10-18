@@ -481,27 +481,36 @@ function getFilteredData() {
     return poiData;
 }
 
-// Color mode toggle functionality
+// Color mode slider functionality
 function initColorBarToggle() {
-    const toggleBtn = document.getElementById('colorBarToggle');
+    const sliderOptions = document.querySelectorAll('.slider-option');
+    const sliderIndicator = document.getElementById('sliderIndicator');
     
-    toggleBtn.addEventListener('click', () => {
-        if (colorMode === 'emotion') {
-            // Switch to category color mode
-            colorMode = 'category';
-            toggleBtn.querySelector('.toggle-text').textContent = 'Color by Category';
-            toggleBtn.querySelector('.toggle-icon').textContent = '🏷️';
-        } else {
-            // Switch to emotion color mode
-            colorMode = 'emotion';
-            toggleBtn.querySelector('.toggle-text').textContent = 'Color by Emotion';
-            toggleBtn.querySelector('.toggle-icon').textContent = '🎨';
-        }
-        
-        // Redraw all markers with new colors
-        const filteredData = getFilteredData();
-        displayMarkers(filteredData);
+    sliderOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const mode = option.dataset.mode;
+            
+            // Update active state
+            sliderOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            
+            // Move indicator
+            if (mode === 'category') {
+                sliderIndicator.classList.add('category-mode');
+                colorMode = 'category';
+            } else {
+                sliderIndicator.classList.remove('category-mode');
+                colorMode = 'emotion';
+            }
+            
+            // Redraw all markers with new colors
+            const filteredData = getFilteredData();
+            displayMarkers(filteredData);
+        });
     });
+    
+    // Initialize with emotion mode active
+    document.querySelector('[data-mode="emotion"]').classList.add('active');
 }
 
 // Emotion card click handlers

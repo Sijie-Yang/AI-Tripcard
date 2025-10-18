@@ -145,11 +145,20 @@
         </div>
     </div>
 
-    <!-- Color Mode Toggle Button -->
-    <button class="color-bar-toggle" id="colorBarToggle">
-        <span class="toggle-icon">🎨</span>
-        <span class="toggle-text">Color by Emotion</span>
-    </button>
+    <!-- Color Mode Slider -->
+    <div class="color-mode-slider">
+        <div class="slider-track">
+            <div class="slider-option" data-mode="emotion">
+                <span class="slider-icon">🎨</span>
+                <span class="slider-label">Emotion</span>
+            </div>
+            <div class="slider-option" data-mode="category">
+                <span class="slider-icon">🏷️</span>
+                <span class="slider-label">Category</span>
+            </div>
+            <div class="slider-indicator" id="sliderIndicator"></div>
+        </div>
+    </div>
 
     <!-- POI Detail Panel -->
     <div class="poi-detail" id="poiDetail">
