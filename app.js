@@ -1603,34 +1603,36 @@ async function calculateTravelTimes(route) {
     const waypoints = route.map(poi => `${poi.lng},${poi.lat}`).join(';');
     
     try {
-        // Car (driving)
+        // Get car route (driving) - this gives us the actual road distance
         const carResponse = await fetch(`https://router.project-osrm.org/route/v1/driving/${waypoints}?overview=false`);
         const carData = await carResponse.json();
+        
         if (carData.routes && carData.routes[0]) {
-            const carMinutes = Math.round(carData.routes[0].duration / 60);
+            const distanceKm = carData.routes[0].distance / 1000; // Convert meters to km
+            const carDurationMin = carData.routes[0].duration / 60; // Convert seconds to minutes
+            
+            // Car: Use actual OSRM duration
+            const carMinutes = Math.round(carDurationMin);
             document.getElementById('carTime').textContent = formatTime(carMinutes);
-        }
-        
-        // Bike (cycling)
-        const bikeResponse = await fetch(`https://router.project-osrm.org/route/v1/cycling/${waypoints}?overview=false`);
-        const bikeData = await bikeResponse.json();
-        if (bikeData.routes && bikeData.routes[0]) {
-            const bikeMinutes = Math.round(bikeData.routes[0].duration / 60);
-            document.getElementById('bikeTime').textContent = formatTime(bikeMinutes);
-        }
-        
-        // Walk (foot)
-        const walkResponse = await fetch(`https://router.project-osrm.org/route/v1/foot/${waypoints}?overview=false`);
-        const walkData = await walkResponse.json();
-        if (walkData.routes && walkData.routes[0]) {
-            const walkMinutes = Math.round(walkData.routes[0].duration / 60);
-            document.getElementById('walkTime').textContent = formatTime(walkMinutes);
-        }
-        
-        // Bus (estimate as 1.3x car time due to stops)
-        if (carData.routes && carData.routes[0]) {
-            const busMinutes = Math.round(carData.routes[0].duration / 60 * 1.3);
+            
+            // Bus: Average speed ~25 km/h in Singapore (slower than car due to stops)
+            // Also add 5 minutes per stop (estimate 1 stop per 2km)
+            const busStops = Math.floor(distanceKm / 2);
+            const busTravelTime = (distanceKm / 25) * 60; // Time at 25 km/h
+            const busWaitTime = busStops * 5; // 5 min per stop
+            const busMinutes = Math.round(busTravelTime + busWaitTime);
             document.getElementById('busTime').textContent = formatTime(busMinutes);
+            
+            // Bike: Average cycling speed ~15 km/h in Singapore
+            const bikeMinutes = Math.round((distanceKm / 15) * 60);
+            document.getElementById('bikeTime').textContent = formatTime(bikeMinutes);
+            
+            // Walk: Average walking speed ~5 km/h
+            const walkMinutes = Math.round((distanceKm / 5) * 60);
+            document.getElementById('walkTime').textContent = formatTime(walkMinutes);
+            
+            console.log(`Route distance: ${distanceKm.toFixed(2)}km`);
+            console.log(`Travel times - Car: ${carMinutes}min, Bus: ${busMinutes}min, Bike: ${bikeMinutes}min, Walk: ${walkMinutes}min`);
         }
     } catch (error) {
         console.error('Error fetching travel times:', error);
