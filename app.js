@@ -1325,6 +1325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAIRecommendations();
     console.log('📊 Calling initJourneyAnalytics...');
     initJourneyAnalytics();
+    initCardSwipe();
     console.log('✅ All initialization complete');
 });
 
@@ -2465,66 +2466,75 @@ function completeCardMode() {
     updateStats();
 }
 
-// Touch swipe support (match cards.html exactly)
-let touchStartX = 0;
-let touchStartY = 0;
-const card = document.getElementById('card');
-
-card.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-    card.classList.add('dragging');
-});
-
-card.addEventListener('touchmove', (e) => {
-    if (!touchStartX || !touchStartY) return;
+// Initialize card swipe events
+function initCardSwipe() {
+    const card = document.getElementById('card');
+    if (!card) {
+        console.error('Card element not found');
+        return;
+    }
     
-    const touchX = e.touches[0].clientX;
-    const touchY = e.touches[0].clientY;
+    let touchStartX = 0;
+    let touchStartY = 0;
     
-    const deltaX = touchX - touchStartX;
-    const deltaY = touchY - touchStartY;
+    card.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        card.classList.add('dragging');
+    });
     
-    // Apply transform
-    const rotation = deltaX / 20;
-    card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
-    
-    // Show hints
-    const leftHint = document.getElementById('leftHint');
-    const rightHint = document.getElementById('rightHint');
-    
-    if (Math.abs(deltaX) > 50) {
-        if (deltaX > 0) {
-            rightHint.style.opacity = Math.min(deltaX / 100, 1);
-            leftHint.style.opacity = 0;
-        } else {
-            leftHint.style.opacity = Math.min(Math.abs(deltaX) / 100, 1);
-            rightHint.style.opacity = 0;
+    card.addEventListener('touchmove', (e) => {
+        if (!touchStartX || !touchStartY) return;
+        
+        const touchX = e.touches[0].clientX;
+        const touchY = e.touches[0].clientY;
+        
+        const deltaX = touchX - touchStartX;
+        const deltaY = touchY - touchStartY;
+        
+        // Apply transform
+        const rotation = deltaX / 20;
+        card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
+        
+        // Show hints
+        const leftHint = document.getElementById('leftHint');
+        const rightHint = document.getElementById('rightHint');
+        
+        if (Math.abs(deltaX) > 50) {
+            if (deltaX > 0) {
+                rightHint.style.opacity = Math.min(deltaX / 100, 1);
+                leftHint.style.opacity = 0;
+            } else {
+                leftHint.style.opacity = Math.min(Math.abs(deltaX) / 100, 1);
+                rightHint.style.opacity = 0;
+            }
         }
-    }
-});
-
-card.addEventListener('touchend', (e) => {
-    if (!touchStartX || !touchStartY) return;
+    });
     
-    const touchX = e.changedTouches[0].clientX;
-    const deltaX = touchX - touchStartX;
+    card.addEventListener('touchend', (e) => {
+        if (!touchStartX || !touchStartY) return;
+        
+        const touchX = e.changedTouches[0].clientX;
+        const deltaX = touchX - touchStartX;
+        
+        card.classList.remove('dragging');
+        
+        if (Math.abs(deltaX) > 100) {
+            // Swipe detected
+            handleSwipe(deltaX > 0 ? 'right' : 'left');
+        } else {
+            // Reset card
+            card.style.transform = 'translate(0, 0) rotate(0deg)';
+            document.getElementById('leftHint').style.opacity = 0;
+            document.getElementById('rightHint').style.opacity = 0;
+        }
+        
+        touchStartX = 0;
+        touchStartY = 0;
+    });
     
-    card.classList.remove('dragging');
-    
-    if (Math.abs(deltaX) > 100) {
-        // Swipe detected
-        handleSwipe(deltaX > 0 ? 'right' : 'left');
-    } else {
-        // Reset card
-        card.style.transform = 'translate(0, 0) rotate(0deg)';
-        document.getElementById('leftHint').style.opacity = 0;
-        document.getElementById('rightHint').style.opacity = 0;
-    }
-    
-    touchStartX = 0;
-    touchStartY = 0;
-});
+    console.log('Card swipe events initialized');
+}
 
 // Collection button - show all cards
 document.getElementById('collectionBtn').addEventListener('click', () => {
