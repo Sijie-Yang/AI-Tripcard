@@ -1,4 +1,4 @@
-# 🇸🇬 SG TripCard - Your Personal Singapore Discovery Companion
+# 🇸🇬 SG TripCard - Your Personal Singapore Discovery Companion for 60 Iconic Locations
 
 > Celebrating 60 years of Singapore with an AI-powered interactive map for discovering 60 iconic locations
 
@@ -16,6 +16,21 @@
 ### 📍 **60 Curated Singapore Locations**
 From Marina Bay Sands to hidden hawker centers - explore the best of Singapore across 6 categories and 6 emotional themes.
 
+<table>
+<tr>
+<td width="50%"><img src="60 images/poi_001.png" alt="Marina Bay Sands"/></td>
+<td width="50%"><img src="60 images/poi_002.png" alt="Gardens by the Bay"/></td>
+</tr>
+<tr>
+<td width="50%"><img src="60 images/poi_003.png" alt="Merlion Park"/></td>
+<td width="50%"><img src="60 images/poi_010.png" alt="Chinatown"/></td>
+</tr>
+<tr>
+<td width="50%"><img src="60 images/poi_015.png" alt="Sentosa"/></td>
+<td width="50%"><img src="60 images/poi_020.png" alt="Singapore Zoo"/></td>
+</tr>
+</table>
+
 ### 🏷️ **3 Smart Status Markers**
 - ✅ **Visited** - Places you've already explored
 - ⭐ **To Visit** - Your wishlist destinations
@@ -24,8 +39,9 @@ From Marina Bay Sands to hidden hawker centers - explore the best of Singapore a
 <table>
 <tr>
 <td width="50%"><img src="screenshots/Swipe%20Card%20Guidance.png" alt="Swipe Card Guidance"/></td>
-</tr>
 <td width="50%"><img src="screenshots/Local%20-%20Tourist%20-%20Mode%20-%20Choice.png" alt="Mode Selection - Local vs Tourist"/></td>
+</tr>
+<tr>
 <td width="50%"><img src="screenshots/Place%20Visit%20Status%20Markers.png" alt="Visit Status Markers"/></td>
 <td width="50%"><img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Marina%20Bay%20Sands.png" alt="Card Swiping Interface - Marina Bay Sands"/></td>
 </tr>
@@ -47,8 +63,6 @@ Swipe right ➡️ for interested/visited, left ⬅️ for not interested/unvisi
 <table>
 <tr>
 <td width="50%"><img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Gardens%20by%20the%20Bay.png" alt="Card Swiping Interface - Gardens by the Bay"/></td>
-</tr>
-<tr>
 <td width="50%"><img src="screenshots/Tourist%20Mode%20-%20Card%20-%20Changi%20Airport.png" alt="Card Swiping Interface - Changi Airport"/></td>
 </tr>
 </table>
